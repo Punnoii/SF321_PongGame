@@ -73,11 +73,6 @@ class Ball:
         if self.x <= 0 or self.x >= self.screen_width:
             self.ball_start()
 
-        # for player in players:
-        #     if self.rect.colliderect(player.rect):
-        #         self.speed_x *= -1  # เปลี่ยนทิศทางแกน x เมื่อชน
-        #         break
-
         if self.rect.colliderect(players[0].rect):
             self.speed_x = 1  # เปลี่ยนทิศทางแกน x เมื่อชน
 
