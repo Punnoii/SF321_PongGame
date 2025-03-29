@@ -1,2 +1,1 @@
-Game Hua Kuy
-Jai yen pee shy
+ครั้งที่1 แก้บัค

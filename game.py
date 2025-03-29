@@ -79,7 +79,7 @@ class Ball:
         #         break
 
         if self.rect.colliderect(players[0].rect):
-            self.speed_x = -1  # เปลี่ยนทิศทางแกน x เมื่อชน
+            self.speed_x = 1  # เปลี่ยนทิศทางแกน x เมื่อชน
 
         if self.rect.colliderect(players[1].rect):
             self.speed_x = -1  # เปลี่ยนทิศทางแกน x เมื่อชน
