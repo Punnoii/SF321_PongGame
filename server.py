@@ -4,7 +4,7 @@ from game import Player , Ball
 import pickle
 import pygame
 
-server = "" # change IP here
+server = "192.168.1.42" # change IP here
 port = 5555
 
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)

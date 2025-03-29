@@ -9,6 +9,13 @@ win = pygame.display.set_mode((width, height))
 
 pygame.display.set_caption( "Client" )
 
+# def draw_score(screen, player1, player2):
+#     font = pygame.font.Font(None, 40)  # กำหนดฟอนต์ขนาด 40
+#     score_text = f"{player1.score} - {player2.score}"  # รูปแบบคะแนน 1 - 2
+#     text = font.render(score_text, True, (0, 0, 0))  # สีดำ
+#     screen.blit(text, (screen.get_width() // 2 - text.get_width() // 2, 20))  # แสดงตรงกลางจอ
+
+
 def redrawWindow(screen,player, player2,ball):
     screen.fill((255,255,255))
     # add if else
@@ -20,13 +27,18 @@ def redrawWindow(screen,player, player2,ball):
         player.draw(screen)
         player2.draw(screen)
         ball.draw(screen)
+        # draw_score(screen, player, player2)
     
     pygame.display.update()
 
 def main():
     run = True
     n = Network()
+    print("Debug: getP() returned:", n.getP())
+    if n.getP() is None:
+        raise ValueError("Error: getP() returned None. Check the network connection.")
     p , ball = n.getP() # รับ player ball ไป server
+    
     p.ready = True 
     clock = pygame.time.Clock()
     
@@ -35,6 +47,8 @@ def main():
         data = n.send((p, ball))  # send player and ball to server
         p2, ball = data  # resive data from server
         
+        print(f"Player 1 Score: {p.score} | Player 2 Score: {p2.score}", end='\r')
+         
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 run = False
