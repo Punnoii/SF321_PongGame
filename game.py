@@ -10,6 +10,7 @@ class Player:
         self.width = width
         self.height = height
         self.color = color
+        self.score = 0
         self.rect = pygame.Rect(x, y, width, height)
         self.vel = 3
         self.ready = False
