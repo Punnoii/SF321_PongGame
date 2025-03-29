@@ -1,6 +1,6 @@
 import socket
 from _thread import *
-from game import Player, Ball
+from game import *
 import pickle
 import pygame
 
@@ -20,17 +20,18 @@ print("Waiting for a connection, Server Started")
 
 players = [Player(0, 250, 20, 120, (255, 0, 0)), Player(480, 250, 20, 120, (0, 0, 255))]
 ball = Ball(250, 250, 10, 10, (0, 0, 0))
+score = Score(0,0)
 
 
-def threaded_client(conn, player, ball):
-    conn.send(pickle.dumps((players[player], ball)))
+def threaded_client(conn, player, ball, score):
+    conn.send(pickle.dumps((players[player], ball, score)))
     reply = ""
     while True:
         try:
             data = pickle.loads(conn.recv(2048))
             players[player] = data[0]
 
-            ball.move(players)  # update ball position
+            ball.move(players,score)  # update ball position
 
             if not data:
                 print("Disconnected")
@@ -38,15 +39,13 @@ def threaded_client(conn, player, ball):
             else:
                 # send data player and ball to client
                 if player == 1:
-                    reply = (players[0], ball)
+                    reply = (players[0], ball, score)
                 else:
-                    reply = (players[1], ball)
+                    reply = (players[1], ball, score)
 
-                print("Received: ", data)
-                print("Sending : ", reply)
 
             conn.sendall(pickle.dumps(reply))
-        except:
+        except Exception as e:
             print(f"Error: {e}")
             break
 
@@ -60,5 +59,5 @@ while True:
     conn, addr = s.accept()
     print("Connected to:", addr)
 
-    start_new_thread(threaded_client, (conn, currentPlayer, ball))
+    start_new_thread(threaded_client, (conn, currentPlayer, ball, score))
     currentPlayer += 1
