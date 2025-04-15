@@ -27,7 +27,6 @@ class Player:
             self.y -= self.vel
         if keys[pygame.K_DOWN]:
             self.y += self.vel
-        # ปรับ paddle ไม่ให้เลื่อนไปเหนือ header bar
         if self.y < BAR_HEIGHT:
             self.y = BAR_HEIGHT
         elif self.y > self.screen_height - self.height:
@@ -90,7 +89,8 @@ class Ball:
 
             if self.rect.colliderect(players[0].rect):
                 self.speed_x = abs(self.speed_x)
-            if self.rect.colliderect(players[1].rect):
+
+            elif self.rect.colliderect(players[1].rect):
                 self.speed_x = -abs(self.speed_x)
 
             if self.rect.left <= 0:

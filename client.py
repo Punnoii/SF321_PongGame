@@ -174,8 +174,12 @@ def redraw_window(screen, player, player2, ball, score):
     pygame.draw.rect(screen, (200, 200, 200), (0, 0, SCREEN_WIDTH, BAR_HEIGHT))
 
     info_font = pygame.font.SysFont("comicsans", 24)
-    red_info = f"{player.name} - {score.score_player_1}"
-    blue_info = f"{player2.name} - {score.score_player_2}"
+    if player.color == (255, 0, 0):
+        red_info = f"{player.name} - {score.score_player_1}"
+        blue_info = f"{player2.name} - {score.score_player_2}"
+    else:
+        red_info = f"{player2.name} - {score.score_player_1}"
+        blue_info = f"{player.name} - {score.score_player_2}"
     red_text = info_font.render(red_info, True, (255, 0, 0))
     blue_text = info_font.render(blue_info, True, (0, 0, 255))
     screen.blit(red_text, (10, 10))
@@ -206,6 +210,56 @@ def redraw_window(screen, player, player2, ball, score):
     pygame.display.update()
 
 
+def show_winner_screen(win, player, player2, score):
+    waiting = True
+    while waiting:
+        win.fill((0, 0, 0))
+
+        # เช็คใครชนะ
+        if score.score_player_1 >= 2:
+            winner_name = player.name if player.color == (255, 0, 0) else player2.name
+        else:
+            winner_name = player2.name if player.color == (255, 0, 0) else player.name
+
+        # แสดงข้อความ
+        winner_font = pygame.font.SysFont("comicsans", 50)
+        winner_text = winner_font.render(f"{winner_name} Wins!", True, (255, 255, 255))
+        win.blit(
+            winner_text,
+            (
+                SCREEN_WIDTH // 2 - winner_text.get_width() // 2,
+                SCREEN_HEIGHT // 2 - 100,
+            ),
+        )
+
+        # ปุ่ม
+        mouse_pos = pygame.mouse.get_pos()
+        if start_button_rect.collidepoint(mouse_pos):
+            pygame.draw.rect(win, button_hover_color, start_button_rect)
+        else:
+            pygame.draw.rect(win, button_color, start_button_rect)
+
+        button_text = button_font.render("Play Again", True, button_text_color)
+        win.blit(
+            button_text,
+            (
+                start_button_rect.centerx - button_text.get_width() // 2,
+                start_button_rect.centery - button_text.get_height() // 2,
+            ),
+        )
+
+        pygame.display.update()  # อัพเดตใน loop
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                return
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if start_button_rect.collidepoint(event.pos):
+                    run_game_flow()
+                    return
+
+
 def main(player_name):
     network = Network()
     player, ball, score = network.getP()
@@ -213,6 +267,7 @@ def main(player_name):
     player.name = player_name
     clock = pygame.time.Clock()
     run = True
+    game_over = False
     while run:
         clock.tick(60)
         player2, ball, score = network.send((player, ball, score))
@@ -220,6 +275,15 @@ def main(player_name):
             if event.type == pygame.QUIT:
                 run = False
                 pygame.quit()
+        if score.score_player_1 >= 2 or score.score_player_2 >= 2:
+            game_over = True
+
+        if not game_over:
+            player.move()
+            redraw_window(win, player, player2, ball, score)
+        else:
+            show_winner_screen(win, player, player2, score)
+
         player.move()
         redraw_window(win, player, player2, ball, score)
 
