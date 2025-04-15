@@ -4,12 +4,8 @@ from game import *
 
 pygame.init()
 
-POINT_ZONE_HEIGHT = 80
-GAME_AREA_HEIGHT = 500
 SCREEN_WIDTH = 500
-SCREEN_HEIGHT = GAME_AREA_HEIGHT + POINT_ZONE_HEIGHT
-GAME_ZONE_HEIGHT = SCREEN_HEIGHT - POINT_ZONE_HEIGHT
-GAME_ZONE_Y_OFFSET = POINT_ZONE_HEIGHT
+SCREEN_HEIGHT = 500
 win = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 pygame.display.set_caption("Client")
 
@@ -19,7 +15,6 @@ button_font = pygame.font.SysFont("comicsans", 40)
 button_color = (0, 200, 0)
 button_hover_color = (0, 255, 0)
 button_text_color = (255, 255, 255)
-
 
 start_button_rect = pygame.Rect(SCREEN_WIDTH // 2 - 100, SCREEN_HEIGHT // 2, 200, 60)
 next_button_rect = pygame.Rect(
@@ -93,7 +88,8 @@ def name_input_screen():
                 if event.key == pygame.K_BACKSPACE:
                     user_text = user_text[:-1]
                 elif event.key == pygame.K_RETURN:
-                    run = False
+                    if user_text.strip() != "":
+                        run = False
                 else:
                     user_text += event.unicode
 
@@ -169,49 +165,52 @@ def lobby_screen(player_name):
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if start_button_rect.collidepoint(event.pos):
                     run = False
-    main()
+    main(player_name)
 
 
 def redraw_window(screen, player, player2, ball, score):
     screen.fill((255, 255, 255))
 
-    # Draw score zone background
-    pygame.draw.rect(screen, (200, 200, 200), (0, 0, SCREEN_WIDTH, POINT_ZONE_HEIGHT))
+    pygame.draw.rect(screen, (200, 200, 200), (0, 0, SCREEN_WIDTH, BAR_HEIGHT))
 
-    # Draw scores
-    font = pygame.font.SysFont("comicsans", 30)
-    red_text = font.render(f"Red: {score.score_player_1}", True, (255, 0, 0))
-    blue_text = font.render(f"Blue: {score.score_player_2}", True, (0, 0, 255))
+    info_font = pygame.font.SysFont("comicsans", 24)
+    red_info = f"{player.name} - {score.score_player_1}"
+    blue_info = f"{player2.name} - {score.score_player_2}"
+    red_text = info_font.render(red_info, True, (255, 0, 0))
+    blue_text = info_font.render(blue_info, True, (0, 0, 255))
     screen.blit(red_text, (10, 10))
     screen.blit(blue_text, (SCREEN_WIDTH - blue_text.get_width() - 10, 10))
 
     if not (player.connected() and player2.connected()):
-        wait_font = pygame.font.SysFont("comicsans", 40)
-        text = wait_font.render("Waiting for Player...", True, (255, 0, 0))
-        screen.blit(text, (
-            SCREEN_WIDTH // 2 - text.get_width() // 2,
-            POINT_ZONE_HEIGHT + GAME_AREA_HEIGHT // 2 - text.get_height() // 2
-        ))
+        waiting_font = pygame.font.SysFont("comicsans", 40)
+        waiting_text = waiting_font.render("Waiting for Player...", True, (255, 0, 0))
+        screen.blit(
+            waiting_text,
+            (
+                SCREEN_WIDTH // 2 - waiting_text.get_width() // 2,
+                (SCREEN_HEIGHT + BAR_HEIGHT) // 2 - waiting_text.get_height() // 2,
+            ),
+        )
     else:
-        # Game objects get drawn offset from score zone
-        player.draw(screen, y_offset=POINT_ZONE_HEIGHT)
-        player2.draw(screen, y_offset=POINT_ZONE_HEIGHT)
-        ball.draw(screen, y_offset=POINT_ZONE_HEIGHT)
-
+        player.draw(screen)
+        player2.draw(screen)
+        ball.draw(screen)
         if not ball.active and ball.countdown_number != "":
-            countdown_text = basic_font.render(str(ball.countdown_number), True, (0, 0, 0))
+            countdown_text = basic_font.render(
+                str(ball.countdown_number), True, accent_color
+            )
             countdown_rect = countdown_text.get_rect(
-                center=(SCREEN_WIDTH / 2, POINT_ZONE_HEIGHT + GAME_AREA_HEIGHT // 2)
+                center=(SCREEN_WIDTH / 2, (SCREEN_HEIGHT + BAR_HEIGHT) // 2 + 50)
             )
             screen.blit(countdown_text, countdown_rect)
-
     pygame.display.update()
 
 
-def main():
+def main(player_name):
     network = Network()
     player, ball, score = network.getP()
     player.ready = True
+    player.name = player_name
     clock = pygame.time.Clock()
     run = True
     while run:

@@ -12,23 +12,15 @@ s.listen(2)
 print("Waiting for a connection, Server Started")
 
 SCREEN_WIDTH = 500
-POINT_ZONE_HEIGHT = 80
-GAME_AREA_HEIGHT = 500
-SCREEN_HEIGHT = GAME_AREA_HEIGHT + POINT_ZONE_HEIGHT
+SCREEN_HEIGHT = 500
 
 players = [
     Player(
-        0,
-        POINT_ZONE_HEIGHT + GAME_AREA_HEIGHT // 2 - 60,
-        20,
-        120,
-        (255, 0, 0),
-        SCREEN_WIDTH,
-        SCREEN_HEIGHT,
+        0, SCREEN_HEIGHT // 2 - 60, 20, 120, (255, 0, 0), SCREEN_WIDTH, SCREEN_HEIGHT
     ),
     Player(
         SCREEN_WIDTH - 20,
-        POINT_ZONE_HEIGHT + GAME_AREA_HEIGHT // 2 - 60,
+        SCREEN_HEIGHT // 2 - 60,
         20,
         120,
         (0, 0, 255),
@@ -38,7 +30,7 @@ players = [
 ]
 ball = Ball(
     SCREEN_WIDTH // 2 - 5,
-    POINT_ZONE_HEIGHT + GAME_AREA_HEIGHT // 2 - 5,
+    SCREEN_HEIGHT // 2 - 5,
     10,
     10,
     (0, 0, 0),
