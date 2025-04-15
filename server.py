@@ -1,62 +1,76 @@
 import socket
-from _thread import *
-from game import Player , Ball
+from _thread import start_new_thread
+from game import Player, Ball, Score
 import pickle
 import pygame
 
-server = "192.168.1.42" # change IP here
+server = "127.0.0.1"
 port = 5555
-
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-
-try:
-    s.bind((server, port))
-except socket.error as e:
-    str(e)
-
+s.bind((server, port))
 s.listen(2)
 print("Waiting for a connection, Server Started")
 
+SCREEN_WIDTH = 500
+POINT_ZONE_HEIGHT = 80
+GAME_AREA_HEIGHT = 500
+SCREEN_HEIGHT = GAME_AREA_HEIGHT + POINT_ZONE_HEIGHT
 
-players = [Player(0,250,20,120,(255,0,0)), Player(480,250, 20,120, (0,0,255))]
-ball = Ball(250, 250,10,10,(0,0,0))
+players = [
+    Player(
+        0,
+        POINT_ZONE_HEIGHT + GAME_AREA_HEIGHT // 2 - 60,
+        20,
+        120,
+        (255, 0, 0),
+        SCREEN_WIDTH,
+        SCREEN_HEIGHT,
+    ),
+    Player(
+        SCREEN_WIDTH - 20,
+        POINT_ZONE_HEIGHT + GAME_AREA_HEIGHT // 2 - 60,
+        20,
+        120,
+        (0, 0, 255),
+        SCREEN_WIDTH,
+        SCREEN_HEIGHT,
+    ),
+]
+ball = Ball(
+    SCREEN_WIDTH // 2 - 5,
+    POINT_ZONE_HEIGHT + GAME_AREA_HEIGHT // 2 - 5,
+    10,
+    10,
+    (0, 0, 0),
+    SCREEN_WIDTH,
+    SCREEN_HEIGHT,
+)
+score = Score()
 
-def threaded_client(conn, player,ball):
-    conn.send(pickle.dumps((players[player], ball)))
-    reply = ""
+
+def threaded_client(conn, player):
+    clock = pygame.time.Clock()
+    conn.send(pickle.dumps((players[player], ball, score)))
     while True:
+        clock.tick(60)
         try:
             data = pickle.loads(conn.recv(2048))
             players[player] = data[0]
-
-            ball.move(players) # update ball position
-            
+            ball.move(players, score)
             if not data:
-                print("Disconnected")
                 break
+            if player == 1:
+                reply = (players[0], ball, score)
             else:
-                # send data player and ball to client
-                if player == 1:
-                    reply = (players[0],ball)
-                else:
-                    reply = (players[1],ball)
-
-                print("Received: ", data)
-                print("Sending : ", reply)
-
+                reply = (players[1], ball, score)
             conn.sendall(pickle.dumps(reply))
-        except:
-            print(f"Error: {e}")
+        except Exception as e:
             break
-
-    print("Lost connection")
     conn.close()
+
 
 currentPlayer = 0
 while True:
-    
     conn, addr = s.accept()
-    print("Connected to:", addr)
-
-    start_new_thread(threaded_client, (conn, currentPlayer,ball))
+    start_new_thread(threaded_client, (conn, currentPlayer))
     currentPlayer += 1
