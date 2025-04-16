@@ -173,7 +173,7 @@ def redraw_window(screen, player, player2, ball, score):
     screen.fill((255, 255, 255))
     background = pygame.image.load("stadium.jpg")
     background = pygame.transform.scale(background, (SCREEN_WIDTH, SCREEN_HEIGHT))
-    aawin.blit(background, (0, 0))
+    win.blit(background, (0, 0))
 
     pygame.draw.rect(screen, (200, 200, 200), (0, 0, SCREEN_WIDTH, BAR_HEIGHT))
 
