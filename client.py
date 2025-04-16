@@ -215,13 +215,11 @@ def show_winner_screen(win, player, player2, score):
     while waiting:
         win.fill((0, 0, 0))
 
-        # เช็คใครชนะ
         if score.score_player_1 >= 2:
             winner_name = player.name if player.color == (255, 0, 0) else player2.name
         else:
             winner_name = player2.name if player.color == (255, 0, 0) else player.name
 
-        # แสดงข้อความ
         winner_font = pygame.font.SysFont("comicsans", 50)
         winner_text = winner_font.render(f"{winner_name} Wins!", True, (255, 255, 255))
         win.blit(
@@ -232,7 +230,6 @@ def show_winner_screen(win, player, player2, score):
             ),
         )
 
-        # ปุ่ม
         mouse_pos = pygame.mouse.get_pos()
         if start_button_rect.collidepoint(mouse_pos):
             pygame.draw.rect(win, button_hover_color, start_button_rect)
@@ -248,7 +245,7 @@ def show_winner_screen(win, player, player2, score):
             ),
         )
 
-        pygame.display.update()  # อัพเดตใน loop
+        pygame.display.update()
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:

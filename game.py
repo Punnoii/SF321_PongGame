@@ -17,9 +17,11 @@ class Player:
         self.screen_width = screen_width
         self.screen_height = screen_height
         self.name = ""
+        self.image = pygame.image.load("Paddle.png")
+        self.image = pygame.transform.scale(self.image, (width, height))
 
     def draw(self, screen):
-        pygame.draw.rect(screen, self.color, self.rect)
+        screen.blit(self.image, self.rect)
 
     def move(self):
         keys = pygame.key.get_pressed()
@@ -39,6 +41,17 @@ class Player:
     def connected(self):
         return self.ready
 
+    def __getstate__(self):
+        state = self.__dict__.copy()
+        if "image" in state:
+            del state["image"]
+        return state
+
+    def __setstate__(self, state):
+        self.__dict__.update(state)
+        self.image = pygame.image.load("Paddle.png")
+        self.image = pygame.transform.scale(self.image, (self.width, self.height))
+
 
 class Ball:
     def __init__(self, x, y, width, height, color, screen_width, screen_height):
@@ -55,6 +68,8 @@ class Ball:
         self.active = True
         self.score_time = 0
         self.countdown_number = ""
+        self.image = pygame.image.load("Ball.png")
+        self.image = pygame.transform.scale(self.image, (width, height))
 
     def update(self):
         if self.active:
@@ -77,7 +92,7 @@ class Ball:
             self.countdown_number = ""
 
     def draw(self, screen):
-        pygame.draw.rect(screen, self.color, self.rect)
+        screen.blit(self.image, self.rect)
 
     def move(self, players, score):
         if self.active:
@@ -110,6 +125,17 @@ class Ball:
             self.speed_x = random.choice((1, -1))
             self.speed_y = random.choice((1, -1))
             self.countdown_number = ""
+
+    def __getstate__(self):
+        state = self.__dict__.copy()
+        if "image" in state:
+            del state["image"]
+        return state
+
+    def __setstate__(self, state):
+        self.__dict__.update(state)
+        self.image = pygame.image.load("Ball.png")
+        self.image = pygame.transform.scale(self.image, (self.width, self.height))
 
 
 class Score:
