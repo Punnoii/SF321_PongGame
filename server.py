@@ -30,7 +30,7 @@ players = [
 ]
 ball = Ball(
     SCREEN_WIDTH // 2 - 5,
-    SCREEN_HEIGHT // 2 - 5,
+    SCREEN_HEIGHT // 2 + BAR_HEIGHT,
     10,
     10,
     (0, 0, 0),
