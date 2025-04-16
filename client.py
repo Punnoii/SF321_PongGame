@@ -5,8 +5,8 @@ from game import *
 pygame.init()
 pygame.mixer.init()
 
-SCREEN_WIDTH = 500
-SCREEN_HEIGHT = 500
+SCREEN_WIDTH = 1000
+SCREEN_HEIGHT = 750
 win = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 pygame.display.set_caption("Client")
 
@@ -171,11 +171,6 @@ def lobby_screen(player_name):
 
 def redraw_window(screen, player, player2, ball, score):
     screen.fill((255, 255, 255))
-    background = pygame.image.load("pong_background.png")
-    background = pygame.transform.scale(
-        background, (SCREEN_WIDTH, SCREEN_HEIGHT + BAR_HEIGHT)
-    )
-    win.blit(background, (0, 0))
 
     pygame.draw.rect(screen, (200, 200, 200), (0, 0, SCREEN_WIDTH, BAR_HEIGHT))
 
