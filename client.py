@@ -3,6 +3,7 @@ from network import Network
 from game import *
 
 pygame.init()
+pygame.mixer.init()
 
 SCREEN_WIDTH = 500
 SCREEN_HEIGHT = 500
