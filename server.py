@@ -11,8 +11,8 @@ s.bind((server, port))
 s.listen(2)
 print("Waiting for a connection, Server Started")
 
-SCREEN_WIDTH = 1000
-SCREEN_HEIGHT = 750
+SCREEN_WIDTH = 1280
+SCREEN_HEIGHT = 800
 
 players = [
     Player(
@@ -30,7 +30,7 @@ players = [
 ]
 ball = Ball(
     SCREEN_WIDTH // 2 - 5,
-    SCREEN_HEIGHT // 2 + BAR_HEIGHT,
+    SCREEN_HEIGHT // 2 - 5,
     10,
     10,
     (0, 0, 0),

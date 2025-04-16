@@ -5,8 +5,8 @@ from game import *
 pygame.init()
 pygame.mixer.init()
 
-SCREEN_WIDTH = 1000
-SCREEN_HEIGHT = 750
+SCREEN_WIDTH = 1280
+SCREEN_HEIGHT = 800
 win = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 pygame.display.set_caption("Client")
 
@@ -21,27 +21,23 @@ start_button_rect = pygame.Rect(SCREEN_WIDTH // 2 - 100, SCREEN_HEIGHT // 2, 200
 next_button_rect = pygame.Rect(
     SCREEN_WIDTH // 2 - 100, SCREEN_HEIGHT // 2 + 100, 200, 60
 )
+start_button = pygame.Rect(SCREEN_WIDTH // 1.5, SCREEN_HEIGHT // 2, 300, 178)
 
 
 def draw_start_screen():
-    win.fill((128, 128, 128))
-    title_font = pygame.font.SysFont("comicsans", 60)
-    title_text = title_font.render("Welcome", True, (255, 255, 255))
-    win.blit(title_text, (SCREEN_WIDTH // 2 - title_text.get_width() // 2, 100))
+    background = pygame.image.load("Welcome.png")
+    background = pygame.transform.scale(background, (SCREEN_WIDTH, SCREEN_HEIGHT))
+    start_button_image = pygame.image.load("start_button.png")
+    start_button_image = pygame.transform.scale(start_button_image, (300, 178))
+    start_button_hover_image = pygame.transform.scale(start_button_image, (320, 190))
+    win.blit(background, (0, 0))
+    win.blit(start_button_image, (start_button.x, start_button.y))
 
     mouse_pos = pygame.mouse.get_pos()
-    if start_button_rect.collidepoint(mouse_pos):
-        pygame.draw.rect(win, button_hover_color, start_button_rect)
+    if start_button.collidepoint(mouse_pos):
+        win.blit(start_button_hover_image, (start_button.x - 10, start_button.y - 10))
     else:
-        pygame.draw.rect(win, button_color, start_button_rect)
-    button_text = button_font.render("Start", True, button_text_color)
-    win.blit(
-        button_text,
-        (
-            start_button_rect.centerx - button_text.get_width() // 2,
-            start_button_rect.centery - button_text.get_height() // 2,
-        ),
-    )
+        win.blit(start_button_image, (start_button.x, start_button.y))
     pygame.display.update()
 
 
@@ -54,7 +50,7 @@ def start_screen():
                 pygame.quit()
                 run = False
             if event.type == pygame.MOUSEBUTTONDOWN:
-                if start_button_rect.collidepoint(event.pos):
+                if start_button.collidepoint(event.pos):
                     run = False
 
 
