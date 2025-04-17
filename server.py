@@ -66,3 +66,7 @@ while True:
     conn, addr = s.accept()
     start_new_thread(threaded_client, (conn, currentPlayer))
     currentPlayer += 1
+    if currentPlayer == 2:
+        currentPlayer -= 1
+        score.score_player_1 = 0
+        score.score_player_2 = 0

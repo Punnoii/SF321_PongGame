@@ -224,6 +224,7 @@ def show_winner_screen(win, player, player2, score):
 
         winner_font = pygame.font.SysFont("comicsans", 50)
         winner_text = winner_font.render(f"{winner_name} Wins!", True, (255, 255, 255))
+
         win.blit(
             winner_text,
             (
@@ -265,8 +266,8 @@ def main(player_name):
     player.ready = True
     player.name = player_name
     clock = pygame.time.Clock()
-    run = True
     game_over = False
+    run = True
     while run:
         clock.tick(60)
         player2, ball, score = network.send((player, ball, score))
@@ -281,6 +282,7 @@ def main(player_name):
             player.move()
             redraw_window(win, player, player2, ball, score)
         else:
+            game_over = False
             show_winner_screen(win, player, player2, score)
 
         player.move()
