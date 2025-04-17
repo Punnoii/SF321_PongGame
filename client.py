@@ -67,12 +67,31 @@ def name_input_screen():
     cursor_visible = True
     last_toggle = pygame.time.get_ticks()
     toggle_interval = 500
+    INITIAL_DELAY = 400
+    REPEAT_DELAY = 50
 
     while run:
         current_time = pygame.time.get_ticks()
         if current_time - last_toggle >= toggle_interval:
             cursor_visible = not cursor_visible
             last_toggle = current_time
+
+        keys = pygame.key.get_pressed()
+        if active and keys[pygame.K_BACKSPACE]:
+            if not backspace_held:
+                backspace_held = True
+                backspace_start = current_time
+                backspace_last = current_time
+                user_text = user_text[:-1]
+            else:
+                if (
+                    current_time - backspace_start >= INITIAL_DELAY
+                    and current_time - backspace_last >= REPEAT_DELAY
+                ):
+                    user_text = user_text[:-1]
+                    backspace_last = current_time
+        else:
+            backspace_held = False
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -93,7 +112,8 @@ def name_input_screen():
                     if user_text.strip() != "":
                         run = False
                 else:
-                    user_text += event.unicode
+                    if len(user_text) < 15:
+                        user_text += event.unicode
 
         win.blit(background, (0, 0))
         win.blit(next_button_image, (next_button.x, next_button.y))
@@ -109,6 +129,10 @@ def name_input_screen():
         display_text = user_text
         if active and cursor_visible:
             display_text += "_"
+
+        max_width = input_box.width - 10
+        while basic_font.size(display_text)[0] > max_width and len(display_text) > 0:
+            display_text = display_text[1:]
 
         pygame.draw.rect(
             win, (255, 255, 255) if active else (200, 200, 200), input_box, 2
