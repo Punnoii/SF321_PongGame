@@ -18,11 +18,8 @@ button_hover_color = (0, 255, 0)
 button_text_color = (255, 255, 255)
 
 start_button_rect = pygame.Rect(SCREEN_WIDTH // 2 - 100, SCREEN_HEIGHT // 2, 200, 60)
-next_button_rect = pygame.Rect(
-    SCREEN_WIDTH // 2 - 100, SCREEN_HEIGHT // 2 + 100, 200, 60
-)
-start_button = pygame.Rect(SCREEN_WIDTH // 1.5, SCREEN_HEIGHT // 2, 300, 178)
-next_button = pygame.Rect(SCREEN_WIDTH // 1.5, SCREEN_HEIGHT // 2 + 100, 300, 178)
+start_button = pygame.Rect(SCREEN_WIDTH // 1.5, SCREEN_HEIGHT // 2, 280, 150)
+next_button = pygame.Rect(SCREEN_WIDTH // 1.5, SCREEN_HEIGHT // 2 + 100, 280, 150)
 
 def draw_start_screen():
     background = pygame.image.load("background.png")
