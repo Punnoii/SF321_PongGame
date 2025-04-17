@@ -22,10 +22,10 @@ next_button_rect = pygame.Rect(
     SCREEN_WIDTH // 2 - 100, SCREEN_HEIGHT // 2 + 100, 200, 60
 )
 start_button = pygame.Rect(SCREEN_WIDTH // 1.5, SCREEN_HEIGHT // 2, 300, 178)
-
+next_button = pygame.Rect(SCREEN_WIDTH // 1.5, SCREEN_HEIGHT // 2 + 100, 200, 60)
 
 def draw_start_screen():
-    background = pygame.image.load("Welcome.png")
+    background = pygame.image.load("background.png")
     background = pygame.transform.scale(background, (SCREEN_WIDTH, SCREEN_HEIGHT))
     start_button_image = pygame.image.load("start_button.png")
     start_button_image = pygame.transform.scale(start_button_image, (300, 178))
@@ -55,7 +55,12 @@ def start_screen():
 
 
 def name_input_screen():
-    input_box = pygame.Rect(SCREEN_WIDTH // 2 - 150, SCREEN_HEIGHT // 2 - 30, 300, 60)
+    background = pygame.image.load("background.png")
+    background = pygame.transform.scale(background, (SCREEN_WIDTH, SCREEN_HEIGHT))
+    input_box = pygame.Rect(SCREEN_WIDTH // 1.5, SCREEN_HEIGHT // 2 - 30, 300, 60)
+    next_button_image = pygame.image.load("next.png")
+    next_button_image = pygame.transform.scale(next_button_image, (300, 178))
+    next_button_hover_image = pygame.transform.scale(next_button_image, (320, 190))
     active = False
     user_text = ""
     run = True
@@ -78,7 +83,7 @@ def name_input_screen():
                     active = True
                 else:
                     active = False
-                if next_button_rect.collidepoint(event.pos):
+                if next_button.collidepoint(event.pos):
                     if user_text.strip() != "":
                         run = False
             if event.type == pygame.KEYDOWN and active:
@@ -90,12 +95,13 @@ def name_input_screen():
                 else:
                     user_text += event.unicode
 
-        win.fill((30, 30, 30))
-        prompt_text = basic_font.render("Enter your name:", True, (255, 255, 255))
+        win.blit(background, (0, 0))
+        win.blit(next_button_image, (next_button.x, next_button.y))
+        prompt_text = basic_font.render("Enter your name:", True, (0, 0, 0))
         win.blit(
             prompt_text,
             (
-                SCREEN_WIDTH // 2 - prompt_text.get_width() // 2,
+                SCREEN_WIDTH // 1.5,
                 SCREEN_HEIGHT // 2 - 100,
             ),
         )
@@ -107,22 +113,14 @@ def name_input_screen():
         pygame.draw.rect(
             win, (255, 255, 255) if active else (200, 200, 200), input_box, 2
         )
-        text_surface = basic_font.render(display_text, True, (255, 255, 255))
+        text_surface = basic_font.render(display_text, True, (255, 20, 147))
         win.blit(text_surface, (input_box.x + 5, input_box.y + 5))
 
         mouse_pos = pygame.mouse.get_pos()
-        if next_button_rect.collidepoint(mouse_pos):
-            pygame.draw.rect(win, button_hover_color, next_button_rect)
+        if next_button.collidepoint(mouse_pos):
+            win.blit(next_button_hover_image, (next_button.x - 10, next_button.y - 10))
         else:
-            pygame.draw.rect(win, button_color, next_button_rect)
-        next_text = button_font.render("Next", True, button_text_color)
-        win.blit(
-            next_text,
-            (
-                next_button_rect.centerx - next_text.get_width() // 2,
-                next_button_rect.centery - next_text.get_height() // 2,
-            ),
-        )
+            win.blit(next_button_image, (next_button.x, next_button.y))
         pygame.display.flip()
 
     return user_text
