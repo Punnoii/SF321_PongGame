@@ -31,8 +31,8 @@ players = [
 ball = Ball(
     SCREEN_WIDTH // 2 - 5,
     SCREEN_HEIGHT // 2 - 5,
-    10,
-    10,
+    50,
+    50,
     (0, 0, 0),
     SCREEN_WIDTH,
     SCREEN_HEIGHT,
