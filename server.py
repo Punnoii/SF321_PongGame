@@ -64,9 +64,9 @@ def threaded_client(conn, player):
 currentPlayer = 0
 while True:
     conn, addr = s.accept()
-    start_new_thread(threaded_client, (conn, currentPlayer))
-    currentPlayer += 1
     if currentPlayer == 2:
-        currentPlayer -= 1
+        currentPlayer = 0
         score.score_player_1 = 0
         score.score_player_2 = 0
+    start_new_thread(threaded_client, (conn, currentPlayer))
+    currentPlayer += 1
