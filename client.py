@@ -150,7 +150,12 @@ def name_input_screen():
 def lobby_screen(player_name):
     run = True
     while run:
-        win.fill((128, 128, 128))
+        win.fill((50, 139, 252))
+        
+        margin = 100
+        inner_rect = pygame.Rect(margin, 2 * margin, SCREEN_WIDTH - 2 * margin, SCREEN_HEIGHT - 4 * margin)
+        pygame.draw.rect(win, (135, 206, 250), inner_rect)
+        
         title_font = pygame.font.SysFont("comicsans", 60)
         title_text = title_font.render("Lobby", True, (255, 255, 255))
         win.blit(title_text, (SCREEN_WIDTH // 2 - title_text.get_width() // 2, 100))
@@ -232,38 +237,46 @@ def redraw_window(screen, player, player2, ball, score):
 
 
 def show_winner_screen(win, player, player2, score):
+    victory_img = pygame.image.load("img/victory.png")
+    defeat_img = pygame.image.load("img/defeat.png")
+
+    victory_img = pygame.transform.scale(victory_img, (700, 500))
+    defeat_img = pygame.transform.scale(defeat_img, (400, 400))
+
+    is_winner = False
+    if player.color == (255, 0, 0):  # Red
+        is_winner = score.score_player_1 >= 2
+    else:  # Blue
+        is_winner = score.score_player_2 >= 2
+
     waiting = True
     while waiting:
         win.fill((0, 0, 0))
 
-        if score.score_player_1 >= 2:
-            winner_name = player.name if player.color == (255, 0, 0) else player2.name
+        if is_winner:
+            win.blit(victory_img, (
+                SCREEN_WIDTH // 2 - victory_img.get_width() // 2,
+                SCREEN_HEIGHT // 2 - 300,
+            ))
         else:
-            winner_name = player2.name if player.color == (255, 0, 0) else player.name
-
-        winner_font = pygame.font.SysFont("comicsans", 50)
-        winner_text = winner_font.render(f"{winner_name} Wins!", True, (255, 255, 255))
-
-        win.blit(
-            winner_text,
-            (
-                SCREEN_WIDTH // 2 - winner_text.get_width() // 2,
-                SCREEN_HEIGHT // 2 - 100,
-            ),
-        )
+            win.blit(defeat_img, (
+                SCREEN_WIDTH // 2 - defeat_img.get_width() // 2,
+                SCREEN_HEIGHT // 2 - 300,
+            ))
 
         mouse_pos = pygame.mouse.get_pos()
-        if start_button_rect.collidepoint(mouse_pos):
-            pygame.draw.rect(win, button_hover_color, start_button_rect)
+        restart_button_rect = start_button_rect.move(0, 200) 
+        if restart_button_rect.collidepoint(mouse_pos):
+            pygame.draw.rect(win, button_hover_color, restart_button_rect)
         else:
-            pygame.draw.rect(win, button_color, start_button_rect)
+            pygame.draw.rect(win, button_color, restart_button_rect)
 
         button_text = button_font.render("Play Again", True, button_text_color)
         win.blit(
             button_text,
             (
-                start_button_rect.centerx - button_text.get_width() // 2,
-                start_button_rect.centery - button_text.get_height() // 2,
+                restart_button_rect.centerx - button_text.get_width() // 2,
+                restart_button_rect.centery - button_text.get_height() // 2,
             ),
         )
 

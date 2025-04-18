@@ -66,8 +66,8 @@ class Ball:
         self.height = height
         self.color = color
         self.rect = pygame.Rect(x, y, width, height)
-        self.speed_x = random.choice((1, -1))
-        self.speed_y = random.choice((1, -1))
+        self.speed_x = random.choice((1, -1))*50
+        self.speed_y = random.choice((1, -1))*50
         self.screen_width = screen_width
         self.screen_height = screen_height
         self.active = True
@@ -131,8 +131,8 @@ class Ball:
             self.active = False
             self.score_time = pygame.time.get_ticks()
             self.rect.center = (self.screen_width // 2, self.screen_height // 2)
-            self.speed_x = random.choice((1, -1))
-            self.speed_y = random.choice((1, -1))
+            self.speed_x = random.choice((1, -1))*50
+            self.speed_y = random.choice((1, -1))*50
             self.countdown_number = ""
 
     def __getstate__(self):
