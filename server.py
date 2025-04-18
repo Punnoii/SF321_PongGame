@@ -1,6 +1,6 @@
 import socket
 from _thread import start_new_thread
-from game import Player, Ball, Score
+from game import *
 import pickle
 import pygame
 
@@ -11,8 +11,8 @@ s.bind((server, port))
 s.listen(2)
 print("Waiting for a connection, Server Started")
 
-SCREEN_WIDTH = 500
-SCREEN_HEIGHT = 500
+SCREEN_WIDTH = 1280
+SCREEN_HEIGHT = 800
 
 players = [
     Player(
@@ -31,8 +31,8 @@ players = [
 ball = Ball(
     SCREEN_WIDTH // 2 - 5,
     SCREEN_HEIGHT // 2 - 5,
-    10,
-    10,
+    50,
+    50,
     (0, 0, 0),
     SCREEN_WIDTH,
     SCREEN_HEIGHT,
@@ -64,5 +64,9 @@ def threaded_client(conn, player):
 currentPlayer = 0
 while True:
     conn, addr = s.accept()
+    if currentPlayer == 2:
+        currentPlayer = 0
+        score.score_player_1 = 0
+        score.score_player_2 = 0
     start_new_thread(threaded_client, (conn, currentPlayer))
     currentPlayer += 1

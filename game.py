@@ -1,6 +1,12 @@
 import pygame
 import random
 
+pygame.init()
+pygame.mixer.init()
+hit_sound = pygame.mixer.Sound("sound/pong.ogg")
+score_sound = pygame.mixer.Sound("sound/score.ogg")
+global ball_image_file
+ball_image_file = f"img/ball{random.randint(1, 3)}.png"
 BAR_HEIGHT = 50
 
 
@@ -17,9 +23,11 @@ class Player:
         self.screen_width = screen_width
         self.screen_height = screen_height
         self.name = ""
+        self.image = pygame.image.load("img/Paddle.png")
+        self.image = pygame.transform.scale(self.image, (width, height))
 
     def draw(self, screen):
-        pygame.draw.rect(screen, self.color, self.rect)
+        screen.blit(self.image, self.rect)
 
     def move(self):
         keys = pygame.key.get_pressed()
@@ -27,7 +35,6 @@ class Player:
             self.y -= self.vel
         if keys[pygame.K_DOWN]:
             self.y += self.vel
-        # ปรับ paddle ไม่ให้เลื่อนไปเหนือ header bar
         if self.y < BAR_HEIGHT:
             self.y = BAR_HEIGHT
         elif self.y > self.screen_height - self.height:
@@ -40,6 +47,16 @@ class Player:
     def connected(self):
         return self.ready
 
+    def __getstate__(self):
+        state = self.__dict__.copy()
+        if "image" in state:
+            del state["image"]
+        return state
+
+    def __setstate__(self, state):
+        self.__dict__.update(state)
+        self.image = pygame.image.load("img/Paddle.png")
+        self.image = pygame.transform.scale(self.image, (self.width, self.height))
 
 class Ball:
     def __init__(self, x, y, width, height, color, screen_width, screen_height):
@@ -49,13 +66,16 @@ class Ball:
         self.height = height
         self.color = color
         self.rect = pygame.Rect(x, y, width, height)
-        self.speed_x = random.choice((1, -1))
-        self.speed_y = random.choice((1, -1))
+        self.speed_x = random.choice((1, -1))*50
+        self.speed_y = random.choice((1, -1))*50
         self.screen_width = screen_width
         self.screen_height = screen_height
         self.active = True
         self.score_time = 0
         self.countdown_number = ""
+        
+        self.image = pygame.image.load(ball_image_file)
+        self.image = pygame.transform.scale(self.image, (width, height))
 
     def update(self):
         if self.active:
@@ -78,7 +98,7 @@ class Ball:
             self.countdown_number = ""
 
     def draw(self, screen):
-        pygame.draw.rect(screen, self.color, self.rect)
+        screen.blit(self.image, self.rect)
 
     def move(self, players, score):
         if self.active:
@@ -87,11 +107,15 @@ class Ball:
 
             if self.rect.top <= BAR_HEIGHT or self.rect.bottom >= self.screen_height:
                 self.speed_y *= -1
+                hit_sound.play()
 
             if self.rect.colliderect(players[0].rect):
                 self.speed_x = abs(self.speed_x)
-            if self.rect.colliderect(players[1].rect):
+                hit_sound.play()
+
+            elif self.rect.colliderect(players[1].rect):
                 self.speed_x = -abs(self.speed_x)
+                hit_sound.play()
 
             if self.rect.left <= 0:
                 score.p_2_hit_score()
@@ -107,9 +131,20 @@ class Ball:
             self.active = False
             self.score_time = pygame.time.get_ticks()
             self.rect.center = (self.screen_width // 2, self.screen_height // 2)
-            self.speed_x = random.choice((1, -1))
-            self.speed_y = random.choice((1, -1))
+            self.speed_x = random.choice((1, -1))*50
+            self.speed_y = random.choice((1, -1))*50
             self.countdown_number = ""
+
+    def __getstate__(self):
+        state = self.__dict__.copy()
+        if "image" in state:
+            del state["image"]
+        return state
+
+    def __setstate__(self, state):
+        self.__dict__.update(state)
+        self.image = pygame.image.load(ball_image_file)
+        self.image = pygame.transform.scale(self.image, (self.width, self.height))
 
 
 class Score:
@@ -119,6 +154,8 @@ class Score:
 
     def p_1_hit_score(self):
         self.score_player_1 += 1
+        score_sound.play()
 
     def p_2_hit_score(self):
         self.score_player_2 += 1
+        score_sound.play()
