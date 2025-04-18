@@ -22,9 +22,9 @@ start_button = pygame.Rect(SCREEN_WIDTH // 1.5, SCREEN_HEIGHT // 2, 280, 150)
 next_button = pygame.Rect(SCREEN_WIDTH // 1.5, SCREEN_HEIGHT // 2 + 100, 280, 150)
 
 def draw_start_screen():
-    background = pygame.image.load("background.png")
+    background = pygame.image.load("img/background.png")
     background = pygame.transform.scale(background, (SCREEN_WIDTH, SCREEN_HEIGHT))
-    start_button_image = pygame.image.load("start_button.png")
+    start_button_image = pygame.image.load("img/start_button.png")
     start_button_image = pygame.transform.scale(start_button_image, (300, 178))
     start_button_hover_image = pygame.transform.scale(start_button_image, (320, 190))
     win.blit(background, (0, 0))
@@ -52,10 +52,10 @@ def start_screen():
 
 
 def name_input_screen():
-    background = pygame.image.load("background.png")
+    background = pygame.image.load("img/background.png")
     background = pygame.transform.scale(background, (SCREEN_WIDTH, SCREEN_HEIGHT))
     input_box = pygame.Rect(SCREEN_WIDTH // 1.5, SCREEN_HEIGHT // 2 - 30, 300, 60)
-    next_button_image = pygame.image.load("next.png")
+    next_button_image = pygame.image.load("img/next.png")
     next_button_image = pygame.transform.scale(next_button_image, (300, 178))
     next_button_hover_image = pygame.transform.scale(next_button_image, (320, 190))
     active = False
@@ -186,7 +186,7 @@ def lobby_screen(player_name):
 
 def redraw_window(screen, player, player2, ball, score):
     screen.fill((255, 255, 255))
-    background = pygame.image.load("pong_background.png")
+    background = pygame.image.load("img/pong_background.png")
     background = pygame.transform.scale(
         background, (SCREEN_WIDTH, SCREEN_HEIGHT + BAR_HEIGHT)
     )

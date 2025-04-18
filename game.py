@@ -3,9 +3,10 @@ import random
 
 pygame.init()
 pygame.mixer.init()
-hit_sound = pygame.mixer.Sound("pong.ogg")
-score_sound = pygame.mixer.Sound("score.ogg")
-
+hit_sound = pygame.mixer.Sound("sound/pong.ogg")
+score_sound = pygame.mixer.Sound("sound/score.ogg")
+global ball_image_file
+ball_image_file = f"img/ball{random.randint(1, 3)}.png"
 BAR_HEIGHT = 50
 
 
@@ -22,7 +23,7 @@ class Player:
         self.screen_width = screen_width
         self.screen_height = screen_height
         self.name = ""
-        self.image = pygame.image.load("Paddle.png")
+        self.image = pygame.image.load("img/Paddle.png")
         self.image = pygame.transform.scale(self.image, (width, height))
 
     def draw(self, screen):
@@ -54,9 +55,8 @@ class Player:
 
     def __setstate__(self, state):
         self.__dict__.update(state)
-        self.image = pygame.image.load("Paddle.png")
+        self.image = pygame.image.load("img/Paddle.png")
         self.image = pygame.transform.scale(self.image, (self.width, self.height))
-
 
 class Ball:
     def __init__(self, x, y, width, height, color, screen_width, screen_height):
@@ -73,7 +73,8 @@ class Ball:
         self.active = True
         self.score_time = 0
         self.countdown_number = ""
-        self.image = pygame.image.load("Ball.png")
+        
+        self.image = pygame.image.load(ball_image_file)
         self.image = pygame.transform.scale(self.image, (width, height))
 
     def update(self):
@@ -142,7 +143,7 @@ class Ball:
 
     def __setstate__(self, state):
         self.__dict__.update(state)
-        self.image = pygame.image.load("Ball.png")
+        self.image = pygame.image.load(ball_image_file)
         self.image = pygame.transform.scale(self.image, (self.width, self.height))
 
 
