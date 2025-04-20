@@ -66,13 +66,15 @@ class Ball:
         self.height = height
         self.color = color
         self.rect = pygame.Rect(x, y, width, height)
-        self.speed_x = random.choice((1, -1))*50
-        self.speed_y = random.choice((1, -1))*50
+        self.speed_x = random.choice((1, -1))
+        self.speed_y = random.choice((1, -1))
         self.screen_width = screen_width
         self.screen_height = screen_height
         self.active = True
         self.score_time = 0
         self.countdown_number = ""
+        self.last_speedup_time = pygame.time.get_ticks()
+        self.speed_multiplier = 1.0
         
         self.image = pygame.image.load(ball_image_file)
         self.image = pygame.transform.scale(self.image, (width, height))
@@ -99,11 +101,18 @@ class Ball:
 
     def draw(self, screen):
         screen.blit(self.image, self.rect)
-
+    
     def move(self, players, score):
         if self.active:
-            self.rect.x += self.speed_x
-            self.rect.y += self.speed_y
+            current_time = pygame.time.get_ticks()
+            if current_time - self.last_speedup_time > 1000:
+                self.speed_multiplier += 0.1
+                self.last_speedup_time = current_time
+                self.speed_x *= 1.1
+                self.speed_y *= 1.1
+
+            self.rect.x += int(self.speed_x)
+            self.rect.y += int(self.speed_y)
 
             if self.rect.top <= BAR_HEIGHT or self.rect.bottom >= self.screen_height:
                 self.speed_y *= -1
@@ -125,14 +134,16 @@ class Ball:
                 self.reset_ball()
         else:
             self.update_countdown()
-
+    
     def reset_ball(self):
         if self.active:
             self.active = False
             self.score_time = pygame.time.get_ticks()
             self.rect.center = (self.screen_width // 2, self.screen_height // 2)
-            self.speed_x = random.choice((1, -1))*50
-            self.speed_y = random.choice((1, -1))*50
+            self.speed_x = random.choice((1, -1))
+            self.speed_y = random.choice((1, -1))
+            self.speed_multiplier = 1.0
+            self.last_speedup_time = pygame.time.get_ticks()
             self.countdown_number = ""
 
     def __getstate__(self):
