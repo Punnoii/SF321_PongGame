@@ -58,8 +58,9 @@ def threaded_client(conn, player_slot):
                 break
             received_player = pickle.loads(data)
             players[player_slot] = received_player
-            ball.move(players, score)
-  
+            if (players[0].connected() and players[1].connected()):
+                ball.move(players, score)
+
             other_player = 1 - player_slot
             reply = (players[other_player], ball, score)
             conn.sendall(pickle.dumps(reply))
