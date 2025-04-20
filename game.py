@@ -58,6 +58,7 @@ class Player:
         self.image = pygame.image.load("img/Paddle.png")
         self.image = pygame.transform.scale(self.image, (self.width, self.height))
 
+
 class Ball:
     def __init__(self, x, y, width, height, color, screen_width, screen_height):
         self.x = x
@@ -66,8 +67,8 @@ class Ball:
         self.height = height
         self.color = color
         self.rect = pygame.Rect(x, y, width, height)
-        self.speed_x = random.choice((1, -1))*50
-        self.speed_y = random.choice((1, -1))*50
+        self.speed_x = random.choice((1, -1))
+        self.speed_y = random.choice((1, -1))
         self.screen_width = screen_width
         self.screen_height = screen_height
         self.active = True
@@ -131,8 +132,8 @@ class Ball:
             self.active = False
             self.score_time = pygame.time.get_ticks()
             self.rect.center = (self.screen_width // 2, self.screen_height // 2)
-            self.speed_x = random.choice((1, -1))*50
-            self.speed_y = random.choice((1, -1))*50
+            self.speed_x = random.choice((1, -1))
+            self.speed_y = random.choice((1, -1))
             self.countdown_number = ""
 
     def __getstate__(self):
@@ -159,3 +160,13 @@ class Score:
     def p_2_hit_score(self):
         self.score_player_2 += 1
         score_sound.play()
+        
+class List_Player :
+    def __init__(self):
+        self.list_player = []
+        
+    def add_player(self,name):
+        self.list_player.append(name)
+        
+    def remove_player(self,name):
+        self.list_player.remove(name)
