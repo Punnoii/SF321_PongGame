@@ -190,8 +190,11 @@ def redraw_window(player, player2, ball, score):
 
 
 def show_winner_screen(player, player2, score):
+    net = Network()
     player.ready = False
     player2.ready = False
+    net.send(player)
+    net.send(player2)
     victory_img = pygame.image.load("img/victory.png")
     defeat_img = pygame.image.load("img/defeat.png")
     

@@ -71,6 +71,7 @@ class Ball:
         self.speed_y = random.choice((1, -1))
         self.screen_width = screen_width
         self.screen_height = screen_height
+        self.ready = False
         self.active = True
         self.score_time = 0
         self.countdown_number = ""
