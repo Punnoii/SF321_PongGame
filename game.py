@@ -18,7 +18,7 @@ class Player:
         self.height = height
         self.color = color
         self.rect = pygame.Rect(x, y, width, height)
-        self.vel = 5
+        self.vel = 10
         self.ready = False
         self.screen_width = screen_width
         self.screen_height = screen_height
@@ -74,6 +74,8 @@ class Ball:
         self.active = True
         self.score_time = 0
         self.countdown_number = ""
+        self.last_speedup_time = pygame.time.get_ticks()
+        self.speed_multiplier = 1.0
         
         self.image = pygame.image.load(ball_image_file)
         self.image = pygame.transform.scale(self.image, (width, height))
