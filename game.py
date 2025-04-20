@@ -103,8 +103,15 @@ class Ball:
 
     def move(self, players, score):
         if self.active:
-            self.rect.x += self.speed_x
-            self.rect.y += self.speed_y
+            current_time = pygame.time.get_ticks()
+            if current_time - self.last_speedup_time > 1000:
+                self.speed_multiplier += 0.1
+                self.last_speedup_time = current_time
+                self.speed_x *= 1.1
+                self.speed_y *= 1.1
+
+            self.rect.x += int(self.speed_x)
+            self.rect.y += int(self.speed_y)
 
             if self.rect.top <= BAR_HEIGHT or self.rect.bottom >= self.screen_height:
                 self.speed_y *= -1
@@ -126,7 +133,7 @@ class Ball:
                 self.reset_ball()
         else:
             self.update_countdown()
-
+    
     def reset_ball(self):
         if self.active:
             self.active = False
@@ -134,6 +141,8 @@ class Ball:
             self.rect.center = (self.screen_width // 2, self.screen_height // 2)
             self.speed_x = random.choice((1, -1))
             self.speed_y = random.choice((1, -1))
+            self.speed_multiplier = 1.0
+            self.last_speedup_time = pygame.time.get_ticks()
             self.countdown_number = ""
 
     def __getstate__(self):
