@@ -8,7 +8,7 @@ pygame.mixer.init()
 SCREEN_WIDTH = 1280
 SCREEN_HEIGHT = 800
 
-win = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT + BAR_HEIGHT))
+win = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 pygame.display.set_caption("Pong Client")
 
 basic_font = pygame.font.Font("press_start_2p.ttf", 30)
