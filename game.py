@@ -107,7 +107,7 @@ class Ball:
         if self.active:
             current_time = pygame.time.get_ticks()
             if current_time - self.last_speedup_time > 1000:
-                self.speed_multiplier += 0.1
+                self.speed_multiplier += 0.01
                 self.last_speedup_time = current_time
                 self.speed_x *= 1.1
                 self.speed_y *= 1.1
@@ -118,13 +118,17 @@ class Ball:
             if self.rect.top <= BAR_HEIGHT or self.rect.bottom >= self.screen_height:
                 self.speed_y *= -1
                 hit_sound.play()
-
+                
             if self.rect.colliderect(players[0].rect):
                 self.speed_x = abs(self.speed_x)
+                diff = (self.rect.centery - players[0].rect.centery) / (players[0].rect.height / 2)
+                self.speed_y = diff * 5 
                 hit_sound.play()
 
             elif self.rect.colliderect(players[1].rect):
                 self.speed_x = -abs(self.speed_x)
+                diff = (self.rect.centery - players[1].rect.centery) / (players[1].rect.height / 2)
+                self.speed_y = diff * 5
                 hit_sound.play()
 
             if self.rect.left <= 0:
