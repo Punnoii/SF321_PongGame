@@ -58,7 +58,13 @@ def threaded_client(conn, player_slot):
                 break
             received_player = pickle.loads(data)
             players[player_slot] = received_player
-            if (players[0].ready and players[1].ready):
+            if score.score_player_1 >= 2 or score.score_player_2 >= 2:
+                players[0].ready = False
+                players[0].name = ""
+                players[1].ready = False
+                players[1].name = ""
+
+            if players[0].ready and players[1].ready:
                 ball.move(players, score)
 
             other_player = 1 - player_slot
@@ -90,7 +96,7 @@ while True:
             conn.close()
             print("Server full - connection rejected")
             continue
-        
+
     print(f"Connected to {addr} as player {slot}")
     if score.score_player_1 >= 2 or score.score_player_2 >= 2:
         ball.x = SCREEN_WIDTH // 2 - ball.width // 2

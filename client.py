@@ -31,9 +31,13 @@ back_button = pygame.Rect(SCREEN_WIDTH // 2 - 150, SCREEN_HEIGHT // 2 + 150, 300
 background = pygame.transform.scale(
     pygame.image.load("img/background.png"), (SCREEN_WIDTH, SCREEN_HEIGHT)
 )
-start_img = pygame.transform.scale(pygame.image.load("img/start_button.png"), (250, 119))
-start_hover = pygame.transform.scale(pygame.image.load("img/start_button.png"), (270, 129))
-next_img = pygame.transform.scale(pygame.image.load("img/next.png"), (250, 119)) 
+start_img = pygame.transform.scale(
+    pygame.image.load("img/start_button.png"), (250, 119)
+)
+start_hover = pygame.transform.scale(
+    pygame.image.load("img/start_button.png"), (270, 129)
+)
+next_img = pygame.transform.scale(pygame.image.load("img/next.png"), (250, 119))
 next_hover = pygame.transform.scale(pygame.image.load("img/next.png"), (270, 129))
 
 
@@ -61,14 +65,19 @@ def name_input_screen():
     backspace_start = backspace_last = 0
     toggle = True
     last_toggle = pygame.time.get_ticks()
-    input_box = pygame.Rect(SCREEN_WIDTH // 2 - 150 + 350, SCREEN_HEIGHT // 2 - 15, 300, 40)
+    input_box = pygame.Rect(
+        SCREEN_WIDTH // 2 - 150 + 350, SCREEN_HEIGHT // 2 - 15, 300, 40
+    )
 
     while True:
         win.blit(background, (0, 0))
         prompt = basic_font.render("Enter your name:", True, accent_color)
         win.blit(
             prompt,
-            (SCREEN_WIDTH // 2 - prompt.get_width() // 2 + 375 , SCREEN_HEIGHT // 2 - 100),
+            (
+                SCREEN_WIDTH // 2 - prompt.get_width() // 2 + 375,
+                SCREEN_HEIGHT // 2 - 100,
+            ),
         )
         pygame.draw.rect(
             win, (200, 200, 200) if not active else (255, 255, 255), input_box, 2
@@ -79,12 +88,12 @@ def name_input_screen():
             last_toggle = now
         disp = text_input + ("_" if active and toggle else "")
         txt = basic_font.render(disp, True, accent_color)
-        win.blit(txt, (input_box.x + 5 , input_box.y + 5))
+        win.blit(txt, (input_box.x + 5, input_box.y + 5))
         mouse = pygame.mouse.get_pos()
         if next_button.collidepoint(mouse):
-            win.blit(next_hover, (next_button.x - 10 , next_button.y - 10))
+            win.blit(next_hover, (next_button.x - 10, next_button.y - 10))
         else:
-            win.blit(next_img, (next_button.x , next_button.y))
+            win.blit(next_img, (next_button.x, next_button.y))
         pygame.display.update()
         for e in pygame.event.get():
             if e.type == pygame.QUIT:
@@ -117,20 +126,22 @@ def name_input_screen():
 def lobby_screen(name):
     while True:
         win.fill((50, 139, 252))
-        
+
         margin = 100
-        inner_rect = pygame.Rect(margin, 2 * margin, SCREEN_WIDTH - 2 * margin, SCREEN_HEIGHT - 4 * margin)
+        inner_rect = pygame.Rect(
+            margin, 2 * margin, SCREEN_WIDTH - 2 * margin, SCREEN_HEIGHT - 4 * margin
+        )
         pygame.draw.rect(win, (135, 206, 250), inner_rect)
-        
+
         title = title_font.render("Lobby", True, (255, 255, 255))
         win.blit(title, (SCREEN_WIDTH // 2 - title.get_width() // 2, 100))
         info = basic_font.render(f"Player: {name}", True, (255, 255, 255))
         win.blit(info, (SCREEN_WIDTH // 2 - info.get_width() // 2, 300))
         mouse = pygame.mouse.get_pos()
         if play_button.collidepoint(mouse):
-            win.blit(start_hover, (play_button.x - 10 , play_button.y - 10))
+            win.blit(start_hover, (play_button.x - 10, play_button.y - 10))
         else:
-            win.blit(start_img, (play_button.x , play_button.y))
+            win.blit(start_img, (play_button.x, play_button.y))
         pygame.display.update()
         for e in pygame.event.get():
             if e.type == pygame.QUIT:
@@ -178,7 +189,6 @@ def redraw_window(player, player2, ball, score):
     bt2 = info_font.render(b_txt, True, (0, 0, 255))
     win.blit(rt, (10, 10))
     win.blit(bt2, (SCREEN_WIDTH - bt2.get_width() - 10, 10))
-    # if not (player.connected() and player2.connected()):
     if not (player.ready and player2.ready):
         w = waiting_font.render("Waiting for Player...", True, (255, 0, 0))
         win.blit(w, (SCREEN_WIDTH // 2 - w.get_width() // 2, SCREEN_HEIGHT // 2))
@@ -197,34 +207,40 @@ def show_winner_screen(player, player2, score):
     net.send(player2)
     victory_img = pygame.image.load("img/victory.png")
     defeat_img = pygame.image.load("img/defeat.png")
-    
+
     victory_img = pygame.transform.scale(victory_img, (700, 500))
     defeat_img = pygame.transform.scale(defeat_img, (400, 400))
-    
+
     is_winner = False
     if player.color == (255, 0, 0):
         is_winner = score.score_player_1 >= 2
     else:
         is_winner = score.score_player_2 >= 2
-        
+
     while True:
         win.fill((0, 0, 0))
         if is_winner:
-            win.blit(victory_img, (
-                SCREEN_WIDTH // 2 - victory_img.get_width() // 2,
-                SCREEN_HEIGHT // 2 - 300,
-            ))
+            win.blit(
+                victory_img,
+                (
+                    SCREEN_WIDTH // 2 - victory_img.get_width() // 2,
+                    SCREEN_HEIGHT // 2 - 300,
+                ),
+            )
         else:
-            win.blit(defeat_img, (
-                SCREEN_WIDTH // 2 - defeat_img.get_width() // 2,
-                SCREEN_HEIGHT // 2 - 300,
-            ))
-            
+            win.blit(
+                defeat_img,
+                (
+                    SCREEN_WIDTH // 2 - defeat_img.get_width() // 2,
+                    SCREEN_HEIGHT // 2 - 300,
+                ),
+            )
+
         mouse_pos = pygame.mouse.get_pos()
         restart_button_rect = start_button_rect.move(0, 200)
         restart_hover_color = (66, 155, 245)
         restart_normal_color = (41, 141, 242)
- 
+
         if restart_button_rect.collidepoint(mouse_pos):
             pygame.draw.rect(win, restart_hover_color, restart_button_rect)
         else:
@@ -238,7 +254,7 @@ def show_winner_screen(player, player2, score):
                 restart_button_rect.centery - button_text.get_height() // 2,
             ),
         )
-        
+
         pygame.display.update()
         for e in pygame.event.get():
             if e.type == pygame.QUIT:
@@ -276,7 +292,7 @@ def main(player_name):
             if e.type == pygame.QUIT:
                 pygame.quit()
                 return
-        player.move()
+        player.move(ball)
 
 
 while True:

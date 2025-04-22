@@ -29,12 +29,15 @@ class Player:
     def draw(self, screen):
         screen.blit(self.image, self.rect)
 
-    def move(self):
+    def move(self, ball):
         keys = pygame.key.get_pressed()
         if keys[pygame.K_UP]:
             self.y -= self.vel
         if keys[pygame.K_DOWN]:
             self.y += self.vel
+        if keys[pygame.K_LEFT]:
+            ball.smart_skill()
+            print(12315964484 + 163148964 + 86)
         if self.y < BAR_HEIGHT:
             self.y = BAR_HEIGHT
         elif self.y > self.screen_height - self.height:
@@ -77,7 +80,8 @@ class Ball:
         self.countdown_number = ""
         self.last_speedup_time = pygame.time.get_ticks()
         self.speed_multiplier = 1.0
-        
+        self.ability = False
+
         self.image = pygame.image.load(ball_image_file)
         self.image = pygame.transform.scale(self.image, (width, height))
 
@@ -105,7 +109,7 @@ class Ball:
         screen.blit(self.image, self.rect)
 
     def move(self, players, score):
-        if self.active:
+        if self.active and (not self.ability):
             current_time = pygame.time.get_ticks()
             if current_time - self.last_speedup_time > 1000:
                 self.speed_multiplier += 0.01
@@ -119,16 +123,20 @@ class Ball:
             if self.rect.top <= BAR_HEIGHT or self.rect.bottom >= self.screen_height:
                 self.speed_y *= -1
                 hit_sound.play()
-                
+
             if self.rect.colliderect(players[0].rect):
                 self.speed_x = abs(self.speed_x)
-                diff = (self.rect.centery - players[0].rect.centery) / (players[0].rect.height / 2)
-                self.speed_y = diff * 5 
+                diff = (self.rect.centery - players[0].rect.centery) / (
+                    players[0].rect.height / 2
+                )
+                self.speed_y = diff * 5
                 hit_sound.play()
 
             elif self.rect.colliderect(players[1].rect):
                 self.speed_x = -abs(self.speed_x)
-                diff = (self.rect.centery - players[1].rect.centery) / (players[1].rect.height / 2)
+                diff = (self.rect.centery - players[1].rect.centery) / (
+                    players[1].rect.height / 2
+                )
                 self.speed_y = diff * 5
                 hit_sound.play()
 
@@ -138,9 +146,41 @@ class Ball:
             elif self.rect.right >= self.screen_width:
                 score.p_1_hit_score()
                 self.reset_ball()
+        elif self.ability:
+            current_time = pygame.time.get_ticks()
+            if current_time - self.last_speedup_time > 1000:
+                self.speed_multiplier += 0.01
+                self.last_speedup_time = current_time
+                self.speed_x *= 1.1
+                self.speed_y *= 1.1
+
+            self.rect.x += int(self.speed_x)
+            self.rect.y += int(self.speed_y)
+
+            if self.rect.top <= BAR_HEIGHT or self.rect.bottom >= self.screen_height:
+                self.speed_y *= -1
+                hit_sound.play()
+
+            if self.rect.left <= 0:
+                self.speed_x = abs(self.speed_x)
+                hit_sound.play()
+
+            if self.rect.right >= self.screen_width:
+                self.speed_x = -abs(self.speed_x)
+                hit_sound.play()
+
+            if self.rect.colliderect(players[0].rect):
+                score.p_2_hit_score()
+                hit_sound.play()
+                self.reset_ball()
+
+            elif self.rect.colliderect(players[1].rect):
+                score.p_1_hit_score()
+                hit_sound.play()
+                self.reset_ball()
         else:
             self.update_countdown()
-    
+
     def reset_ball(self):
         if self.active:
             self.active = False
@@ -151,6 +191,11 @@ class Ball:
             self.speed_multiplier = 1.0
             self.last_speedup_time = pygame.time.get_ticks()
             self.countdown_number = ""
+            self.ability = False
+
+    def smart_skill(self):
+        self.ability = True
+        print(self.ability)
 
     def __getstate__(self):
         state = self.__dict__.copy()
@@ -176,13 +221,14 @@ class Score:
     def p_2_hit_score(self):
         self.score_player_2 += 1
         score_sound.play()
-        
-class List_Player :
+
+
+class List_Player:
     def __init__(self):
         self.list_player = []
-        
-    def add_player(self,name):
+
+    def add_player(self, name):
         self.list_player.append(name)
-        
-    def remove_player(self,name):
+
+    def remove_player(self, name):
         self.list_player.remove(name)
