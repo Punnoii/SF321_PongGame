@@ -5,8 +5,6 @@ pygame.init()
 pygame.mixer.init()
 hit_sound = pygame.mixer.Sound("sound/pong.ogg")
 score_sound = pygame.mixer.Sound("sound/score.ogg")
-global ball_image_file
-ball_image_file = f"img/ball{random.randint(1, 3)}.png"
 BAR_HEIGHT = 50
 
 
@@ -83,7 +81,7 @@ class Ball:
         self.speed_multiplier = 1.0
         self.ability = False
 
-        self.image = pygame.image.load(ball_image_file)
+        self.image = pygame.image.load("img/kunai.png")
         self.image = pygame.transform.scale(self.image, (width, height))
 
     def update(self):
@@ -110,7 +108,7 @@ class Ball:
         screen.blit(self.image, self.rect)
 
     def move(self, players, score):
-        if self.active and (not self.ability):
+        if self.active and not self.ability:
             current_time = pygame.time.get_ticks()
             if current_time - self.last_speedup_time > 1000:
                 self.speed_multiplier += 0.01
@@ -201,12 +199,16 @@ class Ball:
         state = self.__dict__.copy()
         if "image" in state:
             del state["image"]
+        if "original_image" in state:
+            del state["original_image"]
         return state
 
     def __setstate__(self, state):
         self.__dict__.update(state)
-        self.image = pygame.image.load(ball_image_file)
+        self.image = pygame.image.load("img/kunai.png")
         self.image = pygame.transform.scale(self.image, (self.width, self.height))
+        self.original_image = self.image
+
 
 
 class Score:

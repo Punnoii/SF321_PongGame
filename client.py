@@ -5,8 +5,8 @@ from game import *
 pygame.init()
 pygame.mixer.init()
 
-SCREEN_WIDTH = 1280
-SCREEN_HEIGHT = 800
+SCREEN_WIDTH = 960
+SCREEN_HEIGHT = 600
 
 win = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 pygame.display.set_caption("Pong Client")
@@ -23,7 +23,7 @@ button_color = (0, 200, 0)
 button_text_color = (255, 255, 255)
 
 start_button_rect = pygame.Rect(SCREEN_WIDTH // 2 - 225, SCREEN_HEIGHT // 2, 450, 60)
-start_button = pygame.Rect(SCREEN_WIDTH // 2 + 250, SCREEN_HEIGHT // 2 - 89, 300, 178)
+start_button = pygame.Rect(SCREEN_WIDTH // 2 - 100, SCREEN_HEIGHT // 2 + 25, 300, 178)
 play_button = pygame.Rect(SCREEN_WIDTH // 2 - 120, SCREEN_HEIGHT // 2 - 35, 300, 178)
 next_button = pygame.Rect(SCREEN_WIDTH // 2 + 225, SCREEN_HEIGHT // 2 + 50, 300, 178)
 back_button = pygame.Rect(SCREEN_WIDTH // 2 - 150, SCREEN_HEIGHT // 2 + 150, 300, 178)
@@ -32,10 +32,10 @@ background = pygame.transform.scale(
     pygame.image.load("img/background.png"), (SCREEN_WIDTH, SCREEN_HEIGHT)
 )
 start_img = pygame.transform.scale(
-    pygame.image.load("img/start_button.png"), (250, 119)
+    pygame.image.load("img/start_button.png"), (250, 233)
 )
 start_hover = pygame.transform.scale(
-    pygame.image.load("img/start_button.png"), (270, 129)
+    pygame.image.load("img/start_button.png"), (270, 252)
 )
 next_img = pygame.transform.scale(pygame.image.load("img/next.png"), (250, 119))
 next_hover = pygame.transform.scale(pygame.image.load("img/next.png"), (270, 129))
@@ -177,8 +177,7 @@ def redraw_window(player, player2, ball, score):
     bg = pygame.transform.scale(
         pygame.image.load("img/pong_background.png"), (SCREEN_WIDTH, SCREEN_HEIGHT)
     )
-    win.blit(bg, (0, BAR_HEIGHT))
-    pygame.draw.rect(win, (200, 200, 200), (0, 0, SCREEN_WIDTH, BAR_HEIGHT))
+    win.blit(bg, (0, 0))
     if player.color == (255, 0, 0):
         r_txt = f"{player.name}: {score.score_player_1}"
         b_txt = f"{player2.name}: {score.score_player_2}"
