@@ -25,19 +25,20 @@ class Player:
         self.name = ""
         self.image = pygame.image.load("img/Paddle.png")
         self.image = pygame.transform.scale(self.image, (width, height))
+        self.skill = False
 
     def draw(self, screen):
         screen.blit(self.image, self.rect)
 
-    def move(self, ball):
+    def move(self):
         keys = pygame.key.get_pressed()
+
+        if keys[pygame.K_e]:
+            self.skill = True
         if keys[pygame.K_UP]:
             self.y -= self.vel
         if keys[pygame.K_DOWN]:
             self.y += self.vel
-        if keys[pygame.K_LEFT]:
-            ball.smart_skill()
-            print(12315964484 + 163148964 + 86)
         if self.y < BAR_HEIGHT:
             self.y = BAR_HEIGHT
         elif self.y > self.screen_height - self.height:
@@ -146,7 +147,7 @@ class Ball:
             elif self.rect.right >= self.screen_width:
                 score.p_1_hit_score()
                 self.reset_ball()
-        elif self.ability:
+        elif self.active and (self.ability):
             current_time = pygame.time.get_ticks()
             if current_time - self.last_speedup_time > 1000:
                 self.speed_multiplier += 0.01

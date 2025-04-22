@@ -189,6 +189,7 @@ def redraw_window(player, player2, ball, score):
     bt2 = info_font.render(b_txt, True, (0, 0, 255))
     win.blit(rt, (10, 10))
     win.blit(bt2, (SCREEN_WIDTH - bt2.get_width() - 10, 10))
+    # if not (player.connected() and player2.connected()):
     if not (player.ready and player2.ready):
         w = waiting_font.render("Waiting for Player...", True, (255, 0, 0))
         win.blit(w, (SCREEN_WIDTH // 2 - w.get_width() // 2, SCREEN_HEIGHT // 2))
@@ -200,11 +201,6 @@ def redraw_window(player, player2, ball, score):
 
 
 def show_winner_screen(player, player2, score):
-    net = Network()
-    player.ready = False
-    player2.ready = False
-    net.send(player)
-    net.send(player2)
     victory_img = pygame.image.load("img/victory.png")
     defeat_img = pygame.image.load("img/defeat.png")
 
@@ -292,7 +288,7 @@ def main(player_name):
             if e.type == pygame.QUIT:
                 pygame.quit()
                 return
-        player.move(ball)
+        player.move()
 
 
 while True:

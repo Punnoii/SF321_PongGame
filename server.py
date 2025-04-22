@@ -58,6 +58,9 @@ def threaded_client(conn, player_slot):
                 break
             received_player = pickle.loads(data)
             players[player_slot] = received_player
+
+            if players[0].skill or players[1].skill:
+                ball.ability = True
             if score.score_player_1 >= 2 or score.score_player_2 >= 2:
                 players[0].ready = False
                 players[0].name = ""
@@ -98,6 +101,7 @@ while True:
             continue
 
     print(f"Connected to {addr} as player {slot}")
+
     if score.score_player_1 >= 2 or score.score_player_2 >= 2:
         ball.x = SCREEN_WIDTH // 2 - ball.width // 2
         ball.y = SCREEN_HEIGHT // 2 - ball.height // 2
@@ -105,4 +109,5 @@ while True:
         players[1].y = SCREEN_HEIGHT // 2 - players[1].height // 2
         score.score_player_1 = 0
         score.score_player_2 = 0
+
     start_new_thread(threaded_client, (conn, slot))
