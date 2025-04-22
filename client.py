@@ -23,9 +23,9 @@ button_color = (0, 200, 0)
 button_text_color = (255, 255, 255)
 
 start_button_rect = pygame.Rect(SCREEN_WIDTH // 2 - 225, SCREEN_HEIGHT // 2, 450, 60)
-start_button = pygame.Rect(SCREEN_WIDTH // 2 - 100, SCREEN_HEIGHT // 2 + 25, 300, 178)
+start_button = pygame.Rect(SCREEN_WIDTH // 2 - 100, SCREEN_HEIGHT // 2 + 25, 250, 233)
 play_button = pygame.Rect(SCREEN_WIDTH // 2 - 120, SCREEN_HEIGHT // 2 - 35, 300, 178)
-next_button = pygame.Rect(SCREEN_WIDTH // 2 + 225, SCREEN_HEIGHT // 2 + 50, 300, 178)
+next_button = pygame.Rect(SCREEN_WIDTH // 2 + 225, SCREEN_HEIGHT // 2 + 50, 100, 115)
 back_button = pygame.Rect(SCREEN_WIDTH // 2 - 150, SCREEN_HEIGHT // 2 + 150, 300, 178)
 
 background = pygame.transform.scale(
@@ -37,13 +37,17 @@ start_img = pygame.transform.scale(
 start_hover = pygame.transform.scale(
     pygame.image.load("img/start_button.png"), (270, 252)
 )
-next_img = pygame.transform.scale(pygame.image.load("img/next.png"), (250, 119))
-next_hover = pygame.transform.scale(pygame.image.load("img/next.png"), (270, 129))
+next_img = pygame.transform.scale(pygame.image.load("img/next.png"), (100, 115))
+next_hover = pygame.transform.scale(pygame.image.load("img/next.png"), (120, 138))
 
 
 def start_screen():
     while True:
+        logo = pygame.transform.scale(
+            pygame.image.load("img/Logo.png"), (500, 240)
+        )
         win.blit(background, (0, 0))
+        win.blit(logo, (start_button.x - 120, start_button.y // 10))
         mouse = pygame.mouse.get_pos()
         if start_button.collidepoint(mouse):
             win.blit(start_hover, (start_button.x - 10, start_button.y - 10))
@@ -190,8 +194,10 @@ def redraw_window(player, player2, ball, score):
     win.blit(bt2, (SCREEN_WIDTH - bt2.get_width() - 10, 10))
     # if not (player.connected() and player2.connected()):
     if not (player.ready and player2.ready):
-        w = waiting_font.render("Waiting for Player...", True, (255, 0, 0))
-        win.blit(w, (SCREEN_WIDTH // 2 - w.get_width() // 2, SCREEN_HEIGHT // 2))
+        w = pygame.transform.scale(
+            pygame.image.load("img/waitting.png"), (SCREEN_WIDTH, SCREEN_HEIGHT)
+        )
+        win.blit(w, (0, 0))
     else:
         player.draw(win)
         player2.draw(win)
