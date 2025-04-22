@@ -196,7 +196,6 @@ class Ball:
 
     def smart_skill(self):
         self.ability = True
-        print(self.ability)
 
     def __getstate__(self):
         state = self.__dict__.copy()
