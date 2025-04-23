@@ -60,12 +60,21 @@ def threaded_client(conn, player_slot):
             players[player_slot] = received_player
 
             if players[0].skill or players[1].skill:
-                ball.ability = True
+                ball.smart_skill()
+            else:
+                ball.ability = False
+
+            if score.p_1_hit_score or score.p_2_hit_score:
+                players[0].skill = False
+                players[1].skill = False
+
             if score.score_player_1 >= 2 or score.score_player_2 >= 2:
                 players[0].ready = False
                 players[0].name = ""
+                players[0].skill = False
                 players[1].ready = False
                 players[1].name = ""
+                players[1].skill = False
 
             if players[0].ready and players[1].ready:
                 ball.move(players, score)

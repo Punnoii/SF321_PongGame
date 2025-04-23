@@ -26,6 +26,8 @@ class Player:
         self.image = pygame.image.load("img/Paddle.png")
         self.image = pygame.transform.scale(self.image, (width, height))
         self.skill = False
+        self.last_skill_time = 0
+        self.skill_cooldown = 7000
 
     def draw(self, screen):
         screen.blit(self.image, self.rect)
@@ -33,8 +35,15 @@ class Player:
     def move(self):
         keys = pygame.key.get_pressed()
 
+        current_time = pygame.time.get_ticks()
         if keys[pygame.K_e]:
-            self.skill = True
+            if current_time - self.last_skill_time > self.skill_cooldown:
+                self.last_skill_time = current_time
+                self.skill = True
+                print("Skill used")
+            else:
+                print("Skill on cooldown...")
+
         if keys[pygame.K_UP]:
             self.y -= self.vel
         if keys[pygame.K_DOWN]:
@@ -217,10 +226,12 @@ class Score:
     def p_1_hit_score(self):
         self.score_player_1 += 1
         score_sound.play()
+        return True
 
     def p_2_hit_score(self):
         self.score_player_2 += 1
         score_sound.play()
+        return True
 
 
 class List_Player:
