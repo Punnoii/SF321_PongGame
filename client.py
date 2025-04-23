@@ -17,6 +17,8 @@ waiting_font = pygame.font.Font("press_start_2p.ttf", 40)
 title_font = pygame.font.Font("press_start_2p.ttf", 60)
 button_font = pygame.font.Font("press_start_2p.ttf", 40)
 
+enter_sound.set_volume(0.3)
+
 accent_color = (0, 0, 0)
 button_hover_color = (0, 255, 0)
 button_color = (0, 200, 0)
@@ -59,6 +61,7 @@ def start_screen():
                 pygame.quit()
                 return False
             if e.type == pygame.MOUSEBUTTONDOWN and start_button.collidepoint(e.pos):
+                enter_sound.play()
                 return True
 
 
@@ -104,6 +107,7 @@ def name_input_screen():
                 else:
                     active = False
                 if next_button.collidepoint(e.pos) and text_input.strip():
+                    enter_sound.play()
                     return text_input.strip()
             if e.type == pygame.KEYDOWN and active:
                 if e.key == pygame.K_BACKSPACE:
@@ -141,6 +145,7 @@ def lobby_screen(name):
                 pygame.quit()
                 return False
             if e.type == pygame.MOUSEBUTTONDOWN and next_button.collidepoint(e.pos):
+                enter_sound.play()
                 return True
 
 

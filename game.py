@@ -3,8 +3,15 @@ import random
 
 pygame.init()
 pygame.mixer.init()
-hit_sound = pygame.mixer.Sound("sound/pong.ogg")
-score_sound = pygame.mixer.Sound("sound/score.ogg")
+enter_sound = pygame.mixer.Sound("sound/enter.mp3")
+def randSound():
+    hit_sound = pygame.mixer.Sound(f"sound/attack{random.randint(1,5)}.mp3")
+    hit_sound.set_volume(0.3)
+    hit_sound.play()
+def randDeath():
+    death_sound = pygame.mixer.Sound(f"sound/death{random.randint(1,2)}.mp3")
+    death_sound.set_volume(0.3)
+    death_sound.play()
 BAR_HEIGHT = 50
 
 
@@ -121,7 +128,7 @@ class Ball:
 
             if self.rect.top <= BAR_HEIGHT or self.rect.bottom >= self.screen_height:
                 self.speed_y *= -1
-                hit_sound.play()
+                randSound()
 
             if self.rect.colliderect(players[0].rect):
                 self.speed_x = abs(self.speed_x)
@@ -129,7 +136,7 @@ class Ball:
                     players[0].rect.height / 2
                 )
                 self.speed_y = diff * 5
-                hit_sound.play()
+                randSound()
 
             elif self.rect.colliderect(players[1].rect):
                 self.speed_x = -abs(self.speed_x)
@@ -137,7 +144,7 @@ class Ball:
                     players[1].rect.height / 2
                 )
                 self.speed_y = diff * 5
-                hit_sound.play()
+                randSound()
 
             if self.rect.left <= 0:
                 score.p_2_hit_score()
@@ -158,24 +165,24 @@ class Ball:
 
             if self.rect.top <= BAR_HEIGHT or self.rect.bottom >= self.screen_height:
                 self.speed_y *= -1
-                hit_sound.play()
+                randSound()
 
             if self.rect.left <= 0:
                 self.speed_x = abs(self.speed_x)
-                hit_sound.play()
+                randSound()
 
             if self.rect.right >= self.screen_width:
                 self.speed_x = -abs(self.speed_x)
-                hit_sound.play()
+                randSound()
 
             if self.rect.colliderect(players[0].rect):
                 score.p_2_hit_score()
-                hit_sound.play()
+                randDeath()
                 self.reset_ball()
 
             elif self.rect.colliderect(players[1].rect):
                 score.p_1_hit_score()
-                hit_sound.play()
+                randDeath()
                 self.reset_ball()
         else:
             self.update_countdown()
@@ -218,11 +225,11 @@ class Score:
 
     def p_1_hit_score(self):
         self.score_player_1 += 1
-        score_sound.play()
+        randDeath()
 
     def p_2_hit_score(self):
         self.score_player_2 += 1
-        score_sound.play()
+        randDeath()
 
 
 class List_Player:
