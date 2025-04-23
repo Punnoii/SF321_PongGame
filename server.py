@@ -49,6 +49,9 @@ player_slots = [False, False]
 def threaded_client(conn, player_slot):
     global players, ball, score
     clock = pygame.time.Clock()
+    last_score_1 = score.score_player_1
+    last_score_2 = score.score_player_2
+
     try:
         conn.send(pickle.dumps((players[player_slot], ball, score)))
         while True:
@@ -58,15 +61,20 @@ def threaded_client(conn, player_slot):
                 break
             received_player = pickle.loads(data)
             players[player_slot] = received_player
-
             if players[0].skill or players[1].skill:
                 ball.smart_skill()
             else:
                 ball.ability = False
+            if players[0].ready and players[1].ready:
+                ball.move(players, score)
 
-            if score.p_1_hit_score or score.p_2_hit_score:
-                players[0].skill = False
-                players[1].skill = False
+                if (score.score_player_1 != last_score_1) or (score.score_player_2 != last_score_2):
+                    players[0].skill = False
+                    players[1].skill = False
+                    print("Skill reset due to score change.")
+                    print(f"New Score - P1: {score.score_player_1}, P2: {score.score_player_2}")
+                    last_score_1 = score.score_player_1
+                    last_score_2 = score.score_player_2
 
             if score.score_player_1 >= 2 or score.score_player_2 >= 2:
                 players[0].ready = False
@@ -76,12 +84,10 @@ def threaded_client(conn, player_slot):
                 players[1].name = ""
                 players[1].skill = False
 
-            if players[0].ready and players[1].ready:
-                ball.move(players, score)
-
             other_player = 1 - player_slot
             reply = (players[other_player], ball, score)
             conn.sendall(pickle.dumps(reply))
+
     except Exception as e:
         print(f"Player {player_slot} error: {e}")
     finally:
@@ -89,6 +95,7 @@ def threaded_client(conn, player_slot):
             player_slots[player_slot] = False
         print(f"Player {player_slot} disconnected")
         conn.close()
+
 
 
 while True:

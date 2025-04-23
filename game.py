@@ -39,21 +39,32 @@ class Player:
         self.skill = False
         self.last_skill_time = 0
         self.skill_cooldown = 7000
+        self.skill_announced = False
+        self.button_press = False
 
     def draw(self, screen):
         screen.blit(self.image, self.rect)
 
-    def move(self):
+    def move(self, event_list):
         keys = pygame.key.get_pressed()
-
         current_time = pygame.time.get_ticks()
-        if keys[pygame.K_e]:
-            if current_time - self.last_skill_time > self.skill_cooldown:
-                self.last_skill_time = current_time
-                self.skill = True
-                print("Skill used")
-            else:
-                print("Skill on cooldown...")
+
+        for event in event_list:
+            if event.type == pygame.KEYDOWN and event.key == pygame.K_e:
+                if current_time - self.last_skill_time > self.skill_cooldown:
+                    self.last_skill_time = current_time
+                    self.skill = True
+                    print("Skill used")
+                else:
+                    print("Skill on cooldown")
+                
+        if self.skill and not self.skill_announced:
+            print(self.skill)
+            self.skill_announced = True
+            
+        if not self.skill and self.skill_announced:
+            print(self.skill)
+            self.skill_announced = False
 
         if keys[pygame.K_UP]:
             self.y -= self.vel
@@ -163,9 +174,13 @@ class Ball:
 
             if self.rect.left <= 0:
                 score.p_2_hit_score()
+                for player in players:
+                    player.skill = False
                 self.reset_ball()
             elif self.rect.right >= self.screen_width:
                 score.p_1_hit_score()
+                for player in players:
+                    player.skill = False
                 self.reset_ball()
         elif self.active and (self.ability):
             current_time = pygame.time.get_ticks()
@@ -193,11 +208,15 @@ class Ball:
             if self.rect.colliderect(players[0].rect):
                 score.p_2_hit_score()
                 randDeath()
+                for player in players:
+                    player.skill = False
                 self.reset_ball()
 
             elif self.rect.colliderect(players[1].rect):
                 score.p_1_hit_score()
                 randDeath()
+                for player in players:
+                    player.skill = False
                 self.reset_ball()
         else:
             self.update_countdown()
@@ -214,6 +233,7 @@ class Ball:
             self.countdown_number = ""
             self.ability = False
 
+                
     def smart_skill(self):
         self.ability = True
 

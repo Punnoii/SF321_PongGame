@@ -275,14 +275,17 @@ def main(player_name):
             break
         player2, ball, score = response
         redraw_window(player, player2, ball, score)
+        
         if score.score_player_1 >= 2 or score.score_player_2 >= 2:
             if show_winner_screen(player, player2, score):
                 return
+        event_list = pygame.event.get()
         for e in pygame.event.get():
             if e.type == pygame.QUIT:
                 pygame.quit()
                 return
-        player.move()
+        player.move(event_list)
+        ball.move([player, player2], score)
 
 
 while True:
