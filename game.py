@@ -38,7 +38,7 @@ class Player:
         self.image = pygame.transform.scale(self.image, (width, height))
         self.skill = False
         self.last_skill_time = 0
-        self.skill_cooldown = 7000
+        self.skill_cooldown = 15000
         self.skill_announced = False
         self.button_press = False
 
@@ -57,13 +57,11 @@ class Player:
                     print("Skill used")
                 else:
                     print("Skill on cooldown")
-                
+
         if self.skill and not self.skill_announced:
-            print(self.skill)
             self.skill_announced = True
-            
+
         if not self.skill and self.skill_announced:
-            print(self.skill)
             self.skill_announced = False
 
         if keys[pygame.K_UP]:
@@ -233,7 +231,6 @@ class Ball:
             self.countdown_number = ""
             self.ability = False
 
-                
     def smart_skill(self):
         self.ability = True
 

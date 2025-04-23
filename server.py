@@ -68,11 +68,11 @@ def threaded_client(conn, player_slot):
             if players[0].ready and players[1].ready:
                 ball.move(players, score)
 
-                if (score.score_player_1 != last_score_1) or (score.score_player_2 != last_score_2):
+                if (score.score_player_1 != last_score_1) or (
+                    score.score_player_2 != last_score_2
+                ):
                     players[0].skill = False
                     players[1].skill = False
-                    print("Skill reset due to score change.")
-                    print(f"New Score - P1: {score.score_player_1}, P2: {score.score_player_2}")
                     last_score_1 = score.score_player_1
                     last_score_2 = score.score_player_2
 
@@ -95,7 +95,6 @@ def threaded_client(conn, player_slot):
             player_slots[player_slot] = False
         print(f"Player {player_slot} disconnected")
         conn.close()
-
 
 
 while True:

@@ -41,9 +41,7 @@ def start_screen():
         pygame.image.load("img/background.png"), (SCREEN_WIDTH, SCREEN_HEIGHT)
     )
     while True:
-        logo = pygame.transform.scale(
-            pygame.image.load("img/Logo.png"), (500, 240)
-        )
+        logo = pygame.transform.scale(pygame.image.load("img/Logo.png"), (500, 240))
         win.blit(background, (0, 0))
         win.blit(logo, (start_button.x - 120, start_button.y // 10))
         mouse = pygame.mouse.get_pos()
@@ -68,9 +66,7 @@ def name_input_screen():
     backspace_start = backspace_last = 0
     toggle = True
     last_toggle = pygame.time.get_ticks()
-    input_box = pygame.Rect(
-        (SCREEN_WIDTH // 4) - 10, (SCREEN_HEIGHT // 2) - 5, 500, 40
-    )
+    input_box = pygame.Rect((SCREEN_WIDTH // 4) - 10, (SCREEN_HEIGHT // 2) - 5, 500, 40)
     background = pygame.transform.scale(
         pygame.image.load("img/background_input.png"), (SCREEN_WIDTH, SCREEN_HEIGHT)
     )
@@ -168,6 +164,8 @@ def show_server_full_screen():
 
 def redraw_window(player, player2, ball, score):
     win.fill((255, 255, 255))
+    SKILL_DISPLAY_TIME = 1000
+    skill_color = (255, 255, 0)
     bg = pygame.transform.scale(
         pygame.image.load("img/pong_background.png"), (SCREEN_WIDTH, SCREEN_HEIGHT)
     )
@@ -178,6 +176,11 @@ def redraw_window(player, player2, ball, score):
     else:
         r_txt = f"{player2.name}: {score.score_player_1}"
         b_txt = f"{player.name}: {score.score_player_2}"
+    # if ball.ability:
+    #     skill_text = basic_font.render("E", True, skill_color)
+    #     tx = SCREEN_WIDTH // 2 - skill_text.get_width() // 2
+    #     ty = SCREEN_HEIGHT // 2 - skill_text.get_height() // 2
+    #     win.blit(skill_text, (tx, ty))
     rt = basic_font.render(r_txt, True, (255, 0, 0))
     bt2 = basic_font.render(b_txt, True, (0, 0, 255))
     win.blit(rt, (10, 10))
@@ -197,12 +200,22 @@ def redraw_window(player, player2, ball, score):
 def show_winner_screen(player, player2, score):
     play_again = pygame.Rect(SCREEN_WIDTH // 2 - 225, SCREEN_HEIGHT // 2, 200, 115)
 
-    victory_img = pygame.transform.scale(pygame.image.load("img/victory.png"), (SCREEN_WIDTH, SCREEN_HEIGHT))
-    defeat_img = pygame.transform.scale(pygame.image.load("img/defeat.png"), (SCREEN_WIDTH, SCREEN_HEIGHT))
-    play_again_img = pygame.transform.scale(pygame.image.load("img/play_again.png"), (200, 115))
-    play_again_img_hover = pygame.transform.scale(pygame.image.load("img/play_again.png"), (220, 127))
+    victory_img = pygame.transform.scale(
+        pygame.image.load("img/victory.png"), (SCREEN_WIDTH, SCREEN_HEIGHT)
+    )
+    defeat_img = pygame.transform.scale(
+        pygame.image.load("img/defeat.png"), (SCREEN_WIDTH, SCREEN_HEIGHT)
+    )
+    play_again_img = pygame.transform.scale(
+        pygame.image.load("img/play_again.png"), (200, 115)
+    )
+    play_again_img_hover = pygame.transform.scale(
+        pygame.image.load("img/play_again.png"), (220, 127)
+    )
     screen_width, screen_height = win.get_size()
-    play_again_rect = play_again_img.get_rect(bottomright=(screen_width - 10, screen_height - 10))
+    play_again_rect = play_again_img.get_rect(
+        bottomright=(screen_width - 10, screen_height - 10)
+    )
 
     is_winner = False
     if player.color == (255, 0, 0):
@@ -218,7 +231,12 @@ def show_winner_screen(player, player2, score):
 
         mouse = pygame.mouse.get_pos()
         if play_again_rect.collidepoint(mouse):
-            win.blit(play_again_img_hover, play_again_img.get_rect(bottomright=(screen_width - 20, screen_height - 20)))
+            win.blit(
+                play_again_img_hover,
+                play_again_img.get_rect(
+                    bottomright=(screen_width - 20, screen_height - 20)
+                ),
+            )
         else:
             win.blit(play_again_img, play_again_rect)
 
@@ -252,12 +270,12 @@ def main(player_name):
             break
         player2, ball, score = response
         redraw_window(player, player2, ball, score)
-        
+
         if score.score_player_1 >= 2 or score.score_player_2 >= 2:
             if show_winner_screen(player, player2, score):
                 return
         event_list = pygame.event.get()
-        for e in pygame.event.get():
+        for e in event_list:
             if e.type == pygame.QUIT:
                 pygame.quit()
                 return
