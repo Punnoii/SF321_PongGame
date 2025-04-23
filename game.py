@@ -3,10 +3,21 @@ import random
 
 pygame.init()
 pygame.mixer.init()
-hit_sound = pygame.mixer.Sound("sound/pong.ogg")
-score_sound = pygame.mixer.Sound("sound/score.ogg")
-global ball_image_file
-ball_image_file = f"img/ball{random.randint(1, 3)}.png"
+enter_sound = pygame.mixer.Sound("sound/enter.mp3")
+
+
+def randSound():
+    hit_sound = pygame.mixer.Sound(f"sound/attack{random.randint(1,5)}.mp3")
+    hit_sound.set_volume(0.3)
+    hit_sound.play()
+
+
+def randDeath():
+    death_sound = pygame.mixer.Sound(f"sound/death{random.randint(1,2)}.mp3")
+    death_sound.set_volume(0.3)
+    death_sound.play()
+
+
 BAR_HEIGHT = 50
 
 
@@ -92,7 +103,7 @@ class Ball:
         self.speed_multiplier = 1.0
         self.ability = False
 
-        self.image = pygame.image.load(ball_image_file)
+        self.image = pygame.image.load("img/kunai.png")
         self.image = pygame.transform.scale(self.image, (width, height))
 
     def update(self):
@@ -119,7 +130,7 @@ class Ball:
         screen.blit(self.image, self.rect)
 
     def move(self, players, score):
-        if self.active and (not self.ability):
+        if self.active and not self.ability:
             current_time = pygame.time.get_ticks()
             if current_time - self.last_speedup_time > 1000:
                 self.speed_multiplier += 0.01
@@ -132,7 +143,7 @@ class Ball:
 
             if self.rect.top <= BAR_HEIGHT or self.rect.bottom >= self.screen_height:
                 self.speed_y *= -1
-                hit_sound.play()
+                randSound()
 
             if self.rect.colliderect(players[0].rect):
                 self.speed_x = abs(self.speed_x)
@@ -140,7 +151,7 @@ class Ball:
                     players[0].rect.height / 2
                 )
                 self.speed_y = diff * 5
-                hit_sound.play()
+                randSound()
 
             elif self.rect.colliderect(players[1].rect):
                 self.speed_x = -abs(self.speed_x)
@@ -148,7 +159,7 @@ class Ball:
                     players[1].rect.height / 2
                 )
                 self.speed_y = diff * 5
-                hit_sound.play()
+                randSound()
 
             if self.rect.left <= 0:
                 score.p_2_hit_score()
@@ -169,24 +180,24 @@ class Ball:
 
             if self.rect.top <= BAR_HEIGHT or self.rect.bottom >= self.screen_height:
                 self.speed_y *= -1
-                hit_sound.play()
+                randSound()
 
             if self.rect.left <= 0:
                 self.speed_x = abs(self.speed_x)
-                hit_sound.play()
+                randSound()
 
             if self.rect.right >= self.screen_width:
                 self.speed_x = -abs(self.speed_x)
-                hit_sound.play()
+                randSound()
 
             if self.rect.colliderect(players[0].rect):
                 score.p_2_hit_score()
-                hit_sound.play()
+                randDeath()
                 self.reset_ball()
 
             elif self.rect.colliderect(players[1].rect):
                 score.p_1_hit_score()
-                hit_sound.play()
+                randDeath()
                 self.reset_ball()
         else:
             self.update_countdown()
@@ -210,12 +221,15 @@ class Ball:
         state = self.__dict__.copy()
         if "image" in state:
             del state["image"]
+        if "original_image" in state:
+            del state["original_image"]
         return state
 
     def __setstate__(self, state):
         self.__dict__.update(state)
-        self.image = pygame.image.load(ball_image_file)
+        self.image = pygame.image.load("img/kunai.png")
         self.image = pygame.transform.scale(self.image, (self.width, self.height))
+        self.original_image = self.image
 
 
 class Score:
@@ -225,13 +239,11 @@ class Score:
 
     def p_1_hit_score(self):
         self.score_player_1 += 1
-        score_sound.play()
-        return True
+        randDeath()
 
     def p_2_hit_score(self):
         self.score_player_2 += 1
-        score_sound.play()
-        return True
+        randDeath()
 
 
 class List_Player:

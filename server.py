@@ -12,8 +12,8 @@ s.bind((server, port))
 s.listen()
 print("Waiting for a connection, Server Started")
 
-SCREEN_WIDTH = 1280
-SCREEN_HEIGHT = 800
+SCREEN_WIDTH = 960
+SCREEN_HEIGHT = 600
 
 players = [
     Player(

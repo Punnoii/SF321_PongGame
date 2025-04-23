@@ -5,17 +5,19 @@ from game import *
 pygame.init()
 pygame.mixer.init()
 
-SCREEN_WIDTH = 1280
-SCREEN_HEIGHT = 800
+SCREEN_WIDTH = 960
+SCREEN_HEIGHT = 600
 
 win = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 pygame.display.set_caption("Pong Client")
 
-basic_font = pygame.font.Font("press_start_2p.ttf", 30)
+basic_font = pygame.font.Font("Merienda.ttf", 30)
 info_font = pygame.font.Font("press_start_2p.ttf", 24)
 waiting_font = pygame.font.Font("press_start_2p.ttf", 40)
 title_font = pygame.font.Font("press_start_2p.ttf", 60)
 button_font = pygame.font.Font("press_start_2p.ttf", 40)
+
+enter_sound.set_volume(0.3)
 
 accent_color = (0, 0, 0)
 button_hover_color = (0, 255, 0)
@@ -23,27 +25,31 @@ button_color = (0, 200, 0)
 button_text_color = (255, 255, 255)
 
 start_button_rect = pygame.Rect(SCREEN_WIDTH // 2 - 225, SCREEN_HEIGHT // 2, 450, 60)
-start_button = pygame.Rect(SCREEN_WIDTH // 2 + 250, SCREEN_HEIGHT // 2 - 89, 300, 178)
+start_button = pygame.Rect(SCREEN_WIDTH // 2 - 100, SCREEN_HEIGHT // 2 + 25, 250, 233)
 play_button = pygame.Rect(SCREEN_WIDTH // 2 - 120, SCREEN_HEIGHT // 2 - 35, 300, 178)
-next_button = pygame.Rect(SCREEN_WIDTH // 2 + 225, SCREEN_HEIGHT // 2 + 50, 300, 178)
+next_button = pygame.Rect(SCREEN_WIDTH // 2 - 50, (SCREEN_HEIGHT // 2) + 100, 100, 115)
 back_button = pygame.Rect(SCREEN_WIDTH // 2 - 150, SCREEN_HEIGHT // 2 + 150, 300, 178)
 
-background = pygame.transform.scale(
-    pygame.image.load("img/background.png"), (SCREEN_WIDTH, SCREEN_HEIGHT)
-)
 start_img = pygame.transform.scale(
-    pygame.image.load("img/start_button.png"), (250, 119)
+    pygame.image.load("img/start_button.png"), (250, 233)
 )
 start_hover = pygame.transform.scale(
-    pygame.image.load("img/start_button.png"), (270, 129)
+    pygame.image.load("img/start_button.png"), (270, 252)
 )
-next_img = pygame.transform.scale(pygame.image.load("img/next.png"), (250, 119))
-next_hover = pygame.transform.scale(pygame.image.load("img/next.png"), (270, 129))
+next_img = pygame.transform.scale(pygame.image.load("img/next.png"), (100, 115))
+next_hover = pygame.transform.scale(pygame.image.load("img/next.png"), (120, 138))
 
 
 def start_screen():
+    background = pygame.transform.scale(
+        pygame.image.load("img/background.png"), (SCREEN_WIDTH, SCREEN_HEIGHT)
+    )
     while True:
+        logo = pygame.transform.scale(
+            pygame.image.load("img/Logo.png"), (500, 240)
+        )
         win.blit(background, (0, 0))
+        win.blit(logo, (start_button.x - 120, start_button.y // 10))
         mouse = pygame.mouse.get_pos()
         if start_button.collidepoint(mouse):
             win.blit(start_hover, (start_button.x - 10, start_button.y - 10))
@@ -55,6 +61,7 @@ def start_screen():
                 pygame.quit()
                 return False
             if e.type == pygame.MOUSEBUTTONDOWN and start_button.collidepoint(e.pos):
+                enter_sound.play()
                 return True
 
 
@@ -66,19 +73,14 @@ def name_input_screen():
     toggle = True
     last_toggle = pygame.time.get_ticks()
     input_box = pygame.Rect(
-        SCREEN_WIDTH // 2 - 150 + 350, SCREEN_HEIGHT // 2 - 15, 300, 40
+        (SCREEN_WIDTH // 4) - 10, (SCREEN_HEIGHT // 2) - 5, 500, 40
+    )
+    background = pygame.transform.scale(
+        pygame.image.load("img/background_input.png"), (SCREEN_WIDTH, SCREEN_HEIGHT)
     )
 
     while True:
         win.blit(background, (0, 0))
-        prompt = basic_font.render("Enter your name:", True, accent_color)
-        win.blit(
-            prompt,
-            (
-                SCREEN_WIDTH // 2 - prompt.get_width() // 2 + 375,
-                SCREEN_HEIGHT // 2 - 100,
-            ),
-        )
         pygame.draw.rect(
             win, (200, 200, 200) if not active else (255, 255, 255), input_box, 2
         )
@@ -88,7 +90,7 @@ def name_input_screen():
             last_toggle = now
         disp = text_input + ("_" if active and toggle else "")
         txt = basic_font.render(disp, True, accent_color)
-        win.blit(txt, (input_box.x + 5, input_box.y + 5))
+        win.blit(txt, (input_box.x + 5, input_box.y))
         mouse = pygame.mouse.get_pos()
         if next_button.collidepoint(mouse):
             win.blit(next_hover, (next_button.x - 10, next_button.y - 10))
@@ -105,6 +107,7 @@ def name_input_screen():
                 else:
                     active = False
                 if next_button.collidepoint(e.pos) and text_input.strip():
+                    enter_sound.play()
                     return text_input.strip()
             if e.type == pygame.KEYDOWN and active:
                 if e.key == pygame.K_BACKSPACE:
@@ -117,37 +120,32 @@ def name_input_screen():
                         backspace_last = now
                 elif e.key == pygame.K_RETURN and text_input.strip():
                     return text_input.strip()
-                elif len(text_input) < 9 and e.unicode.isprintable():
+                elif len(text_input) < 15 and e.unicode.isprintable():
                     text_input += e.unicode
             if e.type == pygame.KEYUP and e.key == pygame.K_BACKSPACE:
                 backspace_held = False
 
 
 def lobby_screen(name):
+    background = pygame.transform.scale(
+        pygame.image.load("img/background_lobby.png"), (SCREEN_WIDTH, SCREEN_HEIGHT)
+    )
     while True:
-        win.fill((50, 139, 252))
-
-        margin = 100
-        inner_rect = pygame.Rect(
-            margin, 2 * margin, SCREEN_WIDTH - 2 * margin, SCREEN_HEIGHT - 4 * margin
-        )
-        pygame.draw.rect(win, (135, 206, 250), inner_rect)
-
-        title = title_font.render("Lobby", True, (255, 255, 255))
-        win.blit(title, (SCREEN_WIDTH // 2 - title.get_width() // 2, 100))
+        win.blit(background, (0, 0))
         info = basic_font.render(f"Player: {name}", True, (255, 255, 255))
         win.blit(info, (SCREEN_WIDTH // 2 - info.get_width() // 2, 300))
         mouse = pygame.mouse.get_pos()
-        if play_button.collidepoint(mouse):
-            win.blit(start_hover, (play_button.x - 10, play_button.y - 10))
+        if next_button.collidepoint(mouse):
+            win.blit(next_hover, (next_button.x - 10, next_button.y - 10))
         else:
-            win.blit(start_img, (play_button.x, play_button.y))
+            win.blit(next_img, (next_button.x, next_button.y))
         pygame.display.update()
         for e in pygame.event.get():
             if e.type == pygame.QUIT:
                 pygame.quit()
                 return False
-            if e.type == pygame.MOUSEBUTTONDOWN and play_button.collidepoint(e.pos):
+            if e.type == pygame.MOUSEBUTTONDOWN and next_button.collidepoint(e.pos):
+                enter_sound.play()
                 return True
 
 
@@ -177,8 +175,7 @@ def redraw_window(player, player2, ball, score):
     bg = pygame.transform.scale(
         pygame.image.load("img/pong_background.png"), (SCREEN_WIDTH, SCREEN_HEIGHT)
     )
-    win.blit(bg, (0, BAR_HEIGHT))
-    pygame.draw.rect(win, (200, 200, 200), (0, 0, SCREEN_WIDTH, BAR_HEIGHT))
+    win.blit(bg, (0, 0))
     if player.color == (255, 0, 0):
         r_txt = f"{player.name}: {score.score_player_1}"
         b_txt = f"{player2.name}: {score.score_player_2}"
@@ -191,8 +188,10 @@ def redraw_window(player, player2, ball, score):
     win.blit(bt2, (SCREEN_WIDTH - bt2.get_width() - 10, 10))
     # if not (player.connected() and player2.connected()):
     if not (player.ready and player2.ready):
-        w = waiting_font.render("Waiting for Player...", True, (255, 0, 0))
-        win.blit(w, (SCREEN_WIDTH // 2 - w.get_width() // 2, SCREEN_HEIGHT // 2))
+        w = pygame.transform.scale(
+            pygame.image.load("img/waitting.png"), (SCREEN_WIDTH, SCREEN_HEIGHT)
+        )
+        win.blit(w, (0, 0))
     else:
         player.draw(win)
         player2.draw(win)
