@@ -12,10 +12,6 @@ win = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 pygame.display.set_caption("Pong Client")
 
 basic_font = pygame.font.Font("Merienda.ttf", 30)
-info_font = pygame.font.Font("press_start_2p.ttf", 24)
-waiting_font = pygame.font.Font("press_start_2p.ttf", 40)
-title_font = pygame.font.Font("press_start_2p.ttf", 60)
-button_font = pygame.font.Font("press_start_2p.ttf", 40)
 
 enter_sound.set_volume(0.3)
 
@@ -152,7 +148,7 @@ def lobby_screen(name):
 def show_server_full_screen():
     while True:
         win.fill((135, 206, 250))
-        msg = title_font.render("Server Full", True, (255, 0, 0))
+        msg = basic_font.render("Server Full", True, (255, 0, 0))
         win.blit(msg, (SCREEN_WIDTH // 2 - msg.get_width() // 2, 100))
         sub = basic_font.render("Please try again later.", True, (255, 255, 255))
         win.blit(sub, (SCREEN_WIDTH // 2 - sub.get_width() // 2, 200))
@@ -182,11 +178,10 @@ def redraw_window(player, player2, ball, score):
     else:
         r_txt = f"{player2.name}: {score.score_player_1}"
         b_txt = f"{player.name}: {score.score_player_2}"
-    rt = info_font.render(r_txt, True, (255, 0, 0))
-    bt2 = info_font.render(b_txt, True, (0, 0, 255))
+    rt = basic_font.render(r_txt, True, (255, 0, 0))
+    bt2 = basic_font.render(b_txt, True, (0, 0, 255))
     win.blit(rt, (10, 10))
     win.blit(bt2, (SCREEN_WIDTH - bt2.get_width() - 10, 10))
-    # if not (player.connected() and player2.connected()):
     if not (player.ready and player2.ready):
         w = pygame.transform.scale(
             pygame.image.load("img/waitting.png"), (SCREEN_WIDTH, SCREEN_HEIGHT)
@@ -241,7 +236,7 @@ def show_winner_screen(player, player2, score):
         else:
             pygame.draw.rect(win, restart_normal_color, restart_button_rect)
 
-        button_text = button_font.render("Play Again", True, button_text_color)
+        button_text = basic_font.render("Play Again", True, button_text_color)
         win.blit(
             button_text,
             (
