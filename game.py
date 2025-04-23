@@ -40,6 +40,7 @@ class Player:
         self.last_skill_time = 0
         self.skill_cooldown = 15000
         self.skill_announced = False
+        self.skill_ready = False
         self.button_press = False
 
     def draw(self, screen):
@@ -48,13 +49,15 @@ class Player:
     def move(self, event_list):
         keys = pygame.key.get_pressed()
         current_time = pygame.time.get_ticks()
-
+        elapsed = current_time - self.last_skill_time
+        self.skill_ready = elapsed > self.skill_cooldown
         for event in event_list:
             if event.type == pygame.KEYDOWN and event.key == pygame.K_e:
                 if current_time - self.last_skill_time > self.skill_cooldown:
                     self.last_skill_time = current_time
                     self.skill = True
                     print("Skill used")
+                    self.skill_ready = False
                 else:
                     print("Skill on cooldown")
 

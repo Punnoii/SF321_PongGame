@@ -164,7 +164,6 @@ def show_server_full_screen():
 
 def redraw_window(player, player2, ball, score):
     win.fill((255, 255, 255))
-    SKILL_DISPLAY_TIME = 1000
     skill_color = (255, 255, 0)
     bg = pygame.transform.scale(
         pygame.image.load("img/pong_background.png"), (SCREEN_WIDTH, SCREEN_HEIGHT)
@@ -176,11 +175,6 @@ def redraw_window(player, player2, ball, score):
     else:
         r_txt = f"{player2.name}: {score.score_player_1}"
         b_txt = f"{player.name}: {score.score_player_2}"
-    # if ball.ability:
-    #     skill_text = basic_font.render("E", True, skill_color)
-    #     tx = SCREEN_WIDTH // 2 - skill_text.get_width() // 2
-    #     ty = SCREEN_HEIGHT // 2 - skill_text.get_height() // 2
-    #     win.blit(skill_text, (tx, ty))
     rt = basic_font.render(r_txt, True, (255, 0, 0))
     bt2 = basic_font.render(b_txt, True, (0, 0, 255))
     win.blit(rt, (10, 10))
@@ -191,9 +185,25 @@ def redraw_window(player, player2, ball, score):
         )
         win.blit(w, (0, 0))
     else:
+        if ball.ability:
+            label = "E"  # สกิลกำลังทำงาน
+            color = (255, 255, 0)
+        elif not player.skill_ready:
+            label = "C"  # สกิล cooldown
+            color = (255, 0, 0)
+        else:
+            label = "A"  # สกิลพร้อมใช้
+            color = (0, 255, 0)
+        print(player.skill_ready, player2.skill_ready)
+
+        text = basic_font.render(label, True, color)
+        tx = SCREEN_WIDTH // 2 - text.get_width() // 2
+        ty = SCREEN_HEIGHT // 2 - text.get_height() // 2
+        win.blit(text, (tx, ty))
         player.draw(win)
         player2.draw(win)
         ball.draw(win)
+
     pygame.display.update()
 
 
@@ -269,7 +279,6 @@ def main(player_name):
         if not response:
             break
         player2, ball, score = response
-        redraw_window(player, player2, ball, score)
 
         if score.score_player_1 >= 2 or score.score_player_2 >= 2:
             if show_winner_screen(player, player2, score):
@@ -281,6 +290,7 @@ def main(player_name):
                 return
         player.move(event_list)
         ball.move([player, player2], score)
+        redraw_window(player, player2, ball, score)
 
 
 while True:
