@@ -123,30 +123,24 @@ def name_input_screen():
 
 
 def lobby_screen(name):
+    background = pygame.transform.scale(
+        pygame.image.load("img/background_lobby.png"), (SCREEN_WIDTH, SCREEN_HEIGHT)
+    )
     while True:
-        win.fill((50, 139, 252))
-
-        margin = 100
-        inner_rect = pygame.Rect(
-            margin, 2 * margin, SCREEN_WIDTH - 2 * margin, SCREEN_HEIGHT - 4 * margin
-        )
-        pygame.draw.rect(win, (135, 206, 250), inner_rect)
-
-        title = title_font.render("Lobby", True, (255, 255, 255))
-        win.blit(title, (SCREEN_WIDTH // 2 - title.get_width() // 2, 100))
+        win.blit(background, (0, 0))
         info = basic_font.render(f"Player: {name}", True, (255, 255, 255))
         win.blit(info, (SCREEN_WIDTH // 2 - info.get_width() // 2, 300))
         mouse = pygame.mouse.get_pos()
-        if play_button.collidepoint(mouse):
-            win.blit(start_hover, (play_button.x - 10, play_button.y - 10))
+        if next_button.collidepoint(mouse):
+            win.blit(next_hover, (next_button.x - 10, next_button.y - 10))
         else:
-            win.blit(start_img, (play_button.x, play_button.y))
+            win.blit(next_img, (next_button.x, next_button.y))
         pygame.display.update()
         for e in pygame.event.get():
             if e.type == pygame.QUIT:
                 pygame.quit()
                 return False
-            if e.type == pygame.MOUSEBUTTONDOWN and play_button.collidepoint(e.pos):
+            if e.type == pygame.MOUSEBUTTONDOWN and next_button.collidepoint(e.pos):
                 return True
 
 
