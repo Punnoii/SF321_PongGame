@@ -32,8 +32,12 @@ start_img = pygame.transform.scale(
 start_hover = pygame.transform.scale(
     pygame.image.load("img/start_button.png"), (270, 252)
 )
-next_img = pygame.transform.scale(pygame.image.load("img/next.png"), (100, 115))
-next_hover = pygame.transform.scale(pygame.image.load("img/next.png"), (120, 138))
+next_img = pygame.transform.scale(
+    pygame.image.load("img/next.png"), (100, 115)
+)
+next_hover = pygame.transform.scale(
+    pygame.image.load("img/next.png"), (120, 138)
+)
 
 
 def start_screen():
@@ -142,23 +146,37 @@ def lobby_screen(name):
 
 
 def show_server_full_screen():
+    background = pygame.transform.scale(
+        pygame.image.load("img/fullserver.png"), (SCREEN_WIDTH, SCREEN_HEIGHT)
+    )
+    play_again = pygame.transform.scale(
+        pygame.image.load("img/play_again.png"), (200, 115)
+    )
+    play_again_hover = pygame.transform.scale(
+        pygame.image.load("img/play_again.png"), (220, 127)
+    )
+    screen_width, screen_height = win.get_size()
+    play_again_rect = play_again.get_rect(
+        bottomright=(screen_width - 10, screen_height - 10)
+    )
     while True:
-        win.fill((135, 206, 250))
-        msg = basic_font.render("Server Full", True, (255, 0, 0))
-        win.blit(msg, (SCREEN_WIDTH // 2 - msg.get_width() // 2, 100))
-        sub = basic_font.render("Please try again later.", True, (255, 255, 255))
-        win.blit(sub, (SCREEN_WIDTH // 2 - sub.get_width() // 2, 200))
+        win.blit(background, (0, 0))
         mouse = pygame.mouse.get_pos()
-        if back_button.collidepoint(mouse):
-            win.blit(next_hover, (back_button.x - 10, back_button.y - 10))
+        if play_again_rect.collidepoint(mouse):
+            win.blit(
+                play_again_hover,
+                play_again.get_rect(
+                    bottomright=(screen_width - 20, screen_height - 20)
+                ),
+            )
         else:
-            win.blit(next_img, (back_button.x, back_button.y))
+            win.blit(play_again, play_again_rect)
         pygame.display.update()
         for e in pygame.event.get():
             if e.type == pygame.QUIT:
                 pygame.quit()
                 return False
-            if e.type == pygame.MOUSEBUTTONDOWN and back_button.collidepoint(e.pos):
+            if e.type == pygame.MOUSEBUTTONDOWN and play_again_rect.collidepoint(e.pos):
                 return True
 
 
@@ -208,8 +226,6 @@ def redraw_window(player, player2, ball, score):
 
 
 def show_winner_screen(player, player2, score):
-    play_again = pygame.Rect(SCREEN_WIDTH // 2 - 225, SCREEN_HEIGHT // 2, 200, 115)
-
     victory_img = pygame.transform.scale(
         pygame.image.load("img/victory.png"), (SCREEN_WIDTH, SCREEN_HEIGHT)
     )
