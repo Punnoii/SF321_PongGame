@@ -20,7 +20,7 @@ button_hover_color = (0, 255, 0)
 button_color = (0, 200, 0)
 button_text_color = (255, 255, 255)
 
-start_button_rect = pygame.Rect(SCREEN_WIDTH // 2 - 225, SCREEN_HEIGHT // 2, 450, 60)
+
 start_button = pygame.Rect(SCREEN_WIDTH // 2 - 100, SCREEN_HEIGHT // 2 + 25, 250, 233)
 play_button = pygame.Rect(SCREEN_WIDTH // 2 - 120, SCREEN_HEIGHT // 2 - 35, 300, 178)
 next_button = pygame.Rect(SCREEN_WIDTH // 2 - 50, (SCREEN_HEIGHT // 2) + 100, 100, 115)
@@ -195,11 +195,14 @@ def redraw_window(player, player2, ball, score):
 
 
 def show_winner_screen(player, player2, score):
-    victory_img = pygame.image.load("img/victory.png")
-    defeat_img = pygame.image.load("img/defeat.png")
+    play_again = pygame.Rect(SCREEN_WIDTH // 2 - 225, SCREEN_HEIGHT // 2, 200, 115)
 
-    victory_img = pygame.transform.scale(victory_img, (700, 500))
-    defeat_img = pygame.transform.scale(defeat_img, (400, 400))
+    victory_img = pygame.transform.scale(pygame.image.load("img/victory.png"), (SCREEN_WIDTH, SCREEN_HEIGHT))
+    defeat_img = pygame.transform.scale(pygame.image.load("img/defeat.png"), (SCREEN_WIDTH, SCREEN_HEIGHT))
+    play_again_img = pygame.transform.scale(pygame.image.load("img/play_again.png"), (200, 115))
+    play_again_img_hover = pygame.transform.scale(pygame.image.load("img/play_again.png"), (220, 127))
+    screen_width, screen_height = win.get_size()
+    play_again_rect = play_again_img.get_rect(bottomright=(screen_width - 10, screen_height - 10))
 
     is_winner = False
     if player.color == (255, 0, 0):
@@ -208,42 +211,16 @@ def show_winner_screen(player, player2, score):
         is_winner = score.score_player_2 >= 2
 
     while True:
-        win.fill((0, 0, 0))
         if is_winner:
-            win.blit(
-                victory_img,
-                (
-                    SCREEN_WIDTH // 2 - victory_img.get_width() // 2,
-                    SCREEN_HEIGHT // 2 - 300,
-                ),
-            )
+            win.blit(victory_img, (0, 0))
         else:
-            win.blit(
-                defeat_img,
-                (
-                    SCREEN_WIDTH // 2 - defeat_img.get_width() // 2,
-                    SCREEN_HEIGHT // 2 - 300,
-                ),
-            )
+            win.blit(defeat_img, (0, 0))
 
-        mouse_pos = pygame.mouse.get_pos()
-        restart_button_rect = start_button_rect.move(0, 200)
-        restart_hover_color = (66, 155, 245)
-        restart_normal_color = (41, 141, 242)
-
-        if restart_button_rect.collidepoint(mouse_pos):
-            pygame.draw.rect(win, restart_hover_color, restart_button_rect)
+        mouse = pygame.mouse.get_pos()
+        if play_again_rect.collidepoint(mouse):
+            win.blit(play_again_img_hover, play_again_img.get_rect(bottomright=(screen_width - 20, screen_height - 20)))
         else:
-            pygame.draw.rect(win, restart_normal_color, restart_button_rect)
-
-        button_text = basic_font.render("Play Again", True, button_text_color)
-        win.blit(
-            button_text,
-            (
-                restart_button_rect.centerx - button_text.get_width() // 2,
-                restart_button_rect.centery - button_text.get_height() // 2,
-            ),
-        )
+            win.blit(play_again_img, play_again_rect)
 
         pygame.display.update()
         for e in pygame.event.get():
@@ -269,7 +246,7 @@ def main(player_name):
     player.ready = True
     clock = pygame.time.Clock()
     while True:
-        clock.tick(60)
+        clock.tick(120)
         response = net.send(player)
         if not response:
             break

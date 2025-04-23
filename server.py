@@ -52,7 +52,7 @@ def threaded_client(conn, player_slot):
     try:
         conn.send(pickle.dumps((players[player_slot], ball, score)))
         while True:
-            clock.tick(60)
+            clock.tick(120)
             data = conn.recv(2048)
             if not data:
                 break
