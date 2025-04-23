@@ -11,7 +11,7 @@ SCREEN_HEIGHT = 600
 win = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 pygame.display.set_caption("Pong Client")
 
-basic_font = pygame.font.Font("press_start_2p.ttf", 30)
+basic_font = pygame.font.Font("Merienda.ttf", 30)
 info_font = pygame.font.Font("press_start_2p.ttf", 24)
 waiting_font = pygame.font.Font("press_start_2p.ttf", 40)
 title_font = pygame.font.Font("press_start_2p.ttf", 60)
@@ -25,12 +25,9 @@ button_text_color = (255, 255, 255)
 start_button_rect = pygame.Rect(SCREEN_WIDTH // 2 - 225, SCREEN_HEIGHT // 2, 450, 60)
 start_button = pygame.Rect(SCREEN_WIDTH // 2 - 100, SCREEN_HEIGHT // 2 + 25, 250, 233)
 play_button = pygame.Rect(SCREEN_WIDTH // 2 - 120, SCREEN_HEIGHT // 2 - 35, 300, 178)
-next_button = pygame.Rect(SCREEN_WIDTH // 2 + 225, SCREEN_HEIGHT // 2 + 50, 100, 115)
+next_button = pygame.Rect(SCREEN_WIDTH // 2 - 50, (SCREEN_HEIGHT // 2) + 100, 100, 115)
 back_button = pygame.Rect(SCREEN_WIDTH // 2 - 150, SCREEN_HEIGHT // 2 + 150, 300, 178)
 
-background = pygame.transform.scale(
-    pygame.image.load("img/background.png"), (SCREEN_WIDTH, SCREEN_HEIGHT)
-)
 start_img = pygame.transform.scale(
     pygame.image.load("img/start_button.png"), (250, 233)
 )
@@ -42,6 +39,9 @@ next_hover = pygame.transform.scale(pygame.image.load("img/next.png"), (120, 138
 
 
 def start_screen():
+    background = pygame.transform.scale(
+        pygame.image.load("img/background.png"), (SCREEN_WIDTH, SCREEN_HEIGHT)
+    )
     while True:
         logo = pygame.transform.scale(
             pygame.image.load("img/Logo.png"), (500, 240)
@@ -70,19 +70,14 @@ def name_input_screen():
     toggle = True
     last_toggle = pygame.time.get_ticks()
     input_box = pygame.Rect(
-        SCREEN_WIDTH // 2 - 150 + 350, SCREEN_HEIGHT // 2 - 15, 300, 40
+        (SCREEN_WIDTH // 4) - 10, (SCREEN_HEIGHT // 2) - 5, 500, 40
+    )
+    background = pygame.transform.scale(
+        pygame.image.load("img/background_input.png"), (SCREEN_WIDTH, SCREEN_HEIGHT)
     )
 
     while True:
         win.blit(background, (0, 0))
-        prompt = basic_font.render("Enter your name:", True, accent_color)
-        win.blit(
-            prompt,
-            (
-                SCREEN_WIDTH // 2 - prompt.get_width() // 2 + 375,
-                SCREEN_HEIGHT // 2 - 100,
-            ),
-        )
         pygame.draw.rect(
             win, (200, 200, 200) if not active else (255, 255, 255), input_box, 2
         )
@@ -92,7 +87,7 @@ def name_input_screen():
             last_toggle = now
         disp = text_input + ("_" if active and toggle else "")
         txt = basic_font.render(disp, True, accent_color)
-        win.blit(txt, (input_box.x + 5, input_box.y + 5))
+        win.blit(txt, (input_box.x + 5, input_box.y))
         mouse = pygame.mouse.get_pos()
         if next_button.collidepoint(mouse):
             win.blit(next_hover, (next_button.x - 10, next_button.y - 10))
@@ -121,7 +116,7 @@ def name_input_screen():
                         backspace_last = now
                 elif e.key == pygame.K_RETURN and text_input.strip():
                     return text_input.strip()
-                elif len(text_input) < 9 and e.unicode.isprintable():
+                elif len(text_input) < 15 and e.unicode.isprintable():
                     text_input += e.unicode
             if e.type == pygame.KEYUP and e.key == pygame.K_BACKSPACE:
                 backspace_held = False
