@@ -179,50 +179,61 @@ def show_server_full_screen():
             if e.type == pygame.MOUSEBUTTONDOWN and play_again_rect.collidepoint(e.pos):
                 return True
 
-
 def redraw_window(player, player2, ball, score):
-    win.fill((255, 255, 255))
-    skill_color = (255, 255, 0)
     bg = pygame.transform.scale(
         pygame.image.load("img/pong_background.png"), (SCREEN_WIDTH, SCREEN_HEIGHT)
     )
+    skill_ready_img = pygame.transform.scale(
+        pygame.image.load("img/skill.png"), (50, 50)
+    )
+    skill_cooldown_img = pygame.transform.scale(
+        pygame.image.load("img/skill_cooldown.png"), (50, 50)
+    )
+    skill_active_img = pygame.transform.scale(
+        pygame.image.load("img/skill_active.png"), (50, 50)
+    )
     win.blit(bg, (0, 0))
+    
     if player.color == (255, 0, 0):
         r_txt = f"{player.name}: {score.score_player_1}"
         b_txt = f"{player2.name}: {score.score_player_2}"
     else:
         r_txt = f"{player2.name}: {score.score_player_1}"
         b_txt = f"{player.name}: {score.score_player_2}"
+
     rt = basic_font.render(r_txt, True, (255, 0, 0))
     bt2 = basic_font.render(b_txt, True, (0, 0, 255))
     win.blit(rt, (10, 10))
     win.blit(bt2, (SCREEN_WIDTH - bt2.get_width() - 10, 10))
+
     if not (player.ready and player2.ready):
-        w = pygame.transform.scale(
+        wait_screen = pygame.transform.scale(
             pygame.image.load("img/waitting.png"), (SCREEN_WIDTH, SCREEN_HEIGHT)
         )
-        win.blit(w, (0, 0))
+        win.blit(wait_screen, (0, 0))
     else:
-        if ball.ability:
-            label = "E"  # สกิลกำลังทำงาน
-            color = (255, 255, 0)
-        elif not player.skill_ready:
-            label = "C"  # สกิล cooldown
-            color = (255, 0, 0)
+        if ball.ability and player.color == (255, 0, 0):
+            img_left = skill_active_img
+        elif not player.skill_ready and player.color == (255, 0, 0):
+            img_left = skill_cooldown_img
         else:
-            label = "A"  # สกิลพร้อมใช้
-            color = (0, 255, 0)
-        print(player.skill_ready, player2.skill_ready)
+            img_left = skill_ready_img
+        win.blit(img_left, (10, SCREEN_HEIGHT - 60))
 
-        text = basic_font.render(label, True, color)
-        tx = SCREEN_WIDTH // 2 - text.get_width() // 2
-        ty = SCREEN_HEIGHT // 2 - text.get_height() // 2
-        win.blit(text, (tx, ty))
+        if ball.ability and player2.color == (0, 0, 255):
+            img_right = skill_active_img
+        elif not player2.skill_ready and player2.color == (0, 0, 255):
+            img_right = skill_cooldown_img
+        else:
+            img_right = skill_ready_img
+        win.blit(img_right, (SCREEN_WIDTH - 60, SCREEN_HEIGHT - 60))
+
         player.draw(win)
         player2.draw(win)
         ball.draw(win)
 
     pygame.display.update()
+
 
 
 def show_winner_screen(player, player2, score):
