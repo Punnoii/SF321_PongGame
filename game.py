@@ -33,6 +33,7 @@ class Player:
         self.ready = False
         self.screen_width = screen_width
         self.screen_height = screen_height
+        self.id = 0
         self.name = ""
         self.image = pygame.image.load("img/Paddle.png")
         self.image = pygame.transform.scale(self.image, (width, height))

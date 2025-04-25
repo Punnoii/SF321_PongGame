@@ -194,7 +194,7 @@ def redraw_window(player, player2, ball, score):
         else:
             label = "A"  # สกิลพร้อมใช้
             color = (0, 255, 0)
-        print(player.skill_ready, player2.skill_ready)
+        print(player.skill, player2.skill)
 
         text = basic_font.render(label, True, color)
         tx = SCREEN_WIDTH // 2 - text.get_width() // 2
