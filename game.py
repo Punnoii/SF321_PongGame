@@ -1,9 +1,12 @@
 import pygame
 import random
+from PIL import Image
 
 pygame.init()
 pygame.mixer.init()
 enter_sound = pygame.mixer.Sound("sound/enter.mp3")
+event_sound = pygame.mixer.Sound("sound/event.mp3")
+event_sound.set_volume(0.1)
 
 
 def randSound():

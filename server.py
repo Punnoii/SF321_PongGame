@@ -45,8 +45,8 @@ list_player = List_Player()
 
 player_slots_lock = threading.Lock()
 player_slots = [False, False]
-event_interval = 15
-event_duration = 15
+event_interval = 20
+event_duration = 20
 event_active = False
 current_rule = "normal"
 
@@ -60,16 +60,20 @@ def threaded_client(conn, player_slot):
         event_timer = time.time()
         conn.send(pickle.dumps((players[player_slot], ball, score, current_rule)))
         while True:
-            clock.tick(120)
+            clock.tick(60)
             now = time.time()
             if now - event_timer >= event_interval:
                 ball.countdown_event = ""
-            elif now - event_timer > 14:
+            elif now - event_timer > 19:
                 ball.countdown_event = "1"
-            elif now - event_timer > 13:
+            elif now - event_timer > 18:
                 ball.countdown_event = "2"
-            elif now - event_timer > 12:
+            elif now - event_timer > 17:
                 ball.countdown_event = "3"
+            elif now - event_timer > 16:
+                ball.countdown_event = "4"
+            elif now - event_timer > 15:
+                ball.countdown_event = "5"
 
             if not event_active and now - event_timer >= event_interval:
                 event_active = True

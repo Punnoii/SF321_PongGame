@@ -32,17 +32,57 @@ start_img = pygame.transform.scale(
 start_hover = pygame.transform.scale(
     pygame.image.load("img/start_button.png"), (270, 252)
 )
-next_img = pygame.transform.scale(pygame.image.load("img/next.png"), (100, 115))
-next_hover = pygame.transform.scale(pygame.image.load("img/next.png"), (120, 138))
+next_img = pygame.transform.scale(
+    pygame.image.load("img/next.png"), (100, 115)
+)
+next_hover = pygame.transform.scale(
+    pygame.image.load("img/next.png"), (120, 138)
+)
+background_main = pygame.transform.scale(
+    pygame.image.load("img/background.png"), (SCREEN_WIDTH, SCREEN_HEIGHT)
+)
+background_fight = pygame.transform.scale(
+    pygame.image.load("img/pong_background.png"), (SCREEN_WIDTH, SCREEN_HEIGHT)
+)
+background_lobby = pygame.transform.scale(
+    pygame.image.load("img/background_lobby.png"), (SCREEN_WIDTH, SCREEN_HEIGHT)
+)
+background_wait = pygame.transform.scale(
+    pygame.image.load("img/waitting.png"), (SCREEN_WIDTH, SCREEN_HEIGHT)
+)
+background_skill = pygame.transform.scale(
+    pygame.image.load("img/background_event.png"), (SCREEN_WIDTH, SCREEN_HEIGHT)
+)
+background_fullserver = pygame.transform.scale(
+    pygame.image.load("img/fullserver.png"), (SCREEN_WIDTH, SCREEN_HEIGHT)
+)
+background_input = pygame.transform.scale(
+    pygame.image.load("img/background_input.png"), (SCREEN_WIDTH, SCREEN_HEIGHT)
+)
+play_again = pygame.transform.scale(
+    pygame.image.load("img/play_again.png"), (200, 115)
+)
+play_again_hover = pygame.transform.scale(
+    pygame.image.load("img/play_again.png"), (220, 127)
+)
+victory_img = pygame.transform.scale(
+    pygame.image.load("img/victory.png"), (SCREEN_WIDTH, SCREEN_HEIGHT)
+)
+defeat_img = pygame.transform.scale(
+    pygame.image.load("img/defeat.png"), (SCREEN_WIDTH, SCREEN_HEIGHT)
+)
+play_again_img = pygame.transform.scale(
+    pygame.image.load("img/play_again.png"), (200, 115)
+)
+play_again_img_hover = pygame.transform.scale(
+    pygame.image.load("img/play_again.png"), (220, 127)
+)
 
 
 def start_screen():
-    background = pygame.transform.scale(
-        pygame.image.load("img/background.png"), (SCREEN_WIDTH, SCREEN_HEIGHT)
-    )
     while True:
         logo = pygame.transform.scale(pygame.image.load("img/Logo.png"), (500, 240))
-        win.blit(background, (0, 0))
+        win.blit(background_main, (0, 0))
         win.blit(logo, (start_button.x - 120, start_button.y // 10))
         mouse = pygame.mouse.get_pos()
         if start_button.collidepoint(mouse):
@@ -67,12 +107,9 @@ def name_input_screen():
     toggle = True
     last_toggle = pygame.time.get_ticks()
     input_box = pygame.Rect((SCREEN_WIDTH // 4) - 10, (SCREEN_HEIGHT // 2) - 5, 500, 40)
-    background = pygame.transform.scale(
-        pygame.image.load("img/background_input.png"), (SCREEN_WIDTH, SCREEN_HEIGHT)
-    )
 
     while True:
-        win.blit(background, (0, 0))
+        win.blit(background_input, (0, 0))
         pygame.draw.rect(
             win, (200, 200, 200) if not active else (255, 255, 255), input_box, 2
         )
@@ -119,11 +156,8 @@ def name_input_screen():
 
 
 def lobby_screen(name):
-    background = pygame.transform.scale(
-        pygame.image.load("img/background_lobby.png"), (SCREEN_WIDTH, SCREEN_HEIGHT)
-    )
     while True:
-        win.blit(background, (0, 0))
+        win.blit(background_lobby, (0, 0))
         info = basic_font.render(f"Player: {name}", True, (255, 255, 255))
         win.blit(info, (SCREEN_WIDTH // 2 - info.get_width() // 2, 300))
         mouse = pygame.mouse.get_pos()
@@ -142,21 +176,12 @@ def lobby_screen(name):
 
 
 def show_server_full_screen():
-    background = pygame.transform.scale(
-        pygame.image.load("img/fullserver.png"), (SCREEN_WIDTH, SCREEN_HEIGHT)
-    )
-    play_again = pygame.transform.scale(
-        pygame.image.load("img/play_again.png"), (200, 115)
-    )
-    play_again_hover = pygame.transform.scale(
-        pygame.image.load("img/play_again.png"), (220, 127)
-    )
     screen_width, screen_height = win.get_size()
     play_again_rect = play_again.get_rect(
         bottomright=(screen_width - 10, screen_height - 10)
     )
     while True:
-        win.blit(background, (0, 0))
+        win.blit(background_fullserver, (0, 0))
         mouse = pygame.mouse.get_pos()
         if play_again_rect.collidepoint(mouse):
             win.blit(
@@ -177,12 +202,6 @@ def show_server_full_screen():
 
 
 def redraw_window(player, player2, ball, score, current_rule):
-    bg = pygame.transform.scale(
-        pygame.image.load("img/pong_background.png"), (SCREEN_WIDTH, SCREEN_HEIGHT)
-    )
-    bg_skill = pygame.transform.scale(
-        pygame.image.load("img/background_event.png"), (SCREEN_WIDTH, SCREEN_HEIGHT)
-    )
     # skill_ready_img = pygame.transform.scale(
     #     pygame.image.load("img/skill.png"), (50, 50)
     # )
@@ -191,7 +210,8 @@ def redraw_window(player, player2, ball, score, current_rule):
     # )
     # skill_active_img = pygame.transform.scale(
     #     pygame.image.load("img/skill_active.png"), (50, 50) )
-    win.blit(bg, (0, 0))
+    win.blit(background_fight, (0, 0))
+    
 
     if player.color == (255, 0, 0):
         r_txt = f"{player.name}: {score.score_player_1}"
@@ -206,10 +226,7 @@ def redraw_window(player, player2, ball, score, current_rule):
     win.blit(bt2, (SCREEN_WIDTH - bt2.get_width() - 10, 10))
 
     if not (player.ready and player2.ready):
-        wait_screen = pygame.transform.scale(
-            pygame.image.load("img/waitting.png"), (SCREEN_WIDTH, SCREEN_HEIGHT)
-        )
-        win.blit(wait_screen, (0, 0))
+        win.blit(background_wait, (0, 0))
     else:
         # if ball.ability:
         #     img_left = skill_active_img
@@ -221,10 +238,17 @@ def redraw_window(player, player2, ball, score, current_rule):
         #     img_left = skill_ready_img
         # win.blit(img_left, (10, SCREEN_HEIGHT - 60))
         if ball.countdown_event != "":
+            if current_rule == "normal":
+                event_sound.play()
             countdown = basic_font.render(ball.countdown_event, True, (255, 215, 0))
             win.blit(countdown, (SCREEN_WIDTH // 2 - countdown.get_width() // 2, 80))
         if current_rule == "paddle_score":
-            # win.blit(bg_skill, (0, 0))
+            win.blit(background_skill, (0, 0))
+            if ball.countdown_event != "":
+                countdown = basic_font.render(ball.countdown_event, True, (255, 215, 0))
+                win.blit(countdown, (SCREEN_WIDTH // 2 - countdown.get_width() // 2, 80))
+            win.blit(rt, (10, 10))
+            win.blit(bt2, (SCREEN_WIDTH - bt2.get_width() - 10, 10))
             alert = basic_font.render("event", True, (255, 215, 0))
             win.blit(alert, (SCREEN_WIDTH // 2 - alert.get_width() // 2, 50))
         player.draw(win)
@@ -235,18 +259,6 @@ def redraw_window(player, player2, ball, score, current_rule):
 
 
 def show_winner_screen(player, player2, score):
-    victory_img = pygame.transform.scale(
-        pygame.image.load("img/victory.png"), (SCREEN_WIDTH, SCREEN_HEIGHT)
-    )
-    defeat_img = pygame.transform.scale(
-        pygame.image.load("img/defeat.png"), (SCREEN_WIDTH, SCREEN_HEIGHT)
-    )
-    play_again_img = pygame.transform.scale(
-        pygame.image.load("img/play_again.png"), (200, 115)
-    )
-    play_again_img_hover = pygame.transform.scale(
-        pygame.image.load("img/play_again.png"), (220, 127)
-    )
     screen_width, screen_height = win.get_size()
     play_again_rect = play_again_img.get_rect(
         bottomright=(screen_width - 10, screen_height - 10)
@@ -299,7 +311,7 @@ def main(player_name):
     player.ready = True
     clock = pygame.time.Clock()
     while True:
-        clock.tick(120)
+        clock.tick(60)
         response = net.send(player)
         if not response:
             break
