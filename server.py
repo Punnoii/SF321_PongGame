@@ -45,8 +45,12 @@ list_player = List_Player()
 
 player_slots_lock = threading.Lock()
 player_slots = [False, False]
+<<<<<<< HEAD
 event_interval = 15
-event_duration = 15
+=======
+event_interval = 20
+>>>>>>> 65093fd8caa6fc9fba3e11f771e45e6254a6d63c
+event_duration = 20
 event_active = False
 current_rule = "normal"
 
@@ -62,14 +66,47 @@ def threaded_client(conn, player_slot):
         while True:
             clock.tick(60)
             now = time.time()
+<<<<<<< HEAD
+            if current_rule == "normal":
+                if now - event_timer >= event_interval:
+                    ball.countdown_event = ""
+                elif now - event_timer > (event_interval - 1):
+                    ball.countdown_event = "1"
+                elif now - event_timer > (event_interval - 2):
+                    ball.countdown_event = "2"
+                elif now - event_timer > (event_interval - 3):
+                    ball.countdown_event = "3"
+                elif now - event_timer > (event_interval - 4):
+                    ball.countdown_event = "4"
+                elif now - event_timer > (event_interval - 5):
+                    ball.countdown_event = "5"
+            else:
+                if now - event_timer >= event_duration:
+                    ball.countdown_event = ""
+                elif now - event_timer > (event_duration - 1):
+                    ball.countdown_event = "1"
+                elif now - event_timer > (event_duration - 2):
+                    ball.countdown_event = "2"
+                elif now - event_timer > (event_duration - 3):
+                    ball.countdown_event = "3"
+                elif now - event_timer > (event_duration - 4):
+                    ball.countdown_event = "4"
+                elif now - event_timer > (event_duration - 5):
+                    ball.countdown_event = "5"
+=======
             if now - event_timer >= event_interval:
                 ball.countdown_event = ""
-            elif now - event_timer > 14:
+            elif now - event_timer > 19:
                 ball.countdown_event = "1"
-            elif now - event_timer > 13:
+            elif now - event_timer > 18:
                 ball.countdown_event = "2"
-            elif now - event_timer > 12:
+            elif now - event_timer > 17:
                 ball.countdown_event = "3"
+            elif now - event_timer > 16:
+                ball.countdown_event = "4"
+            elif now - event_timer > 15:
+                ball.countdown_event = "5"
+>>>>>>> 65093fd8caa6fc9fba3e11f771e45e6254a6d63c
 
             if not event_active and now - event_timer >= event_interval:
                 event_active = True
