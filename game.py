@@ -6,18 +6,18 @@ pygame.init()
 pygame.mixer.init()
 enter_sound = pygame.mixer.Sound("sound/enter.mp3")
 event_sound = pygame.mixer.Sound("sound/event.mp3")
-event_sound.set_volume(0.1)
+background_sound = pygame.mixer.Sound("sound/background.mp3")
 
 
 def randSound():
     hit_sound = pygame.mixer.Sound(f"sound/attack{random.randint(1,5)}.mp3")
-    hit_sound.set_volume(0.3)
+    hit_sound.set_volume(0.1)
     hit_sound.play()
 
 
 def randDeath():
     death_sound = pygame.mixer.Sound(f"sound/death{random.randint(1,2)}.mp3")
-    death_sound.set_volume(0.3)
+    death_sound.set_volume(0.1)
     death_sound.play()
 
 
@@ -119,7 +119,7 @@ class Ball:
         self.countdown_event = ""
         # self.ability = False
 
-        self.image = pygame.image.load("img/kunai.png")
+        self.image = pygame.image.load("img/murasaki.png")
         self.image = pygame.transform.scale(self.image, (width, height))
 
     def update(self):
@@ -250,7 +250,7 @@ class Ball:
 
     def __setstate__(self, state):
         self.__dict__.update(state)
-        self.image = pygame.image.load("img/kunai.png")
+        self.image = pygame.image.load("img/murasaki.png")
         self.image = pygame.transform.scale(self.image, (self.width, self.height))
         self.original_image = self.image
 

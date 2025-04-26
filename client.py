@@ -21,7 +21,7 @@ button_color = (0, 200, 0)
 button_text_color = (255, 255, 255)
 
 
-start_button = pygame.Rect(SCREEN_WIDTH // 2 - 100, SCREEN_HEIGHT // 2 + 25, 250, 233)
+start_button = pygame.Rect(SCREEN_WIDTH // 2 - 125, SCREEN_HEIGHT // 2 + 25, 250, 233)
 play_button = pygame.Rect(SCREEN_WIDTH // 2 - 120, SCREEN_HEIGHT // 2 - 35, 300, 178)
 next_button = pygame.Rect(SCREEN_WIDTH // 2 - 50, (SCREEN_HEIGHT // 2) + 100, 100, 115)
 back_button = pygame.Rect(SCREEN_WIDTH // 2 - 150, SCREEN_HEIGHT // 2 + 150, 300, 178)
@@ -37,6 +37,9 @@ next_img = pygame.transform.scale(
 )
 next_hover = pygame.transform.scale(
     pygame.image.load("img/next.png"), (120, 138)
+)
+logo = pygame.transform.scale(
+    pygame.image.load("img/Logo.png"), (250, 187)
 )
 background_main = pygame.transform.scale(
     pygame.image.load("img/background.png"), (SCREEN_WIDTH, SCREEN_HEIGHT)
@@ -78,12 +81,12 @@ play_again_img_hover = pygame.transform.scale(
     pygame.image.load("img/play_again.png"), (220, 127)
 )
 
-
 def start_screen():
+    background_sound.play()
+    background_sound.set_volume(0.05)
     while True:
-        logo = pygame.transform.scale(pygame.image.load("img/Logo.png"), (500, 240))
         win.blit(background_main, (0, 0))
-        win.blit(logo, (start_button.x - 120, start_button.y // 10))
+        win.blit(logo, (30, start_button.y // 10))
         mouse = pygame.mouse.get_pos()
         if start_button.collidepoint(mouse):
             win.blit(start_hover, (start_button.x - 10, start_button.y - 10))
@@ -211,7 +214,6 @@ def redraw_window(player, player2, ball, score, current_rule):
     # skill_active_img = pygame.transform.scale(
     #     pygame.image.load("img/skill_active.png"), (50, 50) )
     win.blit(background_fight, (0, 0))
-    
 
     if player.color == (255, 0, 0):
         r_txt = f"{player.name}: {score.score_player_1}"
@@ -237,9 +239,11 @@ def redraw_window(player, player2, ball, score, current_rule):
         # else:
         #     img_left = skill_ready_img
         # win.blit(img_left, (10, SCREEN_HEIGHT - 60))
+        background_sound.set_volume(0)
         if ball.countdown_event != "":
             if current_rule == "normal":
                 event_sound.play()
+                event_sound.set_volume(0.05)
             countdown = basic_font.render(ball.countdown_event, True, (255, 215, 0))
             win.blit(countdown, (SCREEN_WIDTH // 2 - countdown.get_width() // 2, 80))
         if current_rule == "paddle_score":
@@ -259,6 +263,7 @@ def redraw_window(player, player2, ball, score, current_rule):
 
 
 def show_winner_screen(player, player2, score):
+    event_sound.set_volume(0)
     screen_width, screen_height = win.get_size()
     play_again_rect = play_again_img.get_rect(
         bottomright=(screen_width - 10, screen_height - 10)
