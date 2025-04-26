@@ -18,14 +18,7 @@ SCREEN_HEIGHT = 600
 
 players = [
     Player(
-        0,
-        SCREEN_HEIGHT // 2 - 60,
-        20,
-        120,
-        (255, 0, 0),
-        SCREEN_WIDTH,
-        SCREEN_HEIGHT,
-        "img/Paddle.png",
+        0, SCREEN_HEIGHT // 2 - 60, 20, 120, (255, 0, 0), SCREEN_WIDTH, SCREEN_HEIGHT
     ),
     Player(
         SCREEN_WIDTH - 20,
@@ -35,7 +28,6 @@ players = [
         (0, 0, 255),
         SCREEN_WIDTH,
         SCREEN_HEIGHT,
-        "img/Paddle.png",
     ),
 ]
 ball = Ball(

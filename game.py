@@ -22,7 +22,7 @@ BAR_HEIGHT = 50
 
 
 class Player:
-    def __init__(self, x, y, width, height, color, screen_width, screen_height, img):
+    def __init__(self, x, y, width, height, color, screen_width, screen_height):
         self.x = x
         self.y = y
         self.width = width
@@ -35,7 +35,7 @@ class Player:
         self.screen_height = screen_height
         self.id = 0
         self.name = ""
-        self.image = pygame.image.load(img)
+        self.image = pygame.image.load("img/Paddle.png")
         self.image = pygame.transform.scale(self.image, (width, height))
         # self.skill = False
         # self.last_skill_time = 0
