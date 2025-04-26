@@ -118,6 +118,8 @@ def threaded_client(conn, player_slot):
         with player_slots_lock:
             player_slots[player_slot] = False
         print(f"Player {player_slot} disconnected")
+        score.score_player_1 = 2
+        score.score_player_2 = 2
         conn.close()
 
 
@@ -148,5 +150,10 @@ while True:
         players[1].y = SCREEN_HEIGHT // 2 - players[1].height // 2
         score.score_player_1 = 0
         score.score_player_2 = 0
+        event_timer = 0
+        now = 0
+        current_rule = "normal"
+        event_active = False
+        ball.countdown_event = ""
 
     start_new_thread(threaded_client, (conn, slot))
