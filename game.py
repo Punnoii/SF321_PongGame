@@ -37,36 +37,36 @@ class Player:
         self.name = ""
         self.image = pygame.image.load("img/Paddle.png")
         self.image = pygame.transform.scale(self.image, (width, height))
-        self.skill = False
-        self.last_skill_time = 0
-        self.skill_cooldown = 15000
-        self.skill_announced = False
-        self.skill_ready = False
-        self.button_press = False
+        # self.skill = False
+        # self.last_skill_time = 0
+        # self.skill_cooldown = 15000
+        # self.skill_announced = False
+        # self.skill_ready = False
+        # self.button_press = False
 
     def draw(self, screen):
         screen.blit(self.image, self.rect)
 
     def move(self, event_list):
         keys = pygame.key.get_pressed()
-        current_time = pygame.time.get_ticks()
-        elapsed = current_time - self.last_skill_time
-        self.skill_ready = elapsed > self.skill_cooldown
-        for event in event_list:
-            if event.type == pygame.KEYDOWN and event.key == pygame.K_e:
-                if current_time - self.last_skill_time > self.skill_cooldown:
-                    self.last_skill_time = current_time
-                    self.skill = True
-                    print("Skill used")
-                    self.skill_ready = False
-                else:
-                    print("Skill on cooldown")
+        # current_time = pygame.time.get_ticks()
+        # elapsed = current_time - self.last_skill_time
+        # self.skill_ready = elapsed > self.skill_cooldown
+        # for event in event_list:
+        #     if event.type == pygame.KEYDOWN and event.key == pygame.K_e:
+        #         if current_time - self.last_skill_time > self.skill_cooldown:
+        #             self.last_skill_time = current_time
+        #             self.skill = True
+        #             print("Skill used")
+        #             self.skill_ready = False
+        #         else:
+        #             print("Skill on cooldown")
 
-        if self.skill and not self.skill_announced:
-            self.skill_announced = True
+        # if self.skill and not self.skill_announced:
+        #     self.skill_announced = True
 
-        if not self.skill and self.skill_announced:
-            self.skill_announced = False
+        # if not self.skill and self.skill_announced:
+        #     self.skill_announced = False
 
         if keys[pygame.K_UP]:
             self.y -= self.vel
@@ -113,8 +113,8 @@ class Ball:
         self.score_time = 0
         self.countdown_number = ""
         self.last_speedup_time = pygame.time.get_ticks()
-        self.speed_multiplier = 1.0
-        self.ability = False
+        self.countdown_event = ""
+        # self.ability = False
 
         self.image = pygame.image.load("img/kunai.png")
         self.image = pygame.transform.scale(self.image, (width, height))
@@ -142,11 +142,12 @@ class Ball:
     def draw(self, screen):
         screen.blit(self.image, self.rect)
 
-    def move(self, players, score):
-        if self.active and not self.ability:
+    def move(self, players, score, current_rule):
+        if self.active and (current_rule == "normal"):
             current_time = pygame.time.get_ticks()
-            if current_time - self.last_speedup_time > 1000:
-                self.speed_multiplier += 0.01
+            if (current_time - self.last_speedup_time > 1000) and (
+                abs(self.speed_x) < 20 and abs(self.speed_y) < 20
+            ):
                 self.last_speedup_time = current_time
                 self.speed_x *= 1.1
                 self.speed_y *= 1.1
@@ -176,18 +177,17 @@ class Ball:
 
             if self.rect.left <= 0:
                 score.p_2_hit_score()
-                for player in players:
-                    player.skill = False
+                # for player in players:
+                #     player.skill = False
                 self.reset_ball()
             elif self.rect.right >= self.screen_width:
                 score.p_1_hit_score()
-                for player in players:
-                    player.skill = False
+                # for player in players:
+                #     player.skill = False
                 self.reset_ball()
-        elif self.active and (self.ability):
+        elif self.active and (current_rule == "paddle_score"):
             current_time = pygame.time.get_ticks()
             if current_time - self.last_speedup_time > 1000:
-                self.speed_multiplier += 0.01
                 self.last_speedup_time = current_time
                 self.speed_x *= 1.1
                 self.speed_y *= 1.1
@@ -210,15 +210,15 @@ class Ball:
             if self.rect.colliderect(players[0].rect):
                 score.p_2_hit_score()
                 randDeath()
-                for player in players:
-                    player.skill = False
+                # for player in players:
+                #     player.skill = False
                 self.reset_ball()
 
             elif self.rect.colliderect(players[1].rect):
                 score.p_1_hit_score()
                 randDeath()
-                for player in players:
-                    player.skill = False
+                # for player in players:
+                #     player.skill = False
                 self.reset_ball()
         else:
             self.update_countdown()
@@ -230,13 +230,12 @@ class Ball:
             self.rect.center = (self.screen_width // 2, self.screen_height // 2)
             self.speed_x = random.choice((1, -1))
             self.speed_y = random.choice((1, -1))
-            self.speed_multiplier = 1.0
             self.last_speedup_time = pygame.time.get_ticks()
             self.countdown_number = ""
             self.ability = False
 
-    def smart_skill(self):
-        self.ability = True
+    # def smart_skill(self):
+    #     self.ability = True
 
     def __getstate__(self):
         state = self.__dict__.copy()

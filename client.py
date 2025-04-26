@@ -176,19 +176,18 @@ def show_server_full_screen():
                 return True
 
 
-def redraw_window(player, player2, ball, score):
+def redraw_window(player, player2, ball, score, current_rule):
     bg = pygame.transform.scale(
         pygame.image.load("img/pong_background.png"), (SCREEN_WIDTH, SCREEN_HEIGHT)
     )
-    skill_ready_img = pygame.transform.scale(
-        pygame.image.load("img/skill.png"), (50, 50)
-    )
-    skill_cooldown_img = pygame.transform.scale(
-        pygame.image.load("img/skill_cooldown.png"), (50, 50)
-    )
-    skill_active_img = pygame.transform.scale(
-        pygame.image.load("img/skill_active.png"), (50, 50)
-    )
+    # skill_ready_img = pygame.transform.scale(
+    #     pygame.image.load("img/skill.png"), (50, 50)
+    # )
+    # skill_cooldown_img = pygame.transform.scale(
+    #     pygame.image.load("img/skill_cooldown.png"), (50, 50)
+    # )
+    # skill_active_img = pygame.transform.scale(
+    #     pygame.image.load("img/skill_active.png"), (50, 50) )
     win.blit(bg, (0, 0))
 
     if player.color == (255, 0, 0):
@@ -209,22 +208,21 @@ def redraw_window(player, player2, ball, score):
         )
         win.blit(wait_screen, (0, 0))
     else:
-        if ball.ability and player.color == (255, 0, 0):
-            img_left = skill_active_img
-        elif not player.skill_ready and player.color == (255, 0, 0):
-            img_left = skill_cooldown_img
-        else:
-            img_left = skill_ready_img
-        win.blit(img_left, (10, SCREEN_HEIGHT - 60))
-
-        if ball.ability and player2.color == (0, 0, 255):
-            img_right = skill_active_img
-        elif not player2.skill_ready and player2.color == (0, 0, 255):
-            img_right = skill_cooldown_img
-        else:
-            img_right = skill_ready_img
-        win.blit(img_right, (SCREEN_WIDTH - 60, SCREEN_HEIGHT - 60))
-
+        # if ball.ability:
+        #     img_left = skill_active_img
+        # elif (not player.skill_ready and player.color == (255, 0, 0)) or (
+        #     not player.skill_ready and player.color == (0, 0, 255)
+        # ):
+        #     img_left = skill_cooldown_img
+        # else:
+        #     img_left = skill_ready_img
+        # win.blit(img_left, (10, SCREEN_HEIGHT - 60))
+        if ball.countdown_event != "":
+            countdown = basic_font.render(ball.countdown_event, True, (255, 215, 0))
+            win.blit(countdown, (SCREEN_WIDTH // 2 - countdown.get_width() // 2, 80))
+        if current_rule == "paddle_score":
+            alert = basic_font.render("event", True, (255, 215, 0))
+            win.blit(alert, (SCREEN_WIDTH // 2 - alert.get_width() // 2, 50))
         player.draw(win)
         player2.draw(win)
         ball.draw(win)
@@ -292,7 +290,7 @@ def main(player_name):
             return
     if not init:
         return
-    player, ball, score = init
+    player, ball, score, current_rule = init
     player.name = player_name
     player.ready = True
     clock = pygame.time.Clock()
@@ -301,7 +299,7 @@ def main(player_name):
         response = net.send(player)
         if not response:
             break
-        player2, ball, score = response
+        player2, ball, score, current_rule = response
 
         if score.score_player_1 >= 2 or score.score_player_2 >= 2:
             if show_winner_screen(player, player2, score):
@@ -312,8 +310,8 @@ def main(player_name):
                 pygame.quit()
                 return
         player.move(event_list)
-        ball.move([player, player2], score)
-        redraw_window(player, player2, ball, score)
+        ball.move([player, player2], score, current_rule)
+        redraw_window(player, player2, ball, score, current_rule)
 
 
 while True:

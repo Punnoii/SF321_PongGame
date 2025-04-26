@@ -4,6 +4,7 @@ from game import *
 import pickle
 import threading
 import pygame
+import time, random
 
 server = "127.0.0.1"
 port = 5555
@@ -44,48 +45,71 @@ list_player = List_Player()
 
 player_slots_lock = threading.Lock()
 player_slots = [False, False]
+event_interval = 15
+event_duration = 15
+event_active = False
+current_rule = "normal"
 
 
 def threaded_client(conn, player_slot):
     global players, ball, score
+    global event_timer, event_interval, event_duration, event_active, current_rule
     clock = pygame.time.Clock()
-    last_score_1 = score.score_player_1
-    last_score_2 = score.score_player_2
 
     try:
-        conn.send(pickle.dumps((players[player_slot], ball, score)))
+        event_timer = time.time()
+        conn.send(pickle.dumps((players[player_slot], ball, score, current_rule)))
         while True:
             clock.tick(120)
+            now = time.time()
+            if now - event_timer >= event_interval:
+                ball.countdown_event = ""
+            elif now - event_timer > 14:
+                ball.countdown_event = "1"
+            elif now - event_timer > 13:
+                ball.countdown_event = "2"
+            elif now - event_timer > 12:
+                ball.countdown_event = "3"
+
+            if not event_active and now - event_timer >= event_interval:
+                event_active = True
+                event_timer = now
+                current_rule = "paddle_score"
+                print("event on")
+            elif event_active and now - event_timer >= event_duration:
+                event_active = False
+                event_timer = now
+                current_rule = "normal"
+                print("normal on")
             data = conn.recv(2048)
             if not data:
                 break
             received_player = pickle.loads(data)
             players[player_slot] = received_player
-            if players[0].skill or players[1].skill:
-                ball.smart_skill()
-            else:
-                ball.ability = False
             if players[0].ready and players[1].ready:
-                ball.move(players, score)
-
-                if (score.score_player_1 != last_score_1) or (
-                    score.score_player_2 != last_score_2
-                ):
-                    players[0].skill = False
-                    players[1].skill = False
-                    last_score_1 = score.score_player_1
-                    last_score_2 = score.score_player_2
+                ball.move(players, score, current_rule)
+                # if (score.score_player_1 != last_score_1) or (
+                #     score.score_player_2 != last_score_2
+                # ):
+                #     players[0].skill = False
+                #     players[1].skill = False
+                #     last_score_1 = score.score_player_1
+                #     last_score_2 = score.score_player_2
+            # if players[0].skill or players[1].skill:
+            #     ball.smart_skill()
+            # else:
+            #     ball.ability = False
 
             if score.score_player_1 >= 2 or score.score_player_2 >= 2:
                 players[0].ready = False
                 players[0].name = ""
-                players[0].skill = False
+                # players[0].skill = False
                 players[1].ready = False
                 players[1].name = ""
-                players[1].skill = False
+                # players[1].skill = False
 
             other_player = 1 - player_slot
-            reply = (players[other_player], ball, score)
+            reply = (players[other_player], ball, score, current_rule)
             conn.sendall(pickle.dumps(reply))
 
     except Exception as e:
