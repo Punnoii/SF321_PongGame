@@ -90,18 +90,6 @@ def threaded_client(conn, player_slot):
                 elif now - event_timer > (event_duration - 5):
                     ball.countdown_event = "5"
 
-            if now - event_timer >= event_interval:
-                ball.countdown_event = ""
-            elif now - event_timer > 19:
-                ball.countdown_event = "1"
-            elif now - event_timer > 18:
-                ball.countdown_event = "2"
-            elif now - event_timer > 17:
-                ball.countdown_event = "3"
-            elif now - event_timer > 16:
-                ball.countdown_event = "4"
-            elif now - event_timer > 15:
-                ball.countdown_event = "5"
             if not event_active and now - event_timer >= event_interval:
                 event_active = True
                 event_timer = now
@@ -110,7 +98,7 @@ def threaded_client(conn, player_slot):
             elif event_active and now - event_timer >= event_duration:
                 event_active = False
                 event_timer = now
-                current_rule = "normal"
+                ball.event_start_time
                 print("normal on")
             data = conn.recv(2048)
             if not data:
