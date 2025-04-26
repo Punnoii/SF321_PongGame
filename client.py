@@ -180,6 +180,9 @@ def redraw_window(player, player2, ball, score, current_rule):
     bg = pygame.transform.scale(
         pygame.image.load("img/pong_background.png"), (SCREEN_WIDTH, SCREEN_HEIGHT)
     )
+    bg_skill = pygame.transform.scale(
+        pygame.image.load("img/background_event.png"), (SCREEN_WIDTH, SCREEN_HEIGHT)
+    )
     # skill_ready_img = pygame.transform.scale(
     #     pygame.image.load("img/skill.png"), (50, 50)
     # )
