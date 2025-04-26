@@ -81,14 +81,15 @@ play_again_img_hover = pygame.transform.scale(
     pygame.image.load("img/play_again.png"), (220, 127)
 )
 event_sukuna = pygame.transform.scale(
-    pygame.image.load("img/event_sukuna.png").convert_alpha(), (400, 214) #1.81
+    pygame.image.load("img/event_sukuna.png"), (400, 214) #1.81
 )
 event_gojo = pygame.transform.scale(
     pygame.image.load("img/event_gojo.png"), (400, 144) #2.77
 )
 
+background_sound.play()
+
 def start_screen():
-    background_sound.play()
     background_sound.set_volume(0.05)
     while True:
         win.blit(background_main, (0, 0))
@@ -209,10 +210,12 @@ def show_server_full_screen():
             if e.type == pygame.MOUSEBUTTONDOWN and play_again_rect.collidepoint(e.pos):
                 return True
 
-event_start_time = 0
-event_stage = ""
+event_start_time = None
+fade_done = False
+
 def redraw_window(player, player2, ball, score, current_rule):
-    global event_start_time,event_stage
+    global event_start_time, fade_done  # ใช้ตัวแปร global
+
     win.blit(background_fight, (0, 0))
 
     if player.color == (255, 0, 0):
@@ -232,67 +235,35 @@ def redraw_window(player, player2, ball, score, current_rule):
     else:
         background_sound.set_volume(0)
 
-        # ต้องตั้งตัวแปรพวกนี้ตอนเริ่ม event
-        if ball.countdown_event != "" :
-            if event_start_time == 0:
-                event_start_time = pygame.time.get_ticks()
-                event_stage = "fade_in"
-            event_duration = pygame.time.get_ticks() - event_start_time
-            print(event_duration)
-            # คำนวณ alpha ตาม stage
-            if event_stage == "fade_in":
-                alpha = min(255, (event_duration / 1000) * 255)  # ภายใน 1 วิ alpha จาก 0 -> 255
-                print(f"Drawing surface at alpha={alpha}, stage={event_stage}")
-                if event_duration >= 1000:
-                    event_stage = "hold"
-                    event_start_time = pygame.time.get_ticks()
+        if ball.countdown_event != "" and not fade_done:  # เช็คว่า fade เสร็จหรือยัง
+            if current_rule == "normal":
+                if event_start_time is None:
+                    event_start_time = pygame.time.get_ticks()  # เริ่มจับเวลาเมื่อ event เริ่ม
 
-            elif event_stage == "hold":
-                alpha = 255  # ค้างไว้เต็มที่
-                if event_duration >= 3000:  # ค้างไว้ 3 วิ
-                    event_stage = "fade_out"
-                    event_start_time = pygame.time.get_ticks()
+                fade_surface = pygame.Surface((400, 214), pygame.SRCALPHA)
+                current_time = pygame.time.get_ticks()
+                elapsed_time = (current_time - event_start_time) / 1000  # คำนวณเวลาเป็นวินาที
 
-            elif event_stage == "fade_out":
-                alpha = max(0, 255 - (event_duration / 1000) * 255)  # ภายใน 1 วิ alpha จาก 255 -> 0
-                if event_duration >= 1000:
-                    # จบ event
-                    event_start_time = 0
-                    ball.countdown_event = ""
-                    alpha = 0
-            # วาดภาพตาม alpha
-            fade_surface = event_sukuna.copy()
-            fade_surface.set_alpha(int(alpha))
-            # fade_surface.blit(event_sukuna, (0, 0))
-            win.blit(fade_surface, ((SCREEN_WIDTH // 2) - 200, SCREEN_HEIGHT // 2 - 107))
-            # เล่นเสียงครั้งเดียว
-            if event_stage == "fade_in" and event_duration < 50:  # กันเล่นซ้ำ
+                if elapsed_time <= 1:  # ถ้าผ่านไปไม่ถึง 1 วิ ให้เป็น fade in
+                    alpha = int(255 * (elapsed_time / 1))  # alpha จะเพิ่มจาก 0 ไป 255 ใน 1 วิ
+                elif elapsed_time <= 4:  # หลังจาก 1 วิจนถึง 4 วิ (hold ภาพไว้)
+                    alpha = 255  # ค้างไว้เต็มที่
+                else:
+                    fade_time = elapsed_time - 4  # หลังจาก 4 วิ เริ่ม fade out
+                    alpha = max(255 - int(fade_time * 255 / 2), 0)  # ค่อย ๆ ลดใน 2 วิ
+
+                fade_surface.set_alpha(alpha)
+                fade_surface.blit(event_sukuna, (0, 0))
+                win.blit(fade_surface, ((SCREEN_WIDTH // 2) - 200, SCREEN_HEIGHT // 2 - 107))
+
                 event_sound.play()
                 event_sound.set_volume(0.05)
-            # วาดข้อความ countdown
+
+                if elapsed_time > 6:  # เมื่อผ่าน 6 วิแล้วให้หยุด fade
+                    fade_done = True  # สถานะ fade เสร็จแล้ว
+
             countdown = basic_font.render(ball.countdown_event, True, (255, 215, 0))
             win.blit(countdown, (SCREEN_WIDTH // 2 - countdown.get_width() // 2, 80))
-
-        # if ball.countdown_event != "":
-        #     if current_rule == "normal":
-        #         # Fade in-out effect for event_sukuna
-        #         fade_surface = pygame.Surface((400, 214), pygame.SRCALPHA)
-                
-        #         time_in_cycle = pygame.time.get_ticks() % 2000  # 2 วิวน
-        #         if time_in_cycle < 1000:
-        #             alpha = (time_in_cycle / 1000) * 255  # 0-1 วิ เพิ่มขึ้น
-        #         else:
-        #             alpha = ((2000 - time_in_cycle) / 1000) * 255  # 1-2 วิ ลดลง
-                
-        #         fade_surface.set_alpha(int(alpha))
-        #         fade_surface.blit(event_sukuna, (0, 0))
-        #         win.blit(fade_surface, ((SCREEN_WIDTH // 2) - 200, SCREEN_HEIGHT // 2 - 107))
-                
-        #         event_sound.play()
-        #         event_sound.set_volume(0.05)
-
-        #     countdown = basic_font.render(ball.countdown_event, True, (255, 215, 0))
-        #     win.blit(countdown, (SCREEN_WIDTH // 2 - countdown.get_width() // 2, 80))
 
         if current_rule == "paddle_score":
             win.blit(background_skill, (0, 0))
