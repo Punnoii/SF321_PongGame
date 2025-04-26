@@ -117,6 +117,8 @@ class Ball:
         self.countdown_number = ""
         self.last_speedup_time = pygame.time.get_ticks()
         self.countdown_event = ""
+        self.event_start_time = pygame.time.get_ticks()
+        self.event_sound_played = False
         # self.ability = False
 
         self.image = pygame.image.load("img/murasaki.png")

@@ -80,6 +80,12 @@ play_again_img = pygame.transform.scale(
 play_again_img_hover = pygame.transform.scale(
     pygame.image.load("img/play_again.png"), (220, 127)
 )
+event_sukuna = pygame.transform.scale(
+    pygame.image.load("img/event_sukuna.png"), (400, 214) #1.81
+)
+event_gojo = pygame.transform.scale(
+    pygame.image.load("img/event_gojo.png"), (400, 144) #2.77
+)
 
 def start_screen():
     background_sound.play()
@@ -205,14 +211,6 @@ def show_server_full_screen():
 
 
 def redraw_window(player, player2, ball, score, current_rule):
-    # skill_ready_img = pygame.transform.scale(
-    #     pygame.image.load("img/skill.png"), (50, 50)
-    # )
-    # skill_cooldown_img = pygame.transform.scale(
-    #     pygame.image.load("img/skill_cooldown.png"), (50, 50)
-    # )
-    # skill_active_img = pygame.transform.scale(
-    #     pygame.image.load("img/skill_active.png"), (50, 50) )
     win.blit(background_fight, (0, 0))
 
     if player.color == (255, 0, 0):
@@ -230,22 +228,22 @@ def redraw_window(player, player2, ball, score, current_rule):
     if not (player.ready and player2.ready):
         win.blit(background_wait, (0, 0))
     else:
-        # if ball.ability:
-        #     img_left = skill_active_img
-        # elif (not player.skill_ready and player.color == (255, 0, 0)) or (
-        #     not player.skill_ready and player.color == (0, 0, 255)
-        # ):
-        #     img_left = skill_cooldown_img
-        # else:
-        #     img_left = skill_ready_img
-        # win.blit(img_left, (10, SCREEN_HEIGHT - 60))
         background_sound.set_volume(0)
+
         if ball.countdown_event != "":
             if current_rule == "normal":
+                # Fade in-out effect for event_sukuna
+                fade_surface = pygame.Surface((400, 214), pygame.SRCALPHA)
+                alpha = abs(255 * (0.5 - ((pygame.time.get_ticks() % 1000) / 1000))) * 2
+                fade_surface.set_alpha(int(alpha))
+                fade_surface.blit(event_sukuna, (0, 0))
+                win.blit(fade_surface, ((SCREEN_WIDTH // 2) - 200, SCREEN_HEIGHT // 2 - 107))
                 event_sound.play()
                 event_sound.set_volume(0.05)
+
             countdown = basic_font.render(ball.countdown_event, True, (255, 215, 0))
             win.blit(countdown, (SCREEN_WIDTH // 2 - countdown.get_width() // 2, 80))
+
         if current_rule == "paddle_score":
             win.blit(background_skill, (0, 0))
             if ball.countdown_event != "":
@@ -255,11 +253,13 @@ def redraw_window(player, player2, ball, score, current_rule):
             win.blit(bt2, (SCREEN_WIDTH - bt2.get_width() - 10, 10))
             alert = basic_font.render("event", True, (255, 215, 0))
             win.blit(alert, (SCREEN_WIDTH // 2 - alert.get_width() // 2, 50))
+
         player.draw(win)
         player2.draw(win)
         ball.draw(win)
 
     pygame.display.update()
+
 
 
 def show_winner_screen(player, player2, score):
