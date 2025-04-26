@@ -45,11 +45,8 @@ list_player = List_Player()
 
 player_slots_lock = threading.Lock()
 player_slots = [False, False]
-<<<<<<< HEAD
 event_interval = 15
-=======
 event_interval = 20
->>>>>>> 65093fd8caa6fc9fba3e11f771e45e6254a6d63c
 event_duration = 20
 event_active = False
 current_rule = "normal"
@@ -66,7 +63,6 @@ def threaded_client(conn, player_slot):
         while True:
             clock.tick(60)
             now = time.time()
-<<<<<<< HEAD
             if current_rule == "normal":
                 if now - event_timer >= event_interval:
                     ball.countdown_event = ""
@@ -93,7 +89,7 @@ def threaded_client(conn, player_slot):
                     ball.countdown_event = "4"
                 elif now - event_timer > (event_duration - 5):
                     ball.countdown_event = "5"
-=======
+
             if now - event_timer >= event_interval:
                 ball.countdown_event = ""
             elif now - event_timer > 19:
@@ -106,8 +102,6 @@ def threaded_client(conn, player_slot):
                 ball.countdown_event = "4"
             elif now - event_timer > 15:
                 ball.countdown_event = "5"
->>>>>>> 65093fd8caa6fc9fba3e11f771e45e6254a6d63c
-
             if not event_active and now - event_timer >= event_interval:
                 event_active = True
                 event_timer = now
