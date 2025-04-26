@@ -224,6 +224,7 @@ def redraw_window(player, player2, ball, score, current_rule):
             countdown = basic_font.render(ball.countdown_event, True, (255, 215, 0))
             win.blit(countdown, (SCREEN_WIDTH // 2 - countdown.get_width() // 2, 80))
         if current_rule == "paddle_score":
+            # win.blit(bg_skill, (0, 0))
             alert = basic_font.render("event", True, (255, 215, 0))
             win.blit(alert, (SCREEN_WIDTH // 2 - alert.get_width() // 2, 50))
         player.draw(win)
