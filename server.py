@@ -46,7 +46,7 @@ list_player = List_Player()
 player_slots_lock = threading.Lock()
 player_slots = [False, False]
 event_interval = 15
-event_duration = 15
+event_duration = 20
 event_active = False
 current_rule = "normal"
 
@@ -62,14 +62,32 @@ def threaded_client(conn, player_slot):
         while True:
             clock.tick(120)
             now = time.time()
-            if now - event_timer >= event_interval:
-                ball.countdown_event = ""
-            elif now - event_timer > 14:
-                ball.countdown_event = "1"
-            elif now - event_timer > 13:
-                ball.countdown_event = "2"
-            elif now - event_timer > 12:
-                ball.countdown_event = "3"
+            if current_rule == "normal":
+                if now - event_timer >= event_interval:
+                    ball.countdown_event = ""
+                elif now - event_timer > (event_interval - 1):
+                    ball.countdown_event = "1"
+                elif now - event_timer > (event_interval - 2):
+                    ball.countdown_event = "2"
+                elif now - event_timer > (event_interval - 3):
+                    ball.countdown_event = "3"
+                elif now - event_timer > (event_interval - 4):
+                    ball.countdown_event = "4"
+                elif now - event_timer > (event_interval - 5):
+                    ball.countdown_event = "5"
+            else:
+                if now - event_timer >= event_duration:
+                    ball.countdown_event = ""
+                elif now - event_timer > (event_duration - 1):
+                    ball.countdown_event = "1"
+                elif now - event_timer > (event_duration - 2):
+                    ball.countdown_event = "2"
+                elif now - event_timer > (event_duration - 3):
+                    ball.countdown_event = "3"
+                elif now - event_timer > (event_duration - 4):
+                    ball.countdown_event = "4"
+                elif now - event_timer > (event_duration - 5):
+                    ball.countdown_event = "5"
 
             if not event_active and now - event_timer >= event_interval:
                 event_active = True
