@@ -87,10 +87,10 @@ play_again_img_hover = pygame.transform.scale(
     pygame.image.load("img/play_again.png"), (220, 127)
 )
 event_sukuna = pygame.transform.scale(
-    pygame.image.load("img/event_sukuna.png"), (400, 214) #1.81
+    pygame.image.load("img/event_sukuna.png"), (500, 276) #1.81
 )
 event_gojo = pygame.transform.scale(
-    pygame.image.load("img/event_gojo.png"), (400, 144) #2.77
+    pygame.image.load("img/event_gojo.png"), (500, 180) #2.77
 )
 
 background_sound.play()
@@ -246,7 +246,7 @@ def show_other_player_disconnect_screen():
 event_start_time = None
 fade_done = False
 
-def redraw_window(player, player2, ball, score, current_rule):
+def redraw_window(player, player2, ball, score, current_rule, randevent):
     global event_start_time, fade_done  # ใช้ตัวแปร global
 
     win.blit(background_fight, (0, 0))
@@ -270,36 +270,61 @@ def redraw_window(player, player2, ball, score, current_rule):
                 return
     else:
         background_sound.set_volume(0)
-        print(event_start_time, fade_done)
         if ball.countdown_event != "" and not fade_done:
             if current_rule == "normal":
-                if event_start_time is None:
-                    event_start_time = pygame.time.get_ticks()
+                if randevent == "event_sukuna":
+                    if event_start_time is None:
+                        event_start_time = pygame.time.get_ticks()
 
-                fade_surface = pygame.Surface((400, 214), pygame.SRCALPHA)
-                current_time = pygame.time.get_ticks()
-                elapsed_time = (current_time - event_start_time) / 1000
+                    fade_surface = pygame.Surface((500, 276), pygame.SRCALPHA)
+                    current_time = pygame.time.get_ticks()
+                    elapsed_time = (current_time - event_start_time) / 1000
 
-                if elapsed_time <= 1:
-                    alpha = int(255 * (elapsed_time / 1))
-                elif elapsed_time <= 4:
-                    alpha = 255
-                else:
-                    fade_time = elapsed_time - 4
-                    alpha = max(255 - int(fade_time * 255 / 2), 0)
+                    if elapsed_time <= 1:
+                        alpha = int(255 * (elapsed_time / 1))
+                    elif elapsed_time <= 4:
+                        alpha = 255
+                    else:
+                        fade_time = elapsed_time - 4
+                        alpha = max(255 - int(fade_time * 255 / 2), 0)
 
-                fade_surface.set_alpha(alpha)
-                fade_surface.blit(event_sukuna, (0, 0))
-                win.blit(fade_surface, ((SCREEN_WIDTH // 2) - 200, SCREEN_HEIGHT // 2 - 107))
+                    fade_surface.set_alpha(alpha)
+                    fade_surface.blit(event_sukuna, (0, 0))
+                    win.blit(fade_surface, ((SCREEN_WIDTH // 2) - 250, SCREEN_HEIGHT // 2 - 107))
 
-                event_sound.play()
-                event_sound.set_volume(0.05)
+                    eventSukuna_sound.play()
+                    eventSukuna_sound.set_volume(0.05)
 
-                if elapsed_time > 6:
-                    fade_done = True
+                    if elapsed_time > 6:
+                        fade_done = True
+                elif randevent == "event_gojo":
+                    if event_start_time is None:
+                        event_start_time = pygame.time.get_ticks()
 
-            countdown = basic_font.render(ball.countdown_event, True, (255, 215, 0))
-            win.blit(countdown, (SCREEN_WIDTH // 2 - countdown.get_width() // 2, 80))
+                    fade_surface = pygame.Surface((500, 276), pygame.SRCALPHA)
+                    current_time = pygame.time.get_ticks()
+                    elapsed_time = (current_time - event_start_time) / 1000
+
+                    if elapsed_time <= 1:
+                        alpha = int(255 * (elapsed_time / 1))
+                    elif elapsed_time <= 4:
+                        alpha = 255
+                    else:
+                        fade_time = elapsed_time - 4
+                        alpha = max(255 - int(fade_time * 255 / 2), 0)
+
+                    fade_surface.set_alpha(alpha)
+                    fade_surface.blit(event_gojo, (0, 0))
+                    win.blit(fade_surface, ((SCREEN_WIDTH // 2) - 250, SCREEN_HEIGHT // 2 - 107))
+
+                    eventGojo_sound.play()
+                    eventGojo_sound.set_volume(0.05)
+
+                    if elapsed_time > 6:
+                        fade_done = True
+
+                countdown = basic_font.render(ball.countdown_event, True, (255, 215, 0))
+                win.blit(countdown, (SCREEN_WIDTH // 2 - countdown.get_width() // 2, 80))
 
         if current_rule == "event_sukuna":
             win.blit(background_skill_sukuna, (0, 0))
@@ -334,7 +359,8 @@ def redraw_window(player, player2, ball, score, current_rule):
 
 
 def show_winner_screen(player, score):
-    event_sound.set_volume(0)
+    eventSukuna_sound.set_volume(0)
+    eventGojo_sound.set_volume(0)
     screen_width, screen_height = win.get_size()
     play_again_rect = play_again_img.get_rect(
         bottomright=(screen_width - 10, screen_height - 10)
@@ -382,7 +408,7 @@ def main(player_name):
             return
     if not init:
         return
-    player, ball, score, current_rule = init
+    player, ball, score, current_rule, randevent = init
     player.name = player_name
     player.ready = True
     clock = pygame.time.Clock()
@@ -391,7 +417,7 @@ def main(player_name):
         response = net.send(player)
         if not response:
             break
-        player2, ball, score, current_rule = response
+        player2, ball, score, current_rule, randevent = response
 
         event_list = pygame.event.get()
         for e in event_list:
@@ -400,7 +426,10 @@ def main(player_name):
                 return
         player.move(event_list)
         ball.move([player, player2], score, current_rule)
-        redraw_window(player, player2, ball, score, current_rule)
+        redraw_window(player, player2, ball, score, current_rule, randevent)
+        if current_rule == "normal":
+            player.vel = 10
+            player2.vel = 10
         if score.score_player_1 >= 2 or score.score_player_2 >= 2:
             if show_winner_screen(player, score):
                 return

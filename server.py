@@ -24,7 +24,7 @@ players = [
     Player(
         SCREEN_WIDTH - 20,
         SCREEN_HEIGHT // 2 - 60,
-        20,
+        30,
         120,
         (0, 0, 255),
         SCREEN_WIDTH,
@@ -52,19 +52,30 @@ event_duration = 20
 event_active = False
 current_rule = "normal"
 event_on = ["event_sukuna", "event_gojo"]
-
+event_done = True
+nowevent = ""
 
 def threaded_client(conn, player_slot):
-    global players, ball, score
+    global players, ball, score, event_on, event_done, nowevent
     global event_timer, event_interval, event_duration, event_active, current_rule
     clock = pygame.time.Clock()
 
     try:
         event_timer = time.time()
-        conn.send(pickle.dumps((players[player_slot], ball, score, current_rule)))
+        if event_done:
+            randevent = random.choice(event_on)
+            nowevent = randevent
+        randevent = nowevent
+        event_done = False
+        conn.send(pickle.dumps((players[player_slot], ball, score, current_rule, randevent)))
         while True:
             clock.tick(60)
             now = time.time()
+            if event_done:
+                randevent = random.choice(event_on)
+                nowevent = randevent
+            randevent = nowevent
+            event_done = False
             if current_rule == "normal":
                 if now - event_timer >= event_interval:
                     ball.countdown_event = ""
@@ -107,7 +118,7 @@ def threaded_client(conn, player_slot):
             if not event_active and now - event_timer >= event_interval:
                 event_active = True
                 event_timer = now
-                current_rule = random.choice(event_on)
+                current_rule = randevent
                 print("------------------")
                 print(current_rule)
                 print("------------------")
@@ -116,8 +127,7 @@ def threaded_client(conn, player_slot):
                 event_timer = now
                 current_rule = "normal"
                 print("normal on")
-                players[0].vel = 10
-                players[1].vel = 10
+                event_done = True
             data = conn.recv(2048)
             if not data:
                 break
@@ -147,7 +157,8 @@ def threaded_client(conn, player_slot):
                 # players[1].skill = False
 
             other_player = 1 - player_slot
-            reply = (players[other_player], ball, score, current_rule)
+            # reply = (players[other_player], ball, score, current_rule)
+            reply = (players[other_player], ball, score, current_rule, randevent)
             conn.sendall(pickle.dumps(reply))
 
     except Exception as e:

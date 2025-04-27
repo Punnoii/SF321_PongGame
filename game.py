@@ -5,7 +5,8 @@ from PIL import Image
 pygame.init()
 pygame.mixer.init()
 enter_sound = pygame.mixer.Sound("sound/enter.mp3")
-event_sound = pygame.mixer.Sound("sound/event.mp3")
+eventSukuna_sound = pygame.mixer.Sound("sound/event_sukuna.mp3")
+eventGojo_sound = pygame.mixer.Sound("sound/event_gojo.mp3")
 background_sound = pygame.mixer.Sound("sound/background.mp3")
 
 
@@ -38,8 +39,10 @@ class Player:
         self.screen_height = screen_height
         self.id = 0
         self.name = ""
-        self.image = pygame.image.load("img/Paddle.png")
+        self.image = pygame.image.load("img/paddle_gojo.png")
         self.image = pygame.transform.scale(self.image, (width, height))
+        # self.image1 = pygame.image.load("img/paddle_sukuna.png")
+        # self.image1 = pygame.transform.scale(self.image, (width, height))
         # self.skill = False
         # self.last_skill_time = 0
         # self.skill_cooldown = 15000
@@ -95,7 +98,7 @@ class Player:
 
     def __setstate__(self, state):
         self.__dict__.update(state)
-        self.image = pygame.image.load("img/Paddle.png")
+        self.image = pygame.image.load("img/paddle_gojo.png")
         self.image = pygame.transform.scale(self.image, (self.width, self.height))
 
 
