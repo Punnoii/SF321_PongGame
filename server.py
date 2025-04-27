@@ -115,6 +115,8 @@ def threaded_client(conn, player_slot):
                 event_timer = now
                 current_rule = "normal"
                 print("normal on")
+                players[0].vel = 10
+                players[1].vel = 10
             data = conn.recv(2048)
             if not data:
                 break
@@ -149,11 +151,31 @@ def threaded_client(conn, player_slot):
     except Exception as e:
         print(f"Player {player_slot} error: {e}")
     finally:
+    
+        # with player_slots_lock:
+        #     player_slots[player_slot] = False
+        # print(f"Player {player_slot} disconnected")
+        # score.score_player_1 = 2
+        # score.score_player_2 = 2
+        # conn.close()
+        
+
         with player_slots_lock:
             player_slots[player_slot] = False
-        print(f"Player {player_slot} disconnected")
-        score.score_player_1 = 2
-        score.score_player_2 = 2
+        print(f"Player {player_slot} disconnected, waiting 10 seconds.")
+
+        disconnect_time = time.time()
+        while time.time() - disconnect_time < 10:
+            time.sleep(0.5)  # every 0.5 sec
+            with player_slots_lock:
+                if player_slots[player_slot]:  
+                    print(f"Player {player_slot} reconnected in time!")
+                    break
+        else:
+            print(f"Player {player_slot} did not reconnect in time. Resetting score.")
+            score.score_player_1 = 2
+            score.score_player_2 = 2
+
         conn.close()
 
 

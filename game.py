@@ -226,7 +226,9 @@ class Ball:
                 self.reset_ball()
         elif self.active and (current_rule == "event_gojo"):
             current_time = pygame.time.get_ticks()
-            if current_time - self.last_speedup_time > 1000:
+            if (current_time - self.last_speedup_time > 1000) and (
+                abs(self.speed_x) < 20 and abs(self.speed_y) < 20
+            ):
                 self.last_speedup_time = current_time
                 self.speed_x *= 1.1
                 self.speed_y *= 1.1
@@ -238,22 +240,31 @@ class Ball:
                 self.speed_y *= -1
                 randSound()
 
-            if self.rect.left <= 0:
-                self.speed_x = abs(self.speed_x)
-                randSound()
-
-            if self.rect.right >= self.screen_width:
-                self.speed_x = -abs(self.speed_x)
-                randSound()
-
             if self.rect.colliderect(players[0].rect):
-                score.p_2_hit_score()
-                randDeath()
-                self.reset_ball()
+                self.speed_x = abs(self.speed_x)
+                diff = (self.rect.centery - players[0].rect.centery) / (
+                    players[0].rect.height / 2
+                )
+                self.speed_y = diff * 5
+                randSound()
 
             elif self.rect.colliderect(players[1].rect):
+                self.speed_x = -abs(self.speed_x)
+                diff = (self.rect.centery - players[1].rect.centery) / (
+                    players[1].rect.height / 2
+                )
+                self.speed_y = diff * 5
+                randSound()
+
+            if self.rect.left <= 0:
+                score.p_2_hit_score()
+                # for player in players:
+                #     player.skill = False
+                self.reset_ball()
+            elif self.rect.right >= self.screen_width:
                 score.p_1_hit_score()
-                randDeath()
+                # for player in players:
+                #     player.skill = False
                 self.reset_ball()
         else:
             self.update_countdown()

@@ -280,6 +280,7 @@ def redraw_window(player, player2, ball, score, current_rule):
             event_start_time = None
             fade_done = False
         if current_rule == "event_gojo":
+            player.vel = 3
             win.blit(background_skill_gojo, (0, 0))
             if ball.countdown_event != "":
                 countdown = basic_font.render(ball.countdown_event, True, (255, 215, 0))
