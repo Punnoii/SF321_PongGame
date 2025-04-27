@@ -234,7 +234,7 @@ def redraw_window(player, player2, ball, score, current_rule):
         win.blit(background_wait, (0, 0))
     else:
         background_sound.set_volume(0)
-
+        print(event_start_time, fade_done)
         if ball.countdown_event != "" and not fade_done:  # เช็คว่า fade เสร็จหรือยัง
             if current_rule == "normal":
                 if event_start_time is None:
@@ -274,6 +274,8 @@ def redraw_window(player, player2, ball, score, current_rule):
             win.blit(bt2, (SCREEN_WIDTH - bt2.get_width() - 10, 10))
             alert = basic_font.render("event", True, (255, 215, 0))
             win.blit(alert, (SCREEN_WIDTH // 2 - alert.get_width() // 2, 50))
+            event_start_time = None
+            fade_done = False
 
         player.draw(win)
         player2.draw(win)
