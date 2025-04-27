@@ -265,7 +265,7 @@ def redraw_window(player, player2, ball, score, current_rule):
 
     if not (player.ready and player2.ready):
         win.blit(background_wait, (0, 0))
-        if score.score_player_1 >= 2 or score.score_player_2 >= 2:
+        if score.score_player_1 >= 3 or score.score_player_2 >= 3:
             if show_other_player_disconnect_screen():
                 return
     else:
@@ -333,7 +333,7 @@ def redraw_window(player, player2, ball, score, current_rule):
 
 
 
-def show_winner_screen(player, player2, score):
+def show_winner_screen(player, score):
     event_sound.set_volume(0)
     screen_width, screen_height = win.get_size()
     play_again_rect = play_again_img.get_rect(
@@ -402,7 +402,7 @@ def main(player_name):
         ball.move([player, player2], score, current_rule)
         redraw_window(player, player2, ball, score, current_rule)
         if score.score_player_1 >= 2 or score.score_player_2 >= 2:
-            if show_winner_screen(player, player2, score):
+            if show_winner_screen(player, score):
                 return
 
 

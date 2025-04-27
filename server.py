@@ -15,6 +15,7 @@ print("Waiting for a connection, Server Started")
 
 SCREEN_WIDTH = 960
 SCREEN_HEIGHT = 600
+ball_lock = threading.Lock()
 
 players = [
     Player(
@@ -122,8 +123,9 @@ def threaded_client(conn, player_slot):
                 break
             received_player = pickle.loads(data)
             players[player_slot] = received_player
-            if players[0].ready and players[1].ready:
-                ball.move(players, score, current_rule)
+            with ball_lock:  # Acquire lock before moving ball and updating score
+                if players[0].ready and players[1].ready:
+                    ball.move(players, score, current_rule)
                 # if (score.score_player_1 != last_score_1) or (
                 #     score.score_player_2 != last_score_2
                 # ):
@@ -175,8 +177,8 @@ def threaded_client(conn, player_slot):
                     break
         else:
             print(f"Player {player_slot} did not reconnect in time.")
-            score.score_player_1 = 2
-            score.score_player_2 = 2
+            score.score_player_1 = 3
+            score.score_player_2 = 3
 
         conn.close()
 
