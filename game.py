@@ -132,9 +132,17 @@ class Ball:
         self.event_sound_played = False
         # self.ability = False
         self.fade_done = False
-
-        self.image = pygame.image.load("img/murasaki.png")
-        self.image = pygame.transform.scale(self.image, (width, height))
+        self.changeBall = "normal"
+        
+        if self.changeBall == "normal":
+            self.image = pygame.image.load("img/murasaki.png")
+            self.image = pygame.transform.scale(self.image, (width, height))
+        elif self.changeBall == "event_sukuna":
+            self.image = pygame.image.load("img/fireball.png")
+            self.image = pygame.transform.scale(self.image, (width, height))
+        elif self.changeBall == "event_gojo":
+            self.image = pygame.image.load("img/murasaki.png")
+            self.image = pygame.transform.scale(self.image, (width, height))
 
     def update(self):
         if self.active:
