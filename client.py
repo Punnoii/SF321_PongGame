@@ -1,6 +1,7 @@
 import pygame
 from network import Network
 from game import *
+import random
 
 pygame.mixer.pre_init(frequency=44100, size=-16, channels=2, buffer=1024)
 pygame.init()
@@ -89,12 +90,22 @@ event_gojo = pygame.transform.scale(
     pygame.image.load("img/event_gojo.png"), (500, 180)  # 2.77
 )
 
+def rand_win():
+    winner_sounds = pygame.mixer.Sound(f"sound/win_sound{random.randint(1,3)}.mp3")
+    winner_sounds.set_volume(0.05)
+    winner_sounds.play()
+def rand_lose():
+    loser_sounds = pygame.mixer.Sound(f"sound/lose_sound{random.randint(1,3)}.mp3")
+    loser_sounds.set_volume(0.05)
+    loser_sounds.play()
 
 background_sound.play(-1)
 
 
 def start_screen():
     background_sound.set_volume(0.05)
+    rand_win()
+    rand_lose()
     while True:
         win.blit(background_main, (0, 0))
         win.blit(logo, (30, start_button.y // 10))
@@ -379,13 +390,14 @@ def show_winner_screen(player, score):
         is_winner = score.score_player_1 >= 7
     else:
         is_winner = score.score_player_2 >= 7
+    if is_winner:
+        win.blit(victory_img, (0, 0))
+        rand_win()
+    else:
+        win.blit(defeat_img, (0, 0))
+        rand_lose()
 
     while True:
-        if is_winner:
-            win.blit(victory_img, (0, 0))
-        else:
-            win.blit(defeat_img, (0, 0))
-
         mouse = pygame.mouse.get_pos()
         if play_again_rect.collidepoint(mouse):
             win.blit(
