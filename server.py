@@ -19,10 +19,15 @@ ball_lock = threading.Lock()
 
 players = [
     Player(
-        0, SCREEN_HEIGHT // 2 - 60, 20, 120, (255, 0, 0), SCREEN_WIDTH, SCREEN_HEIGHT
+        0, SCREEN_HEIGHT // 2 - 60,
+        30,
+        120,
+        (255, 0, 0),
+        SCREEN_WIDTH,
+        SCREEN_HEIGHT
     ),
     Player(
-        SCREEN_WIDTH - 20,
+        SCREEN_WIDTH - 30,
         SCREEN_HEIGHT // 2 - 60,
         30,
         120,

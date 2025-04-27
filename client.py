@@ -80,12 +80,6 @@ victory_img = pygame.transform.scale(
 defeat_img = pygame.transform.scale(
     pygame.image.load("img/defeat.png"), (SCREEN_WIDTH, SCREEN_HEIGHT)
 )
-play_again_img = pygame.transform.scale(
-    pygame.image.load("img/play_again.png"), (200, 115)
-)
-play_again_img_hover = pygame.transform.scale(
-    pygame.image.load("img/play_again.png"), (220, 127)
-)
 event_sukuna = pygame.transform.scale(
     pygame.image.load("img/event_sukuna.png"), (500, 276) #1.81
 )
@@ -361,7 +355,7 @@ def show_winner_screen(player, score):
     eventSukuna_sound.set_volume(0)
     eventGojo_sound.set_volume(0)
     screen_width, screen_height = win.get_size()
-    play_again_rect = play_again_img.get_rect(
+    play_again_rect = play_again.get_rect(
         bottomright=(screen_width - 10, screen_height - 10)
     )
 
@@ -380,13 +374,13 @@ def show_winner_screen(player, score):
         mouse = pygame.mouse.get_pos()
         if play_again_rect.collidepoint(mouse):
             win.blit(
-                play_again_img_hover,
-                play_again_img.get_rect(
+                play_again_hover,
+                play_again.get_rect(
                     bottomright=(screen_width - 20, screen_height - 20)
                 ),
             )
         else:
-            win.blit(play_again_img, play_again_rect)
+            win.blit(play_again, play_again_rect)
 
         pygame.display.update()
         for e in pygame.event.get():
