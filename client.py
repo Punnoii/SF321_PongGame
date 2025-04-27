@@ -2,8 +2,17 @@ import pygame
 from network import Network
 from game import *
 
+pygame.mixer.pre_init(frequency=44100,size=-16,channels=2,buffer=1024)
 pygame.init()
 pygame.mixer.init()
+
+enter_sound = pygame.mixer.Sound("sound/enter.mp3")
+eventSukuna_sound = pygame.mixer.Sound("sound/event_sukuna.mp3")
+eventGojo_sound = pygame.mixer.Sound("sound/event_gojo.mp3")
+background_sound = pygame.mixer.Sound("sound/background.mp3")
+
+eventGojo_sound.set_volume(0.05)
+eventSukuna_sound.set_volume(0.05)
 
 SCREEN_WIDTH = 960
 SCREEN_HEIGHT = 600
@@ -87,7 +96,10 @@ event_gojo = pygame.transform.scale(
     pygame.image.load("img/event_gojo.png"), (500, 180) #2.77
 )
 
+
+
 background_sound.play(-1)
+
 
 def start_screen():
     background_sound.set_volume(0.05)
@@ -268,7 +280,9 @@ def redraw_window(player, player2, ball, score, current_rule, randevent):
                 if randevent == "event_sukuna":
                     if event_start_time is None:
                         event_start_time = pygame.time.get_ticks()
-
+                    #adding 
+                    if eventSukuna_sound.get_num_channels() == 0 and not fade_done :
+                        eventSukuna_sound.play(fade_ms=500)
                     fade_surface = pygame.Surface((500, 276), pygame.SRCALPHA)
                     current_time = pygame.time.get_ticks()
                     elapsed_time = (current_time - event_start_time) / 1000
@@ -285,15 +299,17 @@ def redraw_window(player, player2, ball, score, current_rule, randevent):
                     fade_surface.blit(event_sukuna, (0, 0))
                     win.blit(fade_surface, ((SCREEN_WIDTH // 2) - 250, SCREEN_HEIGHT // 2 - 107))
 
-                    eventSukuna_sound.play()
-                    eventSukuna_sound.set_volume(0.05)
+                    # eventSukuna_sound.play()
+                    # eventSukuna_sound.set_volume(0.05)
 
                     if elapsed_time > 6:
                         fade_done = True
                 elif randevent == "event_gojo":
                     if event_start_time is None:
                         event_start_time = pygame.time.get_ticks()
-
+                    #adding
+                    if eventGojo_sound.get_num_channels() == 0 and not fade_done :
+                        eventGojo_sound.play(fade_ms=500)
                     fade_surface = pygame.Surface((500, 276), pygame.SRCALPHA)
                     current_time = pygame.time.get_ticks()
                     elapsed_time = (current_time - event_start_time) / 1000
@@ -310,8 +326,8 @@ def redraw_window(player, player2, ball, score, current_rule, randevent):
                     fade_surface.blit(event_gojo, (0, 0))
                     win.blit(fade_surface, ((SCREEN_WIDTH // 2) - 250, SCREEN_HEIGHT // 2 - 107))
 
-                    eventGojo_sound.play()
-                    eventGojo_sound.set_volume(0.05)
+                    # eventGojo_sound.play()
+                    # eventGojo_sound.set_volume(0.05)
 
                     if elapsed_time > 6:
                         fade_done = True
