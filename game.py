@@ -3,11 +3,11 @@ import random
 from PIL import Image
 
 pygame.init()
-pygame.mixer.init()
-enter_sound = pygame.mixer.Sound("sound/enter.mp3")
-eventSukuna_sound = pygame.mixer.Sound("sound/event_sukuna.mp3")
-eventGojo_sound = pygame.mixer.Sound("sound/event_gojo.mp3")
-background_sound = pygame.mixer.Sound("sound/background.mp3")
+# pygame.mixer.init()
+# enter_sound = pygame.mixer.Sound("sound/enter.mp3")
+# eventSukuna_sound = pygame.mixer.Sound("sound/event_sukuna.mp3")
+# eventGojo_sound = pygame.mixer.Sound("sound/event_gojo.mp3")
+# background_sound = pygame.mixer.Sound("sound/background.mp3")
 
 
 def randSound():
@@ -132,17 +132,9 @@ class Ball:
         self.event_sound_played = False
         # self.ability = False
         self.fade_done = False
-        self.changeBall = "normal"
-        
-        if self.changeBall == "normal":
-            self.image = pygame.image.load("img/murasaki.png")
-            self.image = pygame.transform.scale(self.image, (width, height))
-        elif self.changeBall == "event_sukuna":
-            self.image = pygame.image.load("img/fireball.png")
-            self.image = pygame.transform.scale(self.image, (width, height))
-        elif self.changeBall == "event_gojo":
-            self.image = pygame.image.load("img/murasaki.png")
-            self.image = pygame.transform.scale(self.image, (width, height))
+
+        self.image = pygame.image.load("img/murasaki.png")
+        self.image = pygame.transform.scale(self.image, (width, height))
 
     def update(self):
         if self.active:
