@@ -3,12 +3,12 @@ import random
 from PIL import Image
 
 pygame.init()
-# pygame.mixer.init()
-# enter_sound = pygame.mixer.Sound("sound/enter.mp3")
-# eventSukuna_sound = pygame.mixer.Sound("sound/event_sukuna.mp3")
-# eventGojo_sound = pygame.mixer.Sound("sound/event_gojo.mp3")
-# background_sound = pygame.mixer.Sound("sound/background.mp3")
 
+paddle_gojo = pygame.image.load("img/paddle_gojo.png")
+paddle_sukuna = pygame.image.load("img/paddle_sukuna.png")
+ball_jogo = pygame.image.load("img/jogo.png")
+ball_fire = pygame.image.load("img/fireball.png")
+ball_murasaki = pygame.image.load("img/murasaki.png")
 
 def randSound():
     hit_sound = pygame.mixer.Sound(f"sound/attack{random.randint(1,5)}.mp3")
@@ -39,12 +39,12 @@ class Player:
         self.screen_height = screen_height
         self.id = 0
         self.name = ""
+        
         if color == (0, 0, 255):
-            self.image = pygame.image.load("img/paddle_gojo.png")
-            self.image = pygame.transform.scale(self.image, (width, height))
+            self.image = pygame.transform.scale(paddle_gojo, (width, height))
         else:
-            self.image = pygame.image.load("img/paddle_sukuna.png")
-            self.image = pygame.transform.scale(self.image, (width, height))
+            self.image = pygame.transform.scale(paddle_sukuna, (width, height))
+
         # self.image1 = pygame.image.load("img/paddle_sukuna.png")
         # self.image1 = pygame.transform.scale(self.image, (width, height))
         # self.skill = False
@@ -103,11 +103,9 @@ class Player:
     def __setstate__(self, state):
         self.__dict__.update(state)
         if self.color == (0, 0, 255):
-            self.image = pygame.image.load("img/paddle_gojo.png")
-            self.image = pygame.transform.scale(self.image, (self.width, self.height))
+            self.image = pygame.transform.scale(paddle_gojo, (self.width, self.height))
         else:
-            self.image = pygame.image.load("img/paddle_sukuna.png")
-            self.image = pygame.transform.scale(self.image, (self.width, self.height))
+            self.image = pygame.transform.scale(paddle_sukuna, (self.width, self.height))
 
 
 class Ball:
@@ -131,10 +129,11 @@ class Ball:
         self.event_start_time = pygame.time.get_ticks()
         self.event_sound_played = False
         # self.ability = False
-        self.fade_done = False
+        self.current_rule = "normal"
 
-        self.image = pygame.image.load("img/murasaki.png")
-        self.image = pygame.transform.scale(self.image, (width, height))
+        self.image = pygame.transform.scale(ball_jogo, (width, height))
+        self.image = pygame.transform.scale(ball_fire, (width, height))
+        self.image = pygame.transform.scale(ball_murasaki, (width, height))
 
     def update(self):
         if self.active:
@@ -304,9 +303,15 @@ class Ball:
 
     def __setstate__(self, state):
         self.__dict__.update(state)
-        self.image = pygame.image.load("img/murasaki.png")
-        self.image = pygame.transform.scale(self.image, (self.width, self.height))
-        self.original_image = self.image
+        if self.current_rule == "normal":
+            self.image = pygame.transform.scale(ball_jogo, (self.width, self.height))
+            self.original_image = self.image
+        elif self.current_rule == "event_sukuna":
+            self.image = pygame.transform.scale(ball_fire, (self.width, self.height))
+            self.original_image = self.image
+        elif self.current_rule == "event_gojo":
+            self.image = pygame.transform.scale(ball_murasaki, (self.width, self.height))
+            self.original_image = self.image
 
 
 class Score:

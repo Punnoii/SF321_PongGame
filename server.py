@@ -56,6 +56,7 @@ event_interval = 20
 event_duration = 20
 event_active = False
 current_rule = "normal"
+ball.current_rule = current_rule
 event_on = ["event_sukuna", "event_gojo"]
 event_done = True
 nowevent = ""
@@ -124,6 +125,7 @@ def threaded_client(conn, player_slot):
                 event_active = True
                 event_timer = now
                 current_rule = randevent
+                ball.current_rule = current_rule
                 print("------------------")
                 print(current_rule)
                 print("------------------")
@@ -131,6 +133,7 @@ def threaded_client(conn, player_slot):
                 event_active = False
                 event_timer = now
                 current_rule = "normal"
+                ball.current_rule = current_rule
                 print("normal on")
                 event_done = True
             data = conn.recv(2048)

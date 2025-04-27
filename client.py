@@ -337,6 +337,7 @@ def redraw_window(player, player2, ball, score, current_rule, randevent):
 
         if current_rule == "event_sukuna":
             win.blit(background_skill_sukuna, (0, 0))
+            ball.changeBall = "event_sukuna"
             if ball.countdown_event != "":
                 countdown = basic_font.render(ball.countdown_event, True, (255, 215, 0))
                 win.blit(countdown, (SCREEN_WIDTH // 2 - countdown.get_width() // 2, 80))
@@ -349,6 +350,7 @@ def redraw_window(player, player2, ball, score, current_rule, randevent):
         if current_rule == "event_gojo":
             player.vel = 3
             win.blit(background_skill_gojo, (0, 0))
+            ball.changeBall = "event_gojo"
             if ball.countdown_event != "":
                 countdown = basic_font.render(ball.countdown_event, True, (255, 215, 0))
                 win.blit(countdown, (SCREEN_WIDTH // 2 - countdown.get_width() // 2, 80))
@@ -439,6 +441,7 @@ def main(player_name):
         if current_rule == "normal":
             player.vel = 10
             player2.vel = 10
+            ball.changeBall = "normal"
         if score.score_player_1 >= 7 or score.score_player_2 >= 7:
             if show_winner_screen(player, score):
                 return
