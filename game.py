@@ -191,7 +191,7 @@ class Ball:
                 # for player in players:
                 #     player.skill = False
                 self.reset_ball()
-        elif self.active and (current_rule == "paddle_score"):
+        elif self.active and (current_rule == "event_sukuna"):
             current_time = pygame.time.get_ticks()
             if current_time - self.last_speedup_time > 1000:
                 self.last_speedup_time = current_time
@@ -223,8 +223,37 @@ class Ball:
             elif self.rect.colliderect(players[1].rect):
                 score.p_1_hit_score()
                 randDeath()
-                # for player in players:
-                #     player.skill = False
+                self.reset_ball()
+        elif self.active and (current_rule == "event_gojo"):
+            current_time = pygame.time.get_ticks()
+            if current_time - self.last_speedup_time > 1000:
+                self.last_speedup_time = current_time
+                self.speed_x *= 1.1
+                self.speed_y *= 1.1
+
+            self.rect.x += int(self.speed_x)
+            self.rect.y += int(self.speed_y)
+
+            if self.rect.top <= BAR_HEIGHT or self.rect.bottom >= self.screen_height:
+                self.speed_y *= -1
+                randSound()
+
+            if self.rect.left <= 0:
+                self.speed_x = abs(self.speed_x)
+                randSound()
+
+            if self.rect.right >= self.screen_width:
+                self.speed_x = -abs(self.speed_x)
+                randSound()
+
+            if self.rect.colliderect(players[0].rect):
+                score.p_2_hit_score()
+                randDeath()
+                self.reset_ball()
+
+            elif self.rect.colliderect(players[1].rect):
+                score.p_1_hit_score()
+                randDeath()
                 self.reset_ball()
         else:
             self.update_countdown()

@@ -53,8 +53,11 @@ background_lobby = pygame.transform.scale(
 background_wait = pygame.transform.scale(
     pygame.image.load("img/waitting.png"), (SCREEN_WIDTH, SCREEN_HEIGHT)
 )
-background_skill = pygame.transform.scale(
-    pygame.image.load("img/background_event.png"), (SCREEN_WIDTH, SCREEN_HEIGHT)
+background_skill_sukuna = pygame.transform.scale(
+    pygame.image.load("img/background_event_sukuna.png"), (SCREEN_WIDTH, SCREEN_HEIGHT)
+)
+background_skill_gojo = pygame.transform.scale(
+    pygame.image.load("img/background_event_gojo.png"), (SCREEN_WIDTH, SCREEN_HEIGHT)
 )
 background_fullserver = pygame.transform.scale(
     pygame.image.load("img/fullserver.png"), (SCREEN_WIDTH, SCREEN_HEIGHT)
@@ -90,7 +93,7 @@ event_gojo = pygame.transform.scale(
 background_sound.play()
 
 def start_screen():
-    background_sound.set_volume(0.05)
+    background_sound.set_volume(0)
     while True:
         win.blit(background_main, (0, 0))
         win.blit(logo, (30, start_button.y // 10))
@@ -235,22 +238,22 @@ def redraw_window(player, player2, ball, score, current_rule):
     else:
         background_sound.set_volume(0)
         print(event_start_time, fade_done)
-        if ball.countdown_event != "" and not fade_done:  # เช็คว่า fade เสร็จหรือยัง
+        if ball.countdown_event != "" and not fade_done:
             if current_rule == "normal":
                 if event_start_time is None:
-                    event_start_time = pygame.time.get_ticks()  # เริ่มจับเวลาเมื่อ event เริ่ม
+                    event_start_time = pygame.time.get_ticks()
 
                 fade_surface = pygame.Surface((400, 214), pygame.SRCALPHA)
                 current_time = pygame.time.get_ticks()
-                elapsed_time = (current_time - event_start_time) / 1000  # คำนวณเวลาเป็นวินาที
+                elapsed_time = (current_time - event_start_time) / 1000
 
-                if elapsed_time <= 1:  # ถ้าผ่านไปไม่ถึง 1 วิ ให้เป็น fade in
-                    alpha = int(255 * (elapsed_time / 1))  # alpha จะเพิ่มจาก 0 ไป 255 ใน 1 วิ
-                elif elapsed_time <= 4:  # หลังจาก 1 วิจนถึง 4 วิ (hold ภาพไว้)
-                    alpha = 255  # ค้างไว้เต็มที่
+                if elapsed_time <= 1:
+                    alpha = int(255 * (elapsed_time / 1))
+                elif elapsed_time <= 4:
+                    alpha = 255
                 else:
-                    fade_time = elapsed_time - 4  # หลังจาก 4 วิ เริ่ม fade out
-                    alpha = max(255 - int(fade_time * 255 / 2), 0)  # ค่อย ๆ ลดใน 2 วิ
+                    fade_time = elapsed_time - 4
+                    alpha = max(255 - int(fade_time * 255 / 2), 0)
 
                 fade_surface.set_alpha(alpha)
                 fade_surface.blit(event_sukuna, (0, 0))
@@ -259,14 +262,25 @@ def redraw_window(player, player2, ball, score, current_rule):
                 event_sound.play()
                 event_sound.set_volume(0.05)
 
-                if elapsed_time > 6:  # เมื่อผ่าน 6 วิแล้วให้หยุด fade
-                    fade_done = True  # สถานะ fade เสร็จแล้ว
+                if elapsed_time > 6:
+                    fade_done = True
 
             countdown = basic_font.render(ball.countdown_event, True, (255, 215, 0))
             win.blit(countdown, (SCREEN_WIDTH // 2 - countdown.get_width() // 2, 80))
 
-        if current_rule == "paddle_score":
-            win.blit(background_skill, (0, 0))
+        if current_rule == "event_sukuna":
+            win.blit(background_skill_sukuna, (0, 0))
+            if ball.countdown_event != "":
+                countdown = basic_font.render(ball.countdown_event, True, (255, 215, 0))
+                win.blit(countdown, (SCREEN_WIDTH // 2 - countdown.get_width() // 2, 80))
+            win.blit(rt, (10, 10))
+            win.blit(bt2, (SCREEN_WIDTH - bt2.get_width() - 10, 10))
+            alert = basic_font.render("event", True, (255, 215, 0))
+            win.blit(alert, (SCREEN_WIDTH // 2 - alert.get_width() // 2, 50))
+            event_start_time = None
+            fade_done = False
+        if current_rule == "event_gojo":
+            win.blit(background_skill_gojo, (0, 0))
             if ball.countdown_event != "":
                 countdown = basic_font.render(ball.countdown_event, True, (255, 215, 0))
                 win.blit(countdown, (SCREEN_WIDTH // 2 - countdown.get_width() // 2, 80))

@@ -50,6 +50,7 @@ event_interval = 20
 event_duration = 20
 event_active = False
 current_rule = "normal"
+event_on = ["event_sukuna", "event_gojo"]
 
 
 def threaded_client(conn, player_slot):
@@ -105,8 +106,10 @@ def threaded_client(conn, player_slot):
             if not event_active and now - event_timer >= event_interval:
                 event_active = True
                 event_timer = now
-                current_rule = "paddle_score"
-                print("event on")
+                current_rule = random.choice(event_on)
+                print("------------------")
+                print(current_rule)
+                print("------------------")
             elif event_active and now - event_timer >= event_duration:
                 event_active = False
                 event_timer = now
