@@ -62,6 +62,9 @@ background_skill_gojo = pygame.transform.scale(
 background_fullserver = pygame.transform.scale(
     pygame.image.load("img/fullserver.png"), (SCREEN_WIDTH, SCREEN_HEIGHT)
 )
+background_no_player_connect = pygame.transform.scale(
+    pygame.image.load("img/background_other_player_disconnect.png"), (SCREEN_WIDTH, SCREEN_HEIGHT) # pun adding
+)
 background_input = pygame.transform.scale(
     pygame.image.load("img/background_input.png"), (SCREEN_WIDTH, SCREEN_HEIGHT)
 )
@@ -212,6 +215,33 @@ def show_server_full_screen():
                 return False
             if e.type == pygame.MOUSEBUTTONDOWN and play_again_rect.collidepoint(e.pos):
                 return True
+           
+# pun adding 
+def show_other_player_disconnect_screen():
+    screen_width, screen_height = win.get_size()
+    play_again_rect = play_again.get_rect(
+        bottomright=(screen_width - 10, screen_height - 10)
+    )
+    while True:
+        win.blit(background_no_player_connect, (0, 0))
+        mouse = pygame.mouse.get_pos()
+        if play_again_rect.collidepoint(mouse):
+            win.blit(
+                play_again_hover,
+                play_again.get_rect(
+                    bottomright=(screen_width - 20, screen_height - 20)
+                ),
+            )
+        else:
+            win.blit(play_again, play_again_rect)
+        pygame.display.update()
+        for e in pygame.event.get():
+            if e.type == pygame.QUIT:
+                pygame.quit()
+                return False
+            if e.type == pygame.MOUSEBUTTONDOWN and play_again_rect.collidepoint(e.pos):
+                return True
+
 
 event_start_time = None
 fade_done = False
@@ -235,6 +265,9 @@ def redraw_window(player, player2, ball, score, current_rule):
 
     if not (player.ready and player2.ready):
         win.blit(background_wait, (0, 0))
+        if score.score_player_1 >= 2 or score.score_player_2 >= 2:
+            if show_other_player_disconnect_screen():
+                return
     else:
         background_sound.set_volume(0)
         print(event_start_time, fade_done)
@@ -360,9 +393,6 @@ def main(player_name):
             break
         player2, ball, score, current_rule = response
 
-        if score.score_player_1 >= 2 or score.score_player_2 >= 2:
-            if show_winner_screen(player, player2, score):
-                return
         event_list = pygame.event.get()
         for e in event_list:
             if e.type == pygame.QUIT:
@@ -371,6 +401,9 @@ def main(player_name):
         player.move(event_list)
         ball.move([player, player2], score, current_rule)
         redraw_window(player, player2, ball, score, current_rule)
+        if score.score_player_1 >= 2 or score.score_player_2 >= 2:
+            if show_winner_screen(player, player2, score):
+                return
 
 
 while True:

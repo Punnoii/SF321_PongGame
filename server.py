@@ -166,13 +166,15 @@ def threaded_client(conn, player_slot):
 
         disconnect_time = time.time()
         while time.time() - disconnect_time < 10:
-            time.sleep(0.5)  # every 0.5 sec
+            remaining_time = 10 - int(time.time() - disconnect_time)
+            print(f"{remaining_time} sec remaining for player {player_slot} to reconnect.")
+            time.sleep(1)  # รอ 1 วินาทีแล้วเช็คใหม่
             with player_slots_lock:
-                if player_slots[player_slot]:  
+                if player_slots[player_slot]:  # เช็คว่ากลับมาแล้วหรือยัง
                     print(f"Player {player_slot} reconnected in time!")
                     break
         else:
-            print(f"Player {player_slot} did not reconnect in time. Resetting score.")
+            print(f"Player {player_slot} did not reconnect in time.")
             score.score_player_1 = 2
             score.score_player_2 = 2
 
