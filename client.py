@@ -87,10 +87,10 @@ event_gojo = pygame.transform.scale(
     pygame.image.load("img/event_gojo.png"), (500, 180) #2.77
 )
 
-background_sound.play()
+background_sound.play(-1)
 
 def start_screen():
-    background_sound.set_volume(0)
+    background_sound.set_volume(0.05)
     while True:
         win.blit(background_main, (0, 0))
         win.blit(logo, (30, start_button.y // 10))

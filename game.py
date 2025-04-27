@@ -39,8 +39,12 @@ class Player:
         self.screen_height = screen_height
         self.id = 0
         self.name = ""
-        self.image = pygame.image.load("img/paddle_gojo.png")
-        self.image = pygame.transform.scale(self.image, (width, height))
+        if color == (0, 0, 255):
+            self.image = pygame.image.load("img/paddle_gojo.png")
+            self.image = pygame.transform.scale(self.image, (width, height))
+        else:
+            self.image = pygame.image.load("img/paddle_sukuna.png")
+            self.image = pygame.transform.scale(self.image, (width, height))
         # self.image1 = pygame.image.load("img/paddle_sukuna.png")
         # self.image1 = pygame.transform.scale(self.image, (width, height))
         # self.skill = False
@@ -98,8 +102,12 @@ class Player:
 
     def __setstate__(self, state):
         self.__dict__.update(state)
-        self.image = pygame.image.load("img/paddle_gojo.png")
-        self.image = pygame.transform.scale(self.image, (self.width, self.height))
+        if self.color == (0, 0, 255):
+            self.image = pygame.image.load("img/paddle_gojo.png")
+            self.image = pygame.transform.scale(self.image, (self.width, self.height))
+        else:
+            self.image = pygame.image.load("img/paddle_sukuna.png")
+            self.image = pygame.transform.scale(self.image, (self.width, self.height))
 
 
 class Ball:
