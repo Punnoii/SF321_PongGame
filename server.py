@@ -153,7 +153,7 @@ def threaded_client(conn, player_slot):
             # else:
             #     ball.ability = False
 
-            if score.score_player_1 >= 2 or score.score_player_2 >= 2:
+            if score.score_player_1 >= 7 or score.score_player_2 >= 7:
                 players[0].ready = False
                 players[0].name = ""
                 # players[0].skill = False
@@ -193,8 +193,8 @@ def threaded_client(conn, player_slot):
                     break
         else:
             print(f"Player {player_slot} did not reconnect in time.")
-            score.score_player_1 = 3
-            score.score_player_2 = 3
+            score.score_player_1 = 8
+            score.score_player_2 = 8
 
         conn.close()
 
@@ -219,7 +219,7 @@ while True:
 
     print(f"Connected to {addr} as player {slot}")
 
-    if score.score_player_1 >= 2 or score.score_player_2 >= 2:
+    if score.score_player_1 >= 7 or score.score_player_2 >= 7:
         ball.x = SCREEN_WIDTH // 2 - ball.width // 2
         ball.y = SCREEN_HEIGHT // 2 - ball.height // 2
         players[0].y = SCREEN_HEIGHT // 2 - players[0].height // 2

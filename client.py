@@ -258,7 +258,7 @@ def redraw_window(player, player2, ball, score, current_rule, randevent):
 
     if not (player.ready and player2.ready):
         win.blit(background_wait, (0, 0))
-        if score.score_player_1 >= 3 or score.score_player_2 >= 3:
+        if score.score_player_1 >= 8 or score.score_player_2 >= 8:
             if show_other_player_disconnect_screen():
                 return
     else:
@@ -361,9 +361,9 @@ def show_winner_screen(player, score):
 
     is_winner = False
     if player.color == (255, 0, 0):
-        is_winner = score.score_player_1 >= 2
+        is_winner = score.score_player_1 >= 7
     else:
-        is_winner = score.score_player_2 >= 2
+        is_winner = score.score_player_2 >= 7
 
     while True:
         if is_winner:
@@ -423,7 +423,7 @@ def main(player_name):
         if current_rule == "normal":
             player.vel = 10
             player2.vel = 10
-        if score.score_player_1 >= 2 or score.score_player_2 >= 2:
+        if score.score_player_1 >= 7 or score.score_player_2 >= 7:
             if show_winner_screen(player, score):
                 return
 
