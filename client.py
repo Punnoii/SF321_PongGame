@@ -2,7 +2,7 @@ import pygame
 from network import Network
 from game import *
 
-pygame.mixer.pre_init(frequency=44100,size=-16,channels=2,buffer=1024)
+pygame.mixer.pre_init(frequency=44100, size=-16, channels=2, buffer=1024)
 pygame.init()
 pygame.mixer.init()
 
@@ -41,15 +41,9 @@ start_img = pygame.transform.scale(
 start_hover = pygame.transform.scale(
     pygame.image.load("img/start_button.png"), (270, 252)
 )
-next_img = pygame.transform.scale(
-    pygame.image.load("img/next.png"), (100, 129)
-)
-next_hover = pygame.transform.scale(
-    pygame.image.load("img/next.png"), (120, 154)
-)
-logo = pygame.transform.scale(
-    pygame.image.load("img/Logo.png"), (250, 187)
-)
+next_img = pygame.transform.scale(pygame.image.load("img/next.png"), (100, 129))
+next_hover = pygame.transform.scale(pygame.image.load("img/next.png"), (120, 154))
+logo = pygame.transform.scale(pygame.image.load("img/Logo.png"), (250, 187))
 background_main = pygame.transform.scale(
     pygame.image.load("img/background.png"), (SCREEN_WIDTH, SCREEN_HEIGHT)
 )
@@ -72,14 +66,13 @@ background_fullserver = pygame.transform.scale(
     pygame.image.load("img/fullserver.png"), (SCREEN_WIDTH, SCREEN_HEIGHT)
 )
 background_no_player_connect = pygame.transform.scale(
-    pygame.image.load("img/background_other_player_disconnect.png"), (SCREEN_WIDTH, SCREEN_HEIGHT) # pun adding
+    pygame.image.load("img/background_other_player_disconnect.png"),
+    (SCREEN_WIDTH, SCREEN_HEIGHT),  # pun adding
 )
 background_input = pygame.transform.scale(
     pygame.image.load("img/background_input.png"), (SCREEN_WIDTH, SCREEN_HEIGHT)
 )
-play_again = pygame.transform.scale(
-    pygame.image.load("img/play_again.png"), (300, 101)
-)
+play_again = pygame.transform.scale(pygame.image.load("img/play_again.png"), (300, 101))
 play_again_hover = pygame.transform.scale(
     pygame.image.load("img/play_again.png"), (320, 107)
 )
@@ -90,12 +83,11 @@ defeat_img = pygame.transform.scale(
     pygame.image.load("img/defeat.png"), (SCREEN_WIDTH, SCREEN_HEIGHT)
 )
 event_sukuna = pygame.transform.scale(
-    pygame.image.load("img/event_sukuna.png"), (500, 276) #1.81
+    pygame.image.load("img/event_sukuna.png"), (500, 276)  # 1.81
 )
 event_gojo = pygame.transform.scale(
-    pygame.image.load("img/event_gojo.png"), (500, 180) #2.77
+    pygame.image.load("img/event_gojo.png"), (500, 180)  # 2.77
 )
-
 
 
 background_sound.play(-1)
@@ -222,6 +214,7 @@ def show_server_full_screen():
             if e.type == pygame.MOUSEBUTTONDOWN and play_again_rect.collidepoint(e.pos):
                 return True
 
+
 def show_other_player_disconnect_screen():
     screen_width, screen_height = win.get_size()
     play_again_rect = play_again.get_rect(
@@ -251,8 +244,9 @@ def show_other_player_disconnect_screen():
 event_start_time = None
 fade_done = False
 
+
 def redraw_window(player, player2, ball, score, current_rule, randevent):
-    global event_start_time, fade_done  # ใช้ตัวแปร global
+    global event_start_time, fade_done
 
     win.blit(background_fight, (0, 0))
 
@@ -280,8 +274,7 @@ def redraw_window(player, player2, ball, score, current_rule, randevent):
                 if randevent == "event_sukuna":
                     if event_start_time is None:
                         event_start_time = pygame.time.get_ticks()
-                    #adding 
-                    if eventSukuna_sound.get_num_channels() == 0 and not fade_done :
+                    if eventSukuna_sound.get_num_channels() == 0 and not fade_done:
                         eventSukuna_sound.play(fade_ms=500)
                     fade_surface = pygame.Surface((500, 276), pygame.SRCALPHA)
                     current_time = pygame.time.get_ticks()
@@ -297,18 +290,17 @@ def redraw_window(player, player2, ball, score, current_rule, randevent):
 
                     fade_surface.set_alpha(alpha)
                     fade_surface.blit(event_sukuna, (0, 0))
-                    win.blit(fade_surface, ((SCREEN_WIDTH // 2) - 250, SCREEN_HEIGHT // 2 - 107))
-
-                    # eventSukuna_sound.play()
-                    # eventSukuna_sound.set_volume(0.05)
+                    win.blit(
+                        fade_surface,
+                        ((SCREEN_WIDTH // 2) - 250, SCREEN_HEIGHT // 2 - 107),
+                    )
 
                     if elapsed_time > 6:
                         fade_done = True
                 elif randevent == "event_gojo":
                     if event_start_time is None:
                         event_start_time = pygame.time.get_ticks()
-                    #adding
-                    if eventGojo_sound.get_num_channels() == 0 and not fade_done :
+                    if eventGojo_sound.get_num_channels() == 0 and not fade_done:
                         eventGojo_sound.play(fade_ms=500)
                     fade_surface = pygame.Surface((500, 276), pygame.SRCALPHA)
                     current_time = pygame.time.get_ticks()
@@ -324,23 +316,27 @@ def redraw_window(player, player2, ball, score, current_rule, randevent):
 
                     fade_surface.set_alpha(alpha)
                     fade_surface.blit(event_gojo, (0, 0))
-                    win.blit(fade_surface, ((SCREEN_WIDTH // 2) - 250, SCREEN_HEIGHT // 2 - 107))
-
-                    # eventGojo_sound.play()
-                    # eventGojo_sound.set_volume(0.05)
+                    win.blit(
+                        fade_surface,
+                        ((SCREEN_WIDTH // 2) - 250, SCREEN_HEIGHT // 2 - 107),
+                    )
 
                     if elapsed_time > 6:
                         fade_done = True
 
                 countdown = basic_font.render(ball.countdown_event, True, (255, 215, 0))
-                win.blit(countdown, (SCREEN_WIDTH // 2 - countdown.get_width() // 2, 80))
+                win.blit(
+                    countdown, (SCREEN_WIDTH // 2 - countdown.get_width() // 2, 80)
+                )
 
         if current_rule == "event_sukuna":
             win.blit(background_skill_sukuna, (0, 0))
             ball.changeBall = "event_sukuna"
             if ball.countdown_event != "":
                 countdown = basic_font.render(ball.countdown_event, True, (255, 215, 0))
-                win.blit(countdown, (SCREEN_WIDTH // 2 - countdown.get_width() // 2, 80))
+                win.blit(
+                    countdown, (SCREEN_WIDTH // 2 - countdown.get_width() // 2, 80)
+                )
             win.blit(rt, (10, 10))
             win.blit(bt2, (SCREEN_WIDTH - bt2.get_width() - 10, 10))
             alert = basic_font.render("event", True, (255, 215, 0))
@@ -353,7 +349,9 @@ def redraw_window(player, player2, ball, score, current_rule, randevent):
             ball.changeBall = "event_gojo"
             if ball.countdown_event != "":
                 countdown = basic_font.render(ball.countdown_event, True, (255, 215, 0))
-                win.blit(countdown, (SCREEN_WIDTH // 2 - countdown.get_width() // 2, 80))
+                win.blit(
+                    countdown, (SCREEN_WIDTH // 2 - countdown.get_width() // 2, 80)
+                )
             win.blit(rt, (10, 10))
             win.blit(bt2, (SCREEN_WIDTH - bt2.get_width() - 10, 10))
             alert = basic_font.render("event", True, (255, 215, 0))
@@ -366,7 +364,6 @@ def redraw_window(player, player2, ball, score, current_rule, randevent):
         ball.draw(win)
 
     pygame.display.update()
-
 
 
 def show_winner_screen(player, score):

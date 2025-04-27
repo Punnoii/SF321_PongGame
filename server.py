@@ -19,12 +19,7 @@ ball_lock = threading.Lock()
 
 players = [
     Player(
-        0, SCREEN_HEIGHT // 2 - 60,
-        30,
-        120,
-        (255, 0, 0),
-        SCREEN_WIDTH,
-        SCREEN_HEIGHT
+        0, SCREEN_HEIGHT // 2 - 60, 30, 120, (255, 0, 0), SCREEN_WIDTH, SCREEN_HEIGHT
     ),
     Player(
         SCREEN_WIDTH - 30,
@@ -61,6 +56,7 @@ event_on = ["event_sukuna", "event_gojo"]
 event_done = True
 nowevent = ""
 
+
 def threaded_client(conn, player_slot):
     global players, ball, score, event_on, event_done, nowevent
     global event_timer, event_interval, event_duration, event_active, current_rule
@@ -73,7 +69,9 @@ def threaded_client(conn, player_slot):
             nowevent = randevent
         randevent = nowevent
         event_done = False
-        conn.send(pickle.dumps((players[player_slot], ball, score, current_rule, randevent)))
+        conn.send(
+            pickle.dumps((players[player_slot], ball, score, current_rule, randevent))
+        )
         while True:
             clock.tick(60)
             now = time.time()
@@ -141,45 +139,22 @@ def threaded_client(conn, player_slot):
                 break
             received_player = pickle.loads(data)
             players[player_slot] = received_player
-            with ball_lock:  # Acquire lock before moving ball and updating score
+            with ball_lock:
                 if players[0].ready and players[1].ready:
                     ball.move(players, score, current_rule)
-                # if (score.score_player_1 != last_score_1) or (
-                #     score.score_player_2 != last_score_2
-                # ):
-                #     players[0].skill = False
-                #     players[1].skill = False
-                #     last_score_1 = score.score_player_1
-                #     last_score_2 = score.score_player_2
-            # if players[0].skill or players[1].skill:
-            #     ball.smart_skill()
-            # else:
-            #     ball.ability = False
-
             if score.score_player_1 >= 7 or score.score_player_2 >= 7:
                 players[0].ready = False
                 players[0].name = ""
-                # players[0].skill = False
                 players[1].ready = False
                 players[1].name = ""
-                # players[1].skill = False
 
             other_player = 1 - player_slot
-            # reply = (players[other_player], ball, score, current_rule)
             reply = (players[other_player], ball, score, current_rule, randevent)
             conn.sendall(pickle.dumps(reply))
 
     except Exception as e:
         print(f"Player {player_slot} error: {e}")
     finally:
-    
-        # with player_slots_lock:
-        #     player_slots[player_slot] = False
-        # print(f"Player {player_slot} disconnected")
-        # score.score_player_1 = 2
-        # score.score_player_2 = 2
-        # conn.close()
-        
 
         with player_slots_lock:
             player_slots[player_slot] = False
@@ -188,10 +163,12 @@ def threaded_client(conn, player_slot):
         disconnect_time = time.time()
         while time.time() - disconnect_time < 10:
             remaining_time = 10 - int(time.time() - disconnect_time)
-            print(f"{remaining_time} sec remaining for player {player_slot} to reconnect.")
-            time.sleep(1)  # รอ 1 วินาทีแล้วเช็คใหม่
+            print(
+                f"{remaining_time} sec remaining for player {player_slot} to reconnect."
+            )
+            time.sleep(1)
             with player_slots_lock:
-                if player_slots[player_slot]:  # เช็คว่ากลับมาแล้วหรือยัง
+                if player_slots[player_slot]:
                     print(f"Player {player_slot} reconnected in time!")
                     break
         else:

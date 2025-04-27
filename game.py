@@ -10,6 +10,7 @@ ball_jogo = pygame.image.load("img/jogo.png")
 ball_fire = pygame.image.load("img/fireball.png")
 ball_murasaki = pygame.image.load("img/murasaki.png")
 
+
 def randSound():
     hit_sound = pygame.mixer.Sound(f"sound/attack{random.randint(1,5)}.mp3")
     hit_sound.set_volume(0.1)
@@ -39,7 +40,7 @@ class Player:
         self.screen_height = screen_height
         self.id = 0
         self.name = ""
-        
+
         if color == (0, 0, 255):
             self.image = pygame.transform.scale(paddle_gojo, (width, height))
         else:
@@ -105,7 +106,9 @@ class Player:
         if self.color == (0, 0, 255):
             self.image = pygame.transform.scale(paddle_gojo, (self.width, self.height))
         else:
-            self.image = pygame.transform.scale(paddle_sukuna, (self.width, self.height))
+            self.image = pygame.transform.scale(
+                paddle_sukuna, (self.width, self.height)
+            )
 
 
 class Ball:
@@ -128,7 +131,6 @@ class Ball:
         self.countdown_event = ""
         self.event_start_time = pygame.time.get_ticks()
         self.event_sound_played = False
-        # self.ability = False
         self.current_rule = "normal"
 
         self.image = pygame.transform.scale(ball_jogo, (width, height))
@@ -193,13 +195,9 @@ class Ball:
 
             if self.rect.left <= 0:
                 score.p_2_hit_score()
-                # for player in players:
-                #     player.skill = False
                 self.reset_ball()
             elif self.rect.right >= self.screen_width:
                 score.p_1_hit_score()
-                # for player in players:
-                #     player.skill = False
                 self.reset_ball()
         elif self.active and (current_rule == "event_sukuna"):
             current_time = pygame.time.get_ticks()
@@ -226,8 +224,6 @@ class Ball:
             if self.rect.colliderect(players[0].rect):
                 score.p_2_hit_score()
                 randDeath()
-                # for player in players:
-                #     player.skill = False
                 self.reset_ball()
 
             elif self.rect.colliderect(players[1].rect):
@@ -268,13 +264,9 @@ class Ball:
 
             if self.rect.left <= 0:
                 score.p_2_hit_score()
-                # for player in players:
-                #     player.skill = False
                 self.reset_ball()
             elif self.rect.right >= self.screen_width:
                 score.p_1_hit_score()
-                # for player in players:
-                #     player.skill = False
                 self.reset_ball()
         else:
             self.update_countdown()
@@ -289,9 +281,6 @@ class Ball:
             self.last_speedup_time = pygame.time.get_ticks()
             self.countdown_number = ""
             self.ability = False
-
-    # def smart_skill(self):
-    #     self.ability = True
 
     def __getstate__(self):
         state = self.__dict__.copy()
@@ -310,7 +299,9 @@ class Ball:
             self.image = pygame.transform.scale(ball_fire, (self.width, self.height))
             self.original_image = self.image
         elif self.current_rule == "event_gojo":
-            self.image = pygame.transform.scale(ball_murasaki, (self.width, self.height))
+            self.image = pygame.transform.scale(
+                ball_murasaki, (self.width, self.height)
+            )
             self.original_image = self.image
 
 
