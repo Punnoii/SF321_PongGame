@@ -33,10 +33,10 @@ start_hover = pygame.transform.scale(
     pygame.image.load("img/start_button.png"), (270, 252)
 )
 next_img = pygame.transform.scale(
-    pygame.image.load("img/next.png"), (100, 115)
+    pygame.image.load("img/next.png"), (100, 129)
 )
 next_hover = pygame.transform.scale(
-    pygame.image.load("img/next.png"), (120, 138)
+    pygame.image.load("img/next.png"), (120, 154)
 )
 logo = pygame.transform.scale(
     pygame.image.load("img/Logo.png"), (250, 187)
@@ -69,10 +69,10 @@ background_input = pygame.transform.scale(
     pygame.image.load("img/background_input.png"), (SCREEN_WIDTH, SCREEN_HEIGHT)
 )
 play_again = pygame.transform.scale(
-    pygame.image.load("img/play_again.png"), (200, 115)
+    pygame.image.load("img/play_again.png"), (300, 101)
 )
 play_again_hover = pygame.transform.scale(
-    pygame.image.load("img/play_again.png"), (220, 127)
+    pygame.image.load("img/play_again.png"), (320, 107)
 )
 victory_img = pygame.transform.scale(
     pygame.image.load("img/victory.png"), (SCREEN_WIDTH, SCREEN_HEIGHT)
@@ -215,8 +215,7 @@ def show_server_full_screen():
                 return False
             if e.type == pygame.MOUSEBUTTONDOWN and play_again_rect.collidepoint(e.pos):
                 return True
-           
-# pun adding 
+
 def show_other_player_disconnect_screen():
     screen_width, screen_height = win.get_size()
     play_again_rect = play_again.get_rect(
