@@ -376,8 +376,9 @@ def redraw_window(player, player2, ball, score, current_rule, randevent):
 
     pygame.display.update()
 
-
+sound_running = True
 def show_winner_screen(player, score):
+    global sound_running
     eventSukuna_sound.set_volume(0)
     eventGojo_sound.set_volume(0)
     screen_width, screen_height = win.get_size()
@@ -390,14 +391,18 @@ def show_winner_screen(player, score):
         is_winner = score.score_player_1 >= 7
     else:
         is_winner = score.score_player_2 >= 7
-    if is_winner:
-        win.blit(victory_img, (0, 0))
-        rand_win()
-    else:
-        win.blit(defeat_img, (0, 0))
-        rand_lose()
 
     while True:
+        if is_winner:
+            win.blit(victory_img, (0, 0))
+            if sound_running:
+                rand_win()
+                sound_running = False
+        else:
+            win.blit(defeat_img, (0, 0))
+            if sound_running:
+                rand_lose()
+                sound_running = False
         mouse = pygame.mouse.get_pos()
         if play_again_rect.collidepoint(mouse):
             win.blit(

@@ -6,7 +6,7 @@ import threading
 import pygame
 import time, random
 
-server = "127.0.0.1"
+server = "10.4.12.102"  # Server IP
 port = 5555
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 s.bind((server, port))
@@ -73,67 +73,6 @@ def threaded_client(conn, player_slot):
             pickle.dumps((players[player_slot], ball, score, current_rule, randevent))
         )
         while True:
-            clock.tick(60)
-            now = time.time()
-            if event_done:
-                randevent = random.choice(event_on)
-                nowevent = randevent
-            randevent = nowevent
-            event_done = False
-            if current_rule == "normal":
-                if now - event_timer >= event_interval:
-                    ball.countdown_event = ""
-                elif now - event_timer > (event_interval - 1):
-                    ball.countdown_event = "1"
-                elif now - event_timer > (event_interval - 2):
-                    ball.countdown_event = "2"
-                elif now - event_timer > (event_interval - 3):
-                    ball.countdown_event = "3"
-                elif now - event_timer > (event_interval - 4):
-                    ball.countdown_event = "4"
-                elif now - event_timer > (event_interval - 5):
-                    ball.countdown_event = "5"
-            else:
-                if now - event_timer >= event_duration:
-                    ball.countdown_event = ""
-                elif now - event_timer > (event_duration - 1):
-                    ball.countdown_event = "1"
-                elif now - event_timer > (event_duration - 2):
-                    ball.countdown_event = "2"
-                elif now - event_timer > (event_duration - 3):
-                    ball.countdown_event = "3"
-                elif now - event_timer > (event_duration - 4):
-                    ball.countdown_event = "4"
-                elif now - event_timer > (event_duration - 5):
-                    ball.countdown_event = "5"
-
-            if now - event_timer >= event_interval:
-                ball.countdown_event = ""
-            elif now - event_timer > 19:
-                ball.countdown_event = "1"
-            elif now - event_timer > 18:
-                ball.countdown_event = "2"
-            elif now - event_timer > 17:
-                ball.countdown_event = "3"
-            elif now - event_timer > 16:
-                ball.countdown_event = "4"
-            elif now - event_timer > 15:
-                ball.countdown_event = "5"
-            if not event_active and now - event_timer >= event_interval:
-                event_active = True
-                event_timer = now
-                current_rule = randevent
-                ball.current_rule = current_rule
-                print("------------------")
-                print(current_rule)
-                print("------------------")
-            elif event_active and now - event_timer >= event_duration:
-                event_active = False
-                event_timer = now
-                current_rule = "normal"
-                ball.current_rule = current_rule
-                print("normal on")
-                event_done = True
             data = conn.recv(2048)
             if not data:
                 break
@@ -142,6 +81,67 @@ def threaded_client(conn, player_slot):
             with ball_lock:
                 if players[0].ready and players[1].ready:
                     ball.move(players, score, current_rule)
+                    clock.tick(60)
+                    now = time.time()
+                    if event_done:
+                        randevent = random.choice(event_on)
+                        nowevent = randevent
+                    randevent = nowevent
+                    event_done = False
+                    if current_rule == "normal":
+                        if now - event_timer >= event_interval:
+                            ball.countdown_event = ""
+                        elif now - event_timer > (event_interval - 1):
+                            ball.countdown_event = "1"
+                        elif now - event_timer > (event_interval - 2):
+                            ball.countdown_event = "2"
+                        elif now - event_timer > (event_interval - 3):
+                            ball.countdown_event = "3"
+                        elif now - event_timer > (event_interval - 4):
+                            ball.countdown_event = "4"
+                        elif now - event_timer > (event_interval - 5):
+                            ball.countdown_event = "5"
+                    else:
+                        if now - event_timer >= event_duration:
+                            ball.countdown_event = ""
+                        elif now - event_timer > (event_duration - 1):
+                            ball.countdown_event = "1"
+                        elif now - event_timer > (event_duration - 2):
+                            ball.countdown_event = "2"
+                        elif now - event_timer > (event_duration - 3):
+                            ball.countdown_event = "3"
+                        elif now - event_timer > (event_duration - 4):
+                            ball.countdown_event = "4"
+                        elif now - event_timer > (event_duration - 5):
+                            ball.countdown_event = "5"
+
+                    if now - event_timer >= event_interval:
+                        ball.countdown_event = ""
+                    elif now - event_timer > 19:
+                        ball.countdown_event = "1"
+                    elif now - event_timer > 18:
+                        ball.countdown_event = "2"
+                    elif now - event_timer > 17:
+                        ball.countdown_event = "3"
+                    elif now - event_timer > 16:
+                        ball.countdown_event = "4"
+                    elif now - event_timer > 15:
+                        ball.countdown_event = "5"
+                    if not event_active and now - event_timer >= event_interval:
+                        event_active = True
+                        event_timer = now
+                        current_rule = randevent
+                        ball.current_rule = current_rule
+                        print("------------------")
+                        print(current_rule)
+                        print("------------------")
+                    elif event_active and now - event_timer >= event_duration:
+                        event_active = False
+                        event_timer = now
+                        current_rule = "normal"
+                        ball.current_rule = current_rule
+                        print("normal on")
+                        event_done = True
             if score.score_player_1 >= 7 or score.score_player_2 >= 7:
                 players[0].ready = False
                 players[0].name = ""
@@ -151,28 +151,28 @@ def threaded_client(conn, player_slot):
             other_player = 1 - player_slot
             reply = (players[other_player], ball, score, current_rule, randevent)
             conn.sendall(pickle.dumps(reply))
-
+            
     except Exception as e:
         print(f"Player {player_slot} error: {e}")
     finally:
 
         with player_slots_lock:
             player_slots[player_slot] = False
-        print(f"Player {player_slot} disconnected, waiting 10 seconds.")
+        # print(f"Player {player_slot} disconnected, waiting 10 seconds.")
 
-        disconnect_time = time.time()
-        while time.time() - disconnect_time < 10:
-            remaining_time = 10 - int(time.time() - disconnect_time)
-            print(
-                f"{remaining_time} sec remaining for player {player_slot} to reconnect."
-            )
-            time.sleep(1)
-            with player_slots_lock:
-                if player_slots[player_slot]:
-                    print(f"Player {player_slot} reconnected in time!")
-                    break
-        else:
-            print(f"Player {player_slot} did not reconnect in time.")
+        # disconnect_time = time.time()
+        # while time.time() - disconnect_time < 10:
+        #     remaining_time = 10 - int(time.time() - disconnect_time)
+        #     print(
+        #         f"{remaining_time} sec remaining for player {player_slot} to reconnect."
+        #     )
+        #     time.sleep(1)
+        #     with player_slots_lock:
+        #         if player_slots[player_slot]:
+        #             print(f"Player {player_slot} reconnected in time!")
+        #             break
+        # else:
+        #     print(f"Player {player_slot} did not reconnect in time.")
             score.score_player_1 = 8
             score.score_player_2 = 8
 
