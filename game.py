@@ -1,91 +1,330 @@
 import pygame
-import sys
 import random
+from PIL import Image
 
-class Player():
-    def __init__(self, x, y, width, height, color):
+pygame.init()
+
+paddle_gojo = pygame.image.load("img/paddle_gojo.png")
+paddle_sukuna = pygame.image.load("img/paddle_sukuna.png")
+ball_jogo = pygame.image.load("img/jogo.png")
+ball_fire = pygame.image.load("img/fireball.png")
+ball_murasaki = pygame.image.load("img/murasaki.png")
+
+
+def randSound():
+    hit_sound = pygame.mixer.Sound(f"sound/attack{random.randint(1,5)}.mp3")
+    hit_sound.set_volume(0.1)
+    hit_sound.play()
+
+
+def randDeath():
+    death_sound = pygame.mixer.Sound(f"sound/death{random.randint(1,2)}.mp3")
+    death_sound.set_volume(0.1)
+    death_sound.play()
+
+
+BAR_HEIGHT = 50
+
+
+class Player:
+    def __init__(self, x, y, width, height, color, screen_width, screen_height):
         self.x = x
         self.y = y
         self.width = width
         self.height = height
         self.color = color
-        self.rect = pygame.Rect(x,y,width,height)
-        self.vel = 3
+        self.rect = pygame.Rect(x, y, width, height)
+        self.vel = 10
         self.ready = False
-        self.screen_width = 500
-        self.screen_height = 500
+        self.screen_width = screen_width
+        self.screen_height = screen_height
+        self.id = 0
+        self.name = ""
+
+        if color == (0, 0, 255):
+            self.image = pygame.transform.scale(paddle_gojo, (width, height))
+        else:
+            self.image = pygame.transform.scale(paddle_sukuna, (width, height))
+
+        # self.image1 = pygame.image.load("img/paddle_sukuna.png")
+        # self.image1 = pygame.transform.scale(self.image, (width, height))
+        # self.skill = False
+        # self.last_skill_time = 0
+        # self.skill_cooldown = 15000
+        # self.skill_announced = False
+        # self.skill_ready = False
+        # self.button_press = False
 
     def draw(self, screen):
-        pygame.draw.rect(screen, self.color, self.rect)
+        screen.blit(self.image, self.rect)
 
-    def move(self):
+    def move(self, event_list):
         keys = pygame.key.get_pressed()
+        # current_time = pygame.time.get_ticks()
+        # elapsed = current_time - self.last_skill_time
+        # self.skill_ready = elapsed > self.skill_cooldown
+        # for event in event_list:
+        #     if event.type == pygame.KEYDOWN and event.key == pygame.K_e:
+        #         if current_time - self.last_skill_time > self.skill_cooldown:
+        #             self.last_skill_time = current_time
+        #             self.skill = True
+        #             print("Skill used")
+        #             self.skill_ready = False
+        #         else:
+        #             print("Skill on cooldown")
+
+        # if self.skill and not self.skill_announced:
+        #     self.skill_announced = True
+
+        # if not self.skill and self.skill_announced:
+        #     self.skill_announced = False
 
         if keys[pygame.K_UP]:
             self.y -= self.vel
-
         if keys[pygame.K_DOWN]:
             self.y += self.vel
-            
-        # scope of Player
-        if self.y < 0 :
-            self.y = 0
-        if self.y >= self.screen_height - self.height:
+        if self.y < BAR_HEIGHT:
+            self.y = BAR_HEIGHT
+        elif self.y > self.screen_height - self.height:
             self.y = self.screen_height - self.height
-        
-        
         self.update()
 
     def update(self):
-        self.rect = (self.x, self.y, self.width, self.height)
-    
-    # check connect 
+        self.rect.topleft = (self.x, self.y)
+
     def connected(self):
         return self.ready
-    
-class Ball():
-    def __init__(self, x, y, width, height, color):
+
+    def __getstate__(self):
+        state = self.__dict__.copy()
+        if "image" in state:
+            del state["image"]
+        return state
+
+    def __setstate__(self, state):
+        self.__dict__.update(state)
+        if self.color == (0, 0, 255):
+            self.image = pygame.transform.scale(paddle_gojo, (self.width, self.height))
+        else:
+            self.image = pygame.transform.scale(
+                paddle_sukuna, (self.width, self.height)
+            )
+
+
+class Ball:
+    def __init__(self, x, y, width, height, color, screen_width, screen_height):
         self.x = x
         self.y = y
         self.width = width
         self.height = height
         self.color = color
-        self.rect = pygame.Rect(x,y,width,height)
-        self.speed_x = random.choice((1, -1))  # ความเร็วเริ่มต้นในแกน X
-        self.speed_y = random.choice((1, -1))  # ความเร็วเริ่มต้นในแกน Y
-        self.screen_width = 500
-        self.screen_height = 500
-        
-    def update(self):
-        self.rect.topleft = (self.x, self.y)  # อัปเดตตำแหน่งของ rect
-    
-    def draw(self , screen):
-        pygame.draw.rect(screen, self.color, self.rect)
-        
-    def move(self,players):
-        
-        self.x += self.speed_x
-        self.y += self.speed_y
-        
-        if self.y <= 0 or self.y >= self.screen_height :
-            self.speed_y *= -1 
-        if self.x <= 0 or self.x >= self.screen_width :
-            self.ball_start()
-            
-        for player in players:
-            if self.rect.colliderect(player.rect):
-                self.speed_x *= -1  # เปลี่ยนทิศทางแกน x เมื่อชน
-                break
-        
-            
-        self.update()
-        
-    def ball_start(self):
-        self.x = 250
-        self.y = 250
-        self.speed_x = random.choice((1,-1))
-        self.speed_y = random.choice((1,-1))
-        
-        
+        self.rect = pygame.Rect(x, y, width, height)
+        self.speed_x = random.choice((1, -1))
+        self.speed_y = random.choice((1, -1))
+        self.screen_width = screen_width
+        self.screen_height = screen_height
+        self.ready = False
+        self.active = True
+        self.score_time = 0
+        self.countdown_number = ""
+        self.last_speedup_time = pygame.time.get_ticks()
+        self.countdown_event = ""
+        self.event_start_time = pygame.time.get_ticks()
+        self.event_sound_played = False
+        self.current_rule = "normal"
 
-    
+        self.image = pygame.transform.scale(ball_jogo, (width, height))
+        self.image = pygame.transform.scale(ball_fire, (width, height))
+        self.image = pygame.transform.scale(ball_murasaki, (width, height))
+
+    def update(self):
+        if self.active:
+            self.rect.x += self.speed_x
+            self.rect.y += self.speed_y
+        else:
+            self.update_countdown()
+
+    def update_countdown(self):
+        current_time = pygame.time.get_ticks()
+        elapsed = current_time - self.score_time
+        if elapsed < 1000:
+            self.countdown_number = "3"
+        elif elapsed < 2000:
+            self.countdown_number = "2"
+        elif elapsed < 3000:
+            self.countdown_number = "1"
+        else:
+            self.active = True
+            self.countdown_number = ""
+
+    def draw(self, screen):
+        screen.blit(self.image, self.rect)
+
+    def move(self, players, score, current_rule):
+        if self.active and (current_rule == "normal"):
+            current_time = pygame.time.get_ticks()
+            if (current_time - self.last_speedup_time > 1000) and (
+                abs(self.speed_x) < 20 and abs(self.speed_y) < 20
+            ):
+                self.last_speedup_time = current_time
+                self.speed_x *= 1.1
+                self.speed_y *= 1.1
+
+            self.rect.x += int(self.speed_x)
+            self.rect.y += int(self.speed_y)
+
+            if self.rect.top <= BAR_HEIGHT or self.rect.bottom >= self.screen_height:
+                self.speed_y *= -1
+                randSound()
+
+            if self.rect.colliderect(players[0].rect):
+                self.speed_x = abs(self.speed_x)
+                diff = (self.rect.centery - players[0].rect.centery) / (
+                    players[0].rect.height / 2
+                )
+                self.speed_y = diff * 5
+                randSound()
+
+            elif self.rect.colliderect(players[1].rect):
+                self.speed_x = -abs(self.speed_x)
+                diff = (self.rect.centery - players[1].rect.centery) / (
+                    players[1].rect.height / 2
+                )
+                self.speed_y = diff * 5
+                randSound()
+
+            if self.rect.left <= 0:
+                score.p_2_hit_score()
+                self.reset_ball()
+            elif self.rect.right >= self.screen_width:
+                score.p_1_hit_score()
+                self.reset_ball()
+        elif self.active and (current_rule == "event_sukuna"):
+            current_time = pygame.time.get_ticks()
+            if current_time - self.last_speedup_time > 1000:
+                self.last_speedup_time = current_time
+                self.speed_x *= 1.1
+                self.speed_y *= 1.1
+
+            self.rect.x += int(self.speed_x)
+            self.rect.y += int(self.speed_y)
+
+            if self.rect.top <= BAR_HEIGHT or self.rect.bottom >= self.screen_height:
+                self.speed_y *= -1
+                randSound()
+
+            if self.rect.left <= 0:
+                self.speed_x = abs(self.speed_x)
+                randSound()
+
+            if self.rect.right >= self.screen_width:
+                self.speed_x = -abs(self.speed_x)
+                randSound()
+
+            if self.rect.colliderect(players[0].rect):
+                score.p_2_hit_score()
+                randDeath()
+                self.reset_ball()
+
+            elif self.rect.colliderect(players[1].rect):
+                score.p_1_hit_score()
+                randDeath()
+                self.reset_ball()
+        elif self.active and (current_rule == "event_gojo"):
+            current_time = pygame.time.get_ticks()
+            if (current_time - self.last_speedup_time > 1000) and (
+                abs(self.speed_x) < 20 and abs(self.speed_y) < 20
+            ):
+                self.last_speedup_time = current_time
+                self.speed_x *= 1.1
+                self.speed_y *= 1.1
+
+            self.rect.x += int(self.speed_x)
+            self.rect.y += int(self.speed_y)
+
+            if self.rect.top <= BAR_HEIGHT or self.rect.bottom >= self.screen_height:
+                self.speed_y *= -1
+                randSound()
+
+            if self.rect.colliderect(players[0].rect):
+                self.speed_x = abs(self.speed_x)
+                diff = (self.rect.centery - players[0].rect.centery) / (
+                    players[0].rect.height / 2
+                )
+                self.speed_y = diff * 5
+                randSound()
+
+            elif self.rect.colliderect(players[1].rect):
+                self.speed_x = -abs(self.speed_x)
+                diff = (self.rect.centery - players[1].rect.centery) / (
+                    players[1].rect.height / 2
+                )
+                self.speed_y = diff * 5
+                randSound()
+
+            if self.rect.left <= 0:
+                score.p_2_hit_score()
+                self.reset_ball()
+            elif self.rect.right >= self.screen_width:
+                score.p_1_hit_score()
+                self.reset_ball()
+        else:
+            self.update_countdown()
+
+    def reset_ball(self):
+        if self.active:
+            self.active = False
+            self.score_time = pygame.time.get_ticks()
+            self.rect.center = (self.screen_width // 2, self.screen_height // 2)
+            self.speed_x = random.choice((1, -1))
+            self.speed_y = random.choice((1, -1))
+            self.last_speedup_time = pygame.time.get_ticks()
+            self.countdown_number = ""
+            self.ability = False
+
+    def __getstate__(self):
+        state = self.__dict__.copy()
+        if "image" in state:
+            del state["image"]
+        if "original_image" in state:
+            del state["original_image"]
+        return state
+
+    def __setstate__(self, state):
+        self.__dict__.update(state)
+        if self.current_rule == "normal":
+            self.image = pygame.transform.scale(ball_jogo, (self.width, self.height))
+            self.original_image = self.image
+        elif self.current_rule == "event_sukuna":
+            self.image = pygame.transform.scale(ball_fire, (self.width, self.height))
+            self.original_image = self.image
+        elif self.current_rule == "event_gojo":
+            self.image = pygame.transform.scale(
+                ball_murasaki, (self.width, self.height)
+            )
+            self.original_image = self.image
+
+
+class Score:
+    def __init__(self, score_1=0, score_2=0):
+        self.score_player_1 = score_1
+        self.score_player_2 = score_2
+
+    def p_1_hit_score(self):
+        self.score_player_1 += 1
+        randDeath()
+
+    def p_2_hit_score(self):
+        self.score_player_2 += 1
+        randDeath()
+
+
+class List_Player:
+    def __init__(self):
+        self.list_player = []
+
+    def add_player(self, name):
+        self.list_player.append(name)
+
+    def remove_player(self, name):
+        self.list_player.remove(name)
