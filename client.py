@@ -447,6 +447,7 @@ def main(player_name):
         event_list = pygame.event.get()
         for e in event_list:
             if e.type == pygame.QUIT:
+                net.close()
                 pygame.quit()
                 return
         player.move(event_list)
